@@ -21,17 +21,11 @@
   .logo { font-family: 'Playfair Display', serif; font-size: 12px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.2rem; }
   h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: 0.2rem; }
   .subtitle { font-size: 12px; color: var(--text2); }
-
-  /* TABS */
   .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; background: var(--surface); border-radius: var(--radius); padding: 4px; }
-  .tab { flex: 1; padding: 10px 8px; text-align: center; font-size: 13px; font-weight: 600; font-family: 'Manrope', sans-serif; cursor: pointer; border-radius: 8px; color: var(--text2); border: none; background: transparent; transition: all 0.2s; }
+  .tab { flex: 1; padding: 10px 8px; text-align: center; font-size: 13px; font-weight: 600; font-family: 'Manrope', sans-serif; cursor: pointer; border-radius: 8px; color: var(--text2); border: none; background: transparent; }
   .tab.active { background: var(--gold); color: var(--bg); }
-
-  /* PANELS */
   .panel { display: none; }
   .panel.active { display: block; }
-
-  /* TEXT SEARCH */
   .input-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1.2rem; }
   .input-row { margin-bottom: 1rem; }
   .input-row input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 12px 16px; font-size: 15px; font-family: 'Manrope', sans-serif; color: var(--text); outline: none; }
@@ -45,19 +39,11 @@
   .quick-refs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.2rem; }
   .quick-ref { padding: 5px 10px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; font-family: 'Manrope', sans-serif; }
   .quick-ref:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* THEMES */
   .themes-section { margin-bottom: 1.2rem; }
   .theme-category { margin-bottom: 1.2rem; }
   .theme-category-title { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; padding-left: 4px; }
   .theme-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .theme-btn {
-    padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500;
-    font-family: 'Manrope', sans-serif; cursor: pointer; border: 1px solid var(--border2);
-    background: var(--surface); color: var(--text2); transition: all 0.15s;
-  }
-  .theme-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .theme-btn.active { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+  .theme-btn { padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; font-family: 'Manrope', sans-serif; cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); transition: all 0.15s; }
   .theme-btn.soul { border-color: rgba(139,125,216,0.4); }
   .theme-btn.soul:hover, .theme-btn.soul.active { background: var(--purple); border-color: var(--purple); color: white; }
   .theme-btn.recovery { border-color: rgba(77,184,150,0.4); }
@@ -66,19 +52,35 @@
   .theme-btn.life:hover, .theme-btn.life.active { background: var(--gold); border-color: var(--gold); color: var(--bg); }
   .theme-btn.spirit { border-color: rgba(212,130,106,0.4); }
   .theme-btn.spirit:hover, .theme-btn.spirit.active { background: var(--coral); border-color: var(--coral); color: white; }
-
-  /* RESULTS */
   .result { display: none; }
   .result.visible { display: block; }
   .ref-header { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--gold); margin-bottom: 0.2rem; }
   .ref-step { font-size: 12px; color: var(--text3); margin-bottom: 1.2rem; }
-  .verse-block { background: var(--surface); border-left: 3px solid var(--gold); border-radius: 0 var(--radius) var(--radius) 0; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
-  .verse-text { font-family: 'Playfair Display', serif; font-size: 16px; font-style: italic; color: var(--text); line-height: 1.7; margin-bottom: 0.4rem; }
-  .verse-ref { font-size: 12px; color: var(--gold); }
+
+  /* 3 VERSES */
+  .verses-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.2rem; }
+  .verse-card { background: var(--surface); border-radius: var(--radius); padding: 1rem 1.2rem; border-left: 3px solid var(--gold); }
+  .verse-card.ot { border-left-color: var(--purple); }
+  .verse-card.nt { border-left-color: var(--teal); }
+  .verse-card.wisdom { border-left-color: var(--gold); }
+  .verse-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .verse-tag.ot { color: var(--purple); }
+  .verse-tag.nt { color: var(--teal); }
+  .verse-tag.wisdom { color: var(--gold); }
+  .verse-text { font-family: 'Playfair Display', serif; font-size: 15px; font-style: italic; color: var(--text); line-height: 1.7; margin-bottom: 4px; }
+  .verse-ref { font-size: 11px; color: var(--text3); }
+
+  /* LINGUISTICS BLOCK */
+  .ling-block { background: rgba(139,125,216,0.08); border: 1px solid rgba(139,125,216,0.25); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+  .ling-section { margin-bottom: 1rem; }
+  .ling-section:last-child { margin-bottom: 0; }
+  .ling-title { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .ling-content { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .word-chip { display: inline-block; background: rgba(139,125,216,0.15); color: var(--purple); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-right: 4px; }
 
   /* DID YOU KNOW */
-  .did-you-know { background: rgba(139,125,216,0.1); border: 1px solid rgba(139,125,216,0.3); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
-  .dyk-title { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .did-you-know { background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.25); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+  .dyk-title { font-size: 11px; font-weight: 600; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
   .dyk-content { font-size: 13px; color: var(--text); line-height: 1.7; }
 
   .blocks { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.2rem; }
@@ -96,7 +98,6 @@
   .block-body { display: none; padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--border); }
   .block-body.open { display: block; }
   .block-content { font-size: 14px; color: var(--text); line-height: 1.85; padding-top: 1rem; white-space: pre-wrap; }
-
   .questions-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1.2rem; }
   .q-title { font-size: 11px; font-weight: 600; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.8rem; }
   .q-list { display: flex; flex-direction: column; gap: 8px; }
@@ -108,7 +109,6 @@
   .q-answer.open { display: block; }
   .q-loading { display: none; padding: 10px 14px; font-size: 12px; color: var(--text3); border-top: 1px solid var(--border); }
   .q-loading.visible { display: block; }
-
   .loading { display: none; text-align: center; padding: 3rem 0; color: var(--text2); font-size: 14px; }
   .loading.visible { display: block; }
   .spinner { width: 32px; height: 32px; border: 2px solid var(--border2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
@@ -124,16 +124,15 @@
     <div>
       <div class="logo">Путь преодоления · Д.В.П.</div>
       <h1>Разбор библейского текста</h1>
-      <p class="subtitle">Психология · Богословие · История · Применение в группе</p>
+      <p class="subtitle">Психология · Богословие · История · Лингвистика</p>
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('text')">📖 По тексту</button>
-    <button class="tab" onclick="switchTab('themes')">🗂 По теме</button>
+    <button class="tab active" onclick="switchTab('text', this)">📖 По тексту</button>
+    <button class="tab" onclick="switchTab('themes', this)">🗂 По теме</button>
   </div>
 
-  <!-- PANEL: TEXT -->
   <div class="panel active" id="panel-text">
     <div class="input-section">
       <div class="input-row">
@@ -166,59 +165,58 @@
     </div>
   </div>
 
-  <!-- PANEL: THEMES -->
   <div class="panel" id="panel-themes">
     <div class="themes-section">
       <div class="theme-category">
         <div class="theme-category-title">🌑 Состояния души</div>
         <div class="theme-grid">
-          <button class="theme-btn soul" onclick="analyzeTheme('Скорбь и потеря')">Скорбь</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Депрессия и уныние')">Депрессия</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Одиночество')">Одиночество</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Страх и тревога')">Страх</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Стыд и вина')">Стыд и вина</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Гнев и обида')">Гнев</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Отчаяние и безнадёжность')">Отчаяние</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Усталость и выгорание')">Усталость</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Тишина и молчание перед Богом')">Тишина</button>
-          <button class="theme-btn soul" onclick="analyzeTheme('Пустота внутри')">Пустота</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Скорбь и потеря', this)">Скорбь</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Депрессия и уныние', this)">Депрессия</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Одиночество', this)">Одиночество</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Страх и тревога', this)">Страх</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Стыд и вина', this)">Стыд и вина</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Гнев и обида', this)">Гнев</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Отчаяние и безнадёжность', this)">Отчаяние</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Усталость и выгорание', this)">Усталость</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Тишина и молчание перед Богом', this)">Тишина</button>
+          <button class="theme-btn soul" onclick="analyzeTheme('Пустота внутри', this)">Пустота</button>
         </div>
       </div>
       <div class="theme-category">
         <div class="theme-category-title">🌱 Восстановление</div>
         <div class="theme-grid">
-          <button class="theme-btn recovery" onclick="analyzeTheme('Прощение себя')">Прощение себя</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Прощение других')">Прощение других</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Доверие Богу')">Доверие</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Надежда и будущее')">Надежда</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Идентичность и образ Бога')">Идентичность</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Смысл жизни и страдания')">Смысл жизни</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Благодарность')">Благодарность</button>
-          <button class="theme-btn recovery" onclick="analyzeTheme('Исцеление и восстановление')">Исцеление</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Прощение себя', this)">Прощение себя</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Прощение других', this)">Прощение других</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Доверие Богу', this)">Доверие</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Надежда и будущее', this)">Надежда</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Идентичность и образ Бога', this)">Идентичность</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Смысл жизни и страдания', this)">Смысл жизни</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Благодарность', this)">Благодарность</button>
+          <button class="theme-btn recovery" onclick="analyzeTheme('Исцеление и восстановление', this)">Исцеление</button>
         </div>
       </div>
       <div class="theme-category">
         <div class="theme-category-title">🏠 Практическая жизнь</div>
         <div class="theme-grid">
-          <button class="theme-btn life" onclick="analyzeTheme('Отношения по-библейски')">Отношения</button>
-          <button class="theme-btn life" onclick="analyzeTheme('Брак и семья по-библейски')">Семья</button>
-          <button class="theme-btn life" onclick="analyzeTheme('Работа и призвание по-библейски')">Работа</button>
-          <button class="theme-btn life" onclick="analyzeTheme('Финансы и деньги по-библейски')">Финансы</button>
-          <button class="theme-btn life" onclick="analyzeTheme('Дружба и community по-библейски')">Дружба</button>
-          <button class="theme-btn life" onclick="analyzeTheme('Границы и свобода воли')">Границы</button>
-          <button class="theme-btn life" onclick="analyzeTheme('Зависимость и свобода')">Зависимость</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Отношения по-библейски', this)">Отношения</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Брак и семья по-библейски', this)">Семья</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Работа и призвание по-библейски', this)">Работа</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Финансы и деньги по-библейски', this)">Финансы</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Дружба по-библейски', this)">Дружба</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Границы и свобода воли', this)">Границы</button>
+          <button class="theme-btn life" onclick="analyzeTheme('Зависимость и свобода', this)">Зависимость</button>
         </div>
       </div>
       <div class="theme-category">
         <div class="theme-category-title">✝️ Духовный путь</div>
         <div class="theme-grid">
-          <button class="theme-btn spirit" onclick="analyzeTheme('Молитва и общение с Богом')">Молитва</button>
-          <button class="theme-btn spirit" onclick="analyzeTheme('Сомнения в вере')">Сомнения</button>
-          <button class="theme-btn spirit" onclick="analyzeTheme('Бог в страдании и теодицея')">Бог в страдании</button>
-          <button class="theme-btn spirit" onclick="analyzeTheme('Благодать и незаслуженная любовь')">Благодать</button>
-          <button class="theme-btn spirit" onclick="analyzeTheme('Покаяние и возвращение')">Покаяние</button>
-          <button class="theme-btn spirit" onclick="analyzeTheme('Духовная брань')">Духовная брань</button>
-          <button class="theme-btn spirit" onclick="analyzeTheme('Церковь и сообщество')">Церковь</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Молитва и общение с Богом', this)">Молитва</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Сомнения в вере', this)">Сомнения</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Бог в страдании', this)">Бог в страдании</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Благодать и незаслуженная любовь', this)">Благодать</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Покаяние и возвращение', this)">Покаяние</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Духовная брань', this)">Духовная брань</button>
+          <button class="theme-btn spirit" onclick="analyzeTheme('Церковь и сообщество', this)">Церковь</button>
         </div>
       </div>
     </div>
@@ -230,14 +228,25 @@
   <div class="result" id="result">
     <div class="ref-header" id="res-ref"></div>
     <div class="ref-step" id="res-step"></div>
-    <div class="verse-block">
-      <div class="verse-text" id="res-verse"></div>
-      <div class="verse-ref" id="res-verse-ref"></div>
+
+    <div class="verses-grid" id="res-verses"></div>
+
+    <div class="ling-block">
+      <div class="ling-section">
+        <div class="ling-title">🔤 Ключевые слова — греческий и еврейский</div>
+        <div class="ling-content" id="res-greek"></div>
+      </div>
+      <div class="ling-section">
+        <div class="ling-title">📖 Сравнение переводов: Синодальный · KJV · NIV</div>
+        <div class="ling-content" id="res-translations"></div>
+      </div>
     </div>
-    <div class="did-you-know" id="res-dyk-block">
+
+    <div class="did-you-know">
       <div class="dyk-title">🔍 А знаете ли вы?</div>
       <div class="dyk-content" id="res-dyk"></div>
     </div>
+
     <div class="blocks">
       <div class="block">
         <div class="block-head" onclick="toggleBlock(this)">
@@ -284,11 +293,11 @@ const PROXY = 'https://bibleproxy-production.up.railway.app';
 let selectedCtx = 'group';
 let currentRef = '';
 
-function switchTab(tab) {
+function switchTab(tab, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`#panel-${tab}`).classList.add('active');
-  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  el.classList.add('active');
 }
 
 document.querySelectorAll('.ctx-btn').forEach(btn => {
@@ -334,19 +343,14 @@ async function toggleQuestion(item, question) {
   const answer = item.querySelector('.q-answer');
   const loading = item.querySelector('.q-loading');
   const arrow = item.querySelector('.q-arrow');
-  if (answer.classList.contains('open')) {
-    answer.classList.remove('open'); arrow.classList.remove('open'); return;
-  }
-  if (answer.textContent.trim()) {
-    answer.classList.add('open'); arrow.classList.add('open'); return;
-  }
+  if (answer.classList.contains('open')) { answer.classList.remove('open'); arrow.classList.remove('open'); return; }
+  if (answer.textContent.trim()) { answer.classList.add('open'); arrow.classList.add('open'); return; }
   loading.classList.add('visible'); arrow.classList.add('open');
   try {
-    const text = await callAPI(`Ты — ведущий реабилитационной группы, дьякон-психолог. Текст: «${currentRef}». Вопрос: «${question}». Дай мини-проповедь для ведущего — 4-6 предложений живым языком: что главное, как направить разговор, какой момент не упустить.`, 600);
+    const text = await callAPI(`Ты — ведущий реабилитационной группы, дьякон-психолог. Текст: «${currentRef}». Вопрос: «${question}». Мини-проповедь для ведущего — 4-6 предложений живым языком.`, 600);
     answer.textContent = text; answer.classList.add('open');
-  } catch(e) {
-    answer.textContent = 'Ошибка: ' + e.message; answer.classList.add('open');
-  } finally { loading.classList.remove('visible'); }
+  } catch(e) { answer.textContent = 'Ошибка: ' + e.message; answer.classList.add('open'); }
+  finally { loading.classList.remove('visible'); }
 }
 
 const ctxLabels = {
@@ -354,19 +358,39 @@ const ctxLabels = {
   step1: 'Шаг 1', step2: 'Шаг 2', step4: 'Шаг 4', step5: 'Шаг 5', step6: 'Шаг 6'
 };
 
-async function analyzeTheme(theme) {
+function buildPrompt(subject, ctxLabel) {
+  return `Ты — библеист, психолог и лингвист. Разбери тему/текст «${subject}» для реабилитационной группы зависимых. Контекст: ${ctxLabel}.
+
+Подбери 3 текста: один из Ветхого Завета (не Псалмы и не Притчи), один из Нового Завета, один из поучительных книг (Псалмы, Притчи, Иов, Екклесиаст).
+
+Ответь ТОЛЬКО валидным JSON без markdown:
+{
+  "title": "краткое название темы",
+  "ot": {"ref": "ссылка ВЗ", "verse": "цитата на русском"},
+  "nt": {"ref": "ссылка НЗ", "verse": "цитата на русском"},
+  "wisdom": {"ref": "ссылка поучительная книга", "verse": "цитата на русском"},
+  "greek_hebrew": "разбор 2-3 ключевых слов на греческом или еврейском с транслитерацией и значением — например: агапе (греч. ἀγάπη) — безусловная любовь в отличие от эроса и филии",
+  "translations": "сравнение одного ключевого стиха в трёх переводах: Синодальный, KJV (английский), NIV (современный английский) — что теряется и что добавляется при переводе",
+  "did_you_know": "2-3 интересных исторических или культурных факта о контексте этих текстов",
+  "historical": "культурно-исторический контекст всех трёх текстов, 150 слов, живым языком",
+  "psychological": "психологический слой — механизмы, связь с темой зависимости, 150 слов",
+  "theological": "богословский смысл для зависимого человека, 100 слов",
+  "application": "как использовать на группе конкретно, 100 слов",
+  "questions": ["вопрос 1", "вопрос 2", "вопрос 3", "вопрос 4", "вопрос 5"]
+}`;
+}
+
+async function analyzeTheme(theme, btn) {
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  const prompt = `Подбери лучший библейский текст по теме «${theme}» для реабилитационной группы зависимых. Ответь ТОЛЬКО валидным JSON: {"reference":"ссылка","verse":"цитата на русском","did_you_know":"интересный исторический или культурный факт об этом тексте в стиле А знаете ли вы — 2-3 предложения","historical":"культурно-исторический контекст 120 слов живым языком","psychological":"психологический слой механизмы связь с темой ${theme} и зависимостью 120 слов","theological":"богословский смысл для зависимого человека 80 слов","application":"как использовать эту тему на группе конкретно 80 слов","questions":["вопрос 1","вопрос 2","вопрос 3","вопрос 4","вопрос 5"]}`;
-  await runAnalysis(prompt, `Тема: ${theme}`, theme);
+  btn.classList.add('active');
+  await runAnalysis(buildPrompt(theme, 'Групповое собрание'), `Тема: ${theme}`, theme);
 }
 
 async function analyze() {
   const ref = document.getElementById('ref-input').value.trim();
   if (!ref) return;
   const ctxLabel = ctxLabels[selectedCtx] || selectedCtx;
-  const prompt = `Разбери библейский текст «${ref}» для реабилитационной группы зависимых. Контекст: ${ctxLabel}. Ответь ТОЛЬКО валидным JSON: {"reference":"ссылка","verse":"цитата на русском","did_you_know":"интересный исторический или культурный факт об этом тексте в стиле А знаете ли вы — 2-3 предложения","historical":"культурно-исторический контекст 150 слов живым языком","psychological":"психологический слой механизмы связь с зависимостью 150 слов","theological":"богословский смысл для зависимого человека 100 слов","application":"применение в группе конкретно 100 слов","questions":["вопрос 1","вопрос 2","вопрос 3","вопрос 4","вопрос 5"]}`;
-  await runAnalysis(prompt, ctxLabel, ref);
+  await runAnalysis(buildPrompt(ref, ctxLabel), ctxLabel, ref);
 }
 
 async function runAnalysis(prompt, label, ref) {
@@ -379,20 +403,40 @@ async function runAnalysis(prompt, label, ref) {
   result.classList.remove('visible');
   error.classList.remove('visible');
   try {
-    const text = await callAPI(prompt, 3000);
+    const text = await callAPI(prompt, 4000);
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('Попробуй ещё раз');
     const p = JSON.parse(match[0]);
-    currentRef = p.reference || ref;
-    document.getElementById('res-ref').textContent = p.reference || ref;
+
+    currentRef = (p.nt && p.nt.ref) || ref;
+    document.getElementById('res-ref').textContent = p.title || ref;
     document.getElementById('res-step').textContent = label;
-    document.getElementById('res-verse').textContent = p.verse || '';
-    document.getElementById('res-verse-ref').textContent = p.reference || ref;
+
+    // 3 verses
+    const versesEl = document.getElementById('res-verses');
+    versesEl.innerHTML = '';
+    const vData = [
+      { key: 'ot', tag: 'Ветхий Завет', cls: 'ot' },
+      { key: 'nt', tag: 'Новый Завет', cls: 'nt' },
+      { key: 'wisdom', tag: 'Поучительные книги', cls: 'wisdom' }
+    ];
+    vData.forEach(v => {
+      if (p[v.key]) {
+        const card = document.createElement('div');
+        card.className = 'verse-card ' + v.cls;
+        card.innerHTML = `<div class="verse-tag ${v.cls}">${v.tag}</div><div class="verse-text">${p[v.key].verse || ''}</div><div class="verse-ref">${p[v.key].ref || ''}</div>`;
+        versesEl.appendChild(card);
+      }
+    });
+
+    document.getElementById('res-greek').textContent = p.greek_hebrew || '';
+    document.getElementById('res-translations').textContent = p.translations || '';
     document.getElementById('res-dyk').textContent = p.did_you_know || '';
     document.getElementById('res-hist').textContent = p.historical || '';
     document.getElementById('res-psych').textContent = p.psychological || '';
     document.getElementById('res-theo').textContent = p.theological || '';
     document.getElementById('res-group').textContent = p.application || '';
+
     const qList = document.getElementById('res-questions');
     qList.innerHTML = '';
     (p.questions || []).forEach(q => {
@@ -405,6 +449,7 @@ async function runAnalysis(prompt, label, ref) {
       item.appendChild(qEl); item.appendChild(loadEl); item.appendChild(ansEl);
       qList.appendChild(item);
     });
+
     document.querySelectorAll('.block-body').forEach(b => b.classList.remove('open'));
     document.querySelectorAll('.block-arrow').forEach(a => a.classList.remove('open'));
     const firstBody = document.querySelector('.block-body');
