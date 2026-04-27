@@ -694,35 +694,22 @@
 <div id="screen-auth" class="screen">
   <div class="auth-box">
     <div class="auth-title" id="auth-title">Ведущий</div>
-    <div class="auth-subtitle" id="auth-subtitle">Вход в систему</div>
+    <div class="auth-subtitle" id="auth-subtitle">Введите пароль</div>
 
-    <!-- Поля только для участника -->
+    <!-- Поле имени — только для участника -->
     <div id="participant-name-field" style="display:none">
-      <div class="field-label">Имя</div>
-      <input class="field-input" id="auth-name" type="text" placeholder="Ваше имя">
+      <div class="field-label">Ваше имя</div>
+      <input class="field-input" id="auth-name" type="text" placeholder="Введите имя">
     </div>
 
-    <!-- Email только для ведущего -->
-    <div id="facilitator-email-field">
-      <div class="field-label">Email</div>
-      <input class="field-input" id="auth-email" type="email" placeholder="email@example.com">
+    <!-- Пароль — только для ведущего -->
+    <div id="facilitator-password-field" style="display:none">
+      <div class="field-label">Пароль ведущего</div>
+      <input class="field-input" id="auth-password" type="password" placeholder="••••••••">
     </div>
-
-    <!-- Логин участника (имя как логин) -->
-    <div id="participant-login-field" style="display:none">
-      <div class="field-label">Имя (логин)</div>
-      <input class="field-input" id="auth-login" type="text" placeholder="Ваше имя">
-    </div>
-
-    <div class="field-label">Пароль</div>
-    <input class="field-input" id="auth-password" type="password" placeholder="••••••••">
 
     <button class="btn-primary" id="auth-btn" onclick="doAuth()">Войти</button>
     <div class="auth-error" id="auth-error"></div>
-
-    <div class="auth-toggle" id="auth-toggle">
-      Нет аккаунта? <a onclick="toggleAuth()">Зарегистрироваться</a>
-    </div>
     <button class="btn-secondary" onclick="showScreen('screen-landing')">← Назад</button>
   </div>
 </div>
@@ -785,9 +772,7 @@
 <!-- ═══ FIREBASE ═══ -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, orderBy }
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, orderBy, where }
   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -800,7 +785,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ─── PROGRAM DATA ───
@@ -1079,104 +1063,63 @@ const WHEEL_AREAS = [
 
 // ─── STATE ───
 let currentRole = 'participant';
-let currentUser = null;
-let currentUserData = null;
+let currentUser = null;   // { id, name, role, unlockedStep }
 let selectedParticipantId = null;
 let selectedStepId = 1;
 let selectedDayIndex = 0;
 let hwDone = {};
 
+// ─── SCREEN HELPERS ───
 window.showScreen = (id) => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 };
 
+const FACILITATOR_PASSWORD = 'ПУТЬ2024';
+
 window.enterAs = (role) => {
   currentRole = role;
-  isRegistering = false;
   document.getElementById('auth-title').textContent = role === 'facilitator' ? 'Ведущий' : 'Участник';
-  document.getElementById('auth-subtitle').textContent = 'Вход в систему';
-  document.getElementById('auth-btn').textContent = 'Войти';
-
-  // ведущий: email, участник: логин по имени
-  document.getElementById('facilitator-email-field').style.display = role === 'facilitator' ? 'block' : 'none';
-  document.getElementById('participant-login-field').style.display = role === 'participant' ? 'block' : 'none';
-  document.getElementById('participant-name-field').style.display = 'none';
-
-  document.getElementById('auth-toggle').innerHTML = 'Нет аккаунта? <a onclick="toggleAuth()">Зарегистрироваться</a>';
+  document.getElementById('auth-subtitle').textContent = role === 'facilitator' ? 'Введите пароль ведущего' : 'Введите ваше имя';
+  document.getElementById('participant-name-field').style.display = role === 'participant' ? 'block' : 'none';
+  document.getElementById('facilitator-password-field').style.display = role === 'facilitator' ? 'block' : 'none';
   document.getElementById('auth-error').style.display = 'none';
+  if (role === 'participant') document.getElementById('auth-name').value = '';
+  else document.getElementById('auth-password').value = '';
   showScreen('screen-auth');
 };
 
-let isRegistering = false;
-window.toggleAuth = () => {
-  isRegistering = !isRegistering;
-  document.getElementById('auth-btn').textContent = isRegistering ? 'Зарегистрироваться' : 'Войти';
-  document.getElementById('auth-subtitle').textContent = isRegistering ? 'Создать аккаунт' : 'Вход в систему';
-  document.getElementById('auth-toggle').innerHTML = isRegistering
-    ? 'Уже есть аккаунт? <a onclick="toggleAuth()">Войти</a>'
-    : 'Нет аккаунта? <a onclick="toggleAuth()">Зарегистрироваться</a>';
-
-  if (currentRole === 'participant') {
-    // при регистрации показываем поле имени (новое имя), скрываем логин
-    document.getElementById('participant-name-field').style.display = isRegistering ? 'block' : 'none';
-    document.getElementById('participant-login-field').style.display = isRegistering ? 'none' : 'block';
-  } else {
-    // ведущий всегда email
-    document.getElementById('facilitator-email-field').style.display = 'block';
-  }
-  document.getElementById('auth-error').style.display = 'none';
-};
-
 window.doAuth = async () => {
-  const password = document.getElementById('auth-password').value;
   const errEl = document.getElementById('auth-error');
   errEl.style.display = 'none';
 
-  try {
-    if (currentRole === 'participant') {
-      if (isRegistering) {
-        // регистрация участника: имя → имя@rehab.local
-        const name = document.getElementById('auth-name').value.trim();
-        if (!name) { showError('Введите имя'); return; }
-        const fakeEmail = name.toLowerCase().replace(/\s+/g, '_') + '@rehab.local';
-        const cred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
-        await setDoc(doc(db, 'users', cred.user.uid), {
-          name, email: fakeEmail, role: 'participant',
-          unlockedStep: 1, createdAt: new Date().toISOString(),
-        });
-      } else {
-        // вход участника по имени
-        const login = document.getElementById('auth-login').value.trim();
-        if (!login) { showError('Введите имя'); return; }
-        const fakeEmail = login.toLowerCase().replace(/\s+/g, '_') + '@rehab.local';
-        await signInWithEmailAndPassword(auth, fakeEmail, password);
-      }
-    } else {
-      // ведущий: обычный email
-      const email = document.getElementById('auth-email').value.trim();
-      if (isRegistering) {
-        const name = document.getElementById('auth-name')?.value?.trim() || 'Ведущий';
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, 'users', cred.user.uid), {
-          name, email, role: 'facilitator',
-          createdAt: new Date().toISOString(),
-        });
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-    }
-  } catch(e) {
-    const msgs = {
-      'auth/user-not-found':'Пользователь не найден',
-      'auth/wrong-password':'Неверный пароль',
-      'auth/email-already-in-use':'Это имя уже занято',
-      'auth/invalid-email':'Неверный формат',
-      'auth/weak-password':'Пароль минимум 6 символов',
-      'auth/invalid-credential':'Неверное имя или пароль',
-    };
-    showError(msgs[e.code] || e.message);
+  if (currentRole === 'facilitator') {
+    const pwd = document.getElementById('auth-password').value;
+    if (pwd !== FACILITATOR_PASSWORD) { showError('Неверный пароль'); return; }
+    currentUser = { id: 'facilitator', name: 'Ведущий', role: 'facilitator' };
+    document.getElementById('f-user-name').textContent = 'Ведущий';
+    showScreen('screen-facilitator');
+    loadParticipants();
+    return;
   }
+
+  // участник — по имени
+  const name = document.getElementById('auth-name').value.trim();
+  if (!name) { showError('Введите имя'); return; }
+  const nameKey = name.toLowerCase().replace(/\s+/g, '_');
+
+  // ищем участника в Firestore
+  const snap = await getDoc(doc(db, 'participants', nameKey));
+  if (!snap.exists()) {
+    showError('Имя не найдено. Обратитесь к ведущему.');
+    return;
+  }
+  const data = snap.data();
+  currentUser = { id: nameKey, ...data };
+  document.getElementById('p-user-name').textContent = data.name;
+  showScreen('screen-participant');
+  renderStepsNav();
+  openStep(1);
 };
 
 function showError(msg) {
@@ -1185,30 +1128,10 @@ function showError(msg) {
   el.style.display = 'block';
 }
 
-window.logout = async () => {
-  await signOut(auth);
+window.logout = () => {
+  currentUser = null;
   showScreen('screen-landing');
 };
-
-// ─── AUTH STATE ───
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-  currentUser = user;
-  const snap = await getDoc(doc(db, 'users', user.uid));
-  if (!snap.exists()) { await signOut(auth); return; }
-  currentUserData = snap.data();
-
-  if (currentUserData.role === 'facilitator') {
-    document.getElementById('f-user-name').textContent = currentUserData.name || 'Ведущий';
-    showScreen('screen-facilitator');
-    loadParticipants();
-  } else {
-    document.getElementById('p-user-name').textContent = currentUserData.name || 'Участник';
-    showScreen('screen-participant');
-    renderStepsNav();
-    openStep(1);
-  }
-});
 
 // ─── FACILITATOR TABS ───
 window.switchFTab = (tab) => {
@@ -1244,18 +1167,19 @@ window.openFStep = (stepId) => {
 
 // ─── FACILITATOR PARTICIPANTS ───
 async function loadParticipants() {
-  const snap = await getDocs(collection(db, 'users'));
+  const snap = await getDocs(collection(db, 'participants'));
   const list = document.getElementById('participants-list');
-  list.innerHTML = '';
+  list.innerHTML = `<div style="padding:12px 20px 4px">
+    <button class="btn-open-step" style="width:100%;margin:0" onclick="showAddParticipant()">+ Добавить участника</button>
+  </div>`;
   snap.forEach(d => {
     const data = d.data();
-    if (data.role !== 'participant') return;
     const item = document.createElement('div');
     item.className = 'participant-item';
     item.dataset.uid = d.id;
     const step = data.unlockedStep || 1;
     item.innerHTML = `
-      <div class="p-name">${data.name || 'Участник'}</div>
+      <div class="p-name">${data.name}</div>
       <div class="p-step">Шаг ${step}</div>
       <span class="p-badge badge-green">активен</span>
     `;
@@ -1263,6 +1187,38 @@ async function loadParticipants() {
     list.appendChild(item);
   });
 }
+
+window.showAddParticipant = () => {
+  const main = document.getElementById('f-main');
+  main.innerHTML = `
+    <div class="participant-detail">
+      <div class="detail-name">Новый участник</div>
+      <div class="detail-email" style="margin-bottom:20px">Введите имя которое участник будет использовать для входа</div>
+      <div class="field-label">Имя участника</div>
+      <input class="field-input" id="new-participant-name" type="text" placeholder="Например: Иван или Иван_К">
+      <button class="btn-open-step" style="margin-top:16px" onclick="createParticipant()">Создать</button>
+      <div class="auth-error" id="add-error" style="display:none;margin-top:10px"></div>
+    </div>`;
+};
+
+window.createParticipant = async () => {
+  const name = document.getElementById('new-participant-name').value.trim();
+  if (!name) return;
+  const nameKey = name.toLowerCase().replace(/\s+/g, '_');
+  const existing = await getDoc(doc(db, 'participants', nameKey));
+  if (existing.exists()) {
+    document.getElementById('add-error').textContent = 'Участник с таким именем уже есть';
+    document.getElementById('add-error').style.display = 'block';
+    return;
+  }
+  await setDoc(doc(db, 'participants', nameKey), {
+    name, unlockedStep: 1, createdAt: new Date().toISOString(),
+  });
+  await loadParticipants();
+  // select the new one
+  const snap = await getDoc(doc(db, 'participants', nameKey));
+  selectParticipant(nameKey, snap.data());
+};
 
 async function selectParticipant(uid, data) {
   selectedParticipantId = uid;
@@ -1272,12 +1228,12 @@ async function selectParticipant(uid, data) {
   const main = document.getElementById('f-main');
   const unlockedStep = data.unlockedStep || 1;
 
-  // Load answers
+  // diary entries
   let answersHtml = '';
   try {
-    const answersSnap = await getDocs(query(collection(db, 'users', uid, 'diary'), orderBy('createdAt', 'desc')));
+    const answersSnap = await getDocs(query(collection(db, 'participants', uid, 'diary'), orderBy('createdAt', 'desc')));
     if (!answersSnap.empty) {
-      answersHtml = '<div class="detail-section"><div class="detail-section-title">Дневник</div><div class="answers-list">';
+      answersHtml = '<div class="detail-section"><div class="detail-section-title">Дневник участника</div><div class="answers-list">';
       answersSnap.forEach(d => {
         const a = d.data();
         answersHtml += `<div class="answer-card">
@@ -1300,10 +1256,10 @@ async function selectParticipant(uid, data) {
 
   main.innerHTML = `
     <div class="participant-detail">
-      <div class="detail-name">${data.name || 'Участник'}</div>
-      <div class="detail-email">${data.email || ''}</div>
+      <div class="detail-name">${data.name}</div>
+      <div class="detail-email">Логин для входа: <strong style="color:var(--gold)">${uid}</strong></div>
 
-      <div class="detail-section">
+      <div class="detail-section" style="margin-top:20px">
         <div class="detail-section-title">Шаги программы</div>
         <div class="steps-grid">${stepsHtml}</div>
         ${unlockedStep < 10 ? `<button class="btn-open-step" onclick="openNextStep('${uid}', ${unlockedStep})">
@@ -1312,27 +1268,23 @@ async function selectParticipant(uid, data) {
       </div>
 
       ${answersHtml}
-    </div>
-  `;
+    </div>`;
 }
 
 window.openNextStep = async (uid, currentStep) => {
   const nextStep = currentStep + 1;
-  await updateDoc(doc(db, 'users', uid), { unlockedStep: nextStep });
-  const snap = await getDoc(doc(db, 'users', uid));
+  await updateDoc(doc(db, 'participants', uid), { unlockedStep: nextStep });
+  const snap = await getDoc(doc(db, 'participants', uid));
   selectParticipant(uid, snap.data());
-  // refresh list
   document.querySelectorAll('.participant-item').forEach(el => {
-    if (el.dataset.uid === uid) {
-      el.querySelector('.p-step').textContent = `Шаг ${nextStep}`;
-    }
+    if (el.dataset.uid === uid) el.querySelector('.p-step').textContent = `Шаг ${nextStep}`;
   });
 };
 
 // ─── PARTICIPANT ───
 function renderStepsNav() {
   const nav = document.getElementById('steps-nav');
-  const unlocked = currentUserData?.unlockedStep || 1;
+  const unlocked = currentUser?.unlockedStep || 1;
   nav.innerHTML = STEPS.map(s => {
     const isLocked = s.id > unlocked;
     return `<div class="step-nav-item ${isLocked ? 'locked' : ''}" onclick="${isLocked ? '' : `openStep(${s.id})`}">
@@ -1515,13 +1467,12 @@ window.fetchScripture = async (ref) => {
   }
 };
 
-// ─── DIARY ───
 async function loadDiary() {
   if (!currentUser) return;
   const el = document.getElementById('diary-entries');
   if (!el) return;
   try {
-    const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'diary'), orderBy('createdAt', 'desc')));
+    const snap = await getDocs(query(collection(db, 'participants', currentUser.id, 'diary'), orderBy('createdAt', 'desc')));
     el.innerHTML = '';
     snap.forEach(d => {
       const a = d.data();
@@ -1536,10 +1487,8 @@ async function loadDiary() {
 window.saveDiaryEntry = async () => {
   const text = document.getElementById('diary-input')?.value?.trim();
   if (!text || !currentUser) return;
-  await addDoc(collection(db, 'users', currentUser.uid, 'diary'), {
-    text,
-    stepId: selectedStepId,
-    createdAt: new Date().toISOString(),
+  await addDoc(collection(db, 'participants', currentUser.id, 'diary'), {
+    text, stepId: selectedStepId, createdAt: new Date().toISOString(),
   });
   document.getElementById('diary-input').value = '';
   loadDiary();
