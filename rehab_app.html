@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Восстановление личности</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f0d; --bg2: #161614; --bg3: #1e1e1b;
+  --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+  --text: #e8e6df; --text2: #9e9b92; --text3: #6b6860;
+  --gold: #c9a84c; --gold2: #e8c97a;
+  --teal: #4a9e8a; --teal2: #6bbfab;
+  --purple: #7c6fcd; --red: #c96b5a; --green: #5a9e6b;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; font-size:15px; line-height:1.7; min-height:100vh; }
+
+/* ── SCREENS ── */
+.screen { display:none; min-height:100vh; }
+.screen.active { display:flex; }
+
+/* ── LANDING ── */
+#screen-landing {
+  flex-direction:column; align-items:center; justify-content:center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 60%);
+}
+.landing-logo { font-family:'Playfair Display',serif; font-size:36px; color:var(--gold2); text-align:center; margin-bottom:8px; }
+.landing-sub { font-size:13px; color:var(--text3); letter-spacing:0.1em; text-transform:uppercase; text-align:center; margin-bottom:48px; }
+.landing-cards { display:flex; gap:20px; }
+.role-card {
+  background:var(--bg2); border:1px solid var(--border2); border-radius:16px;
+  padding:32px 28px; width:200px; text-align:center; cursor:pointer;
+  transition:all 0.2s;
+}
+.role-card:hover { border-color:var(--gold); transform:translateY(-2px); }
+.role-icon { font-size:36px; margin-bottom:12px; }
+.role-name { font-family:'Playfair Display',serif; font-size:18px; color:var(--text); margin-bottom:6px; }
+.role-desc { font-size:12px; color:var(--text3); }
+
+/* ── AUTH ── */
+#screen-auth {
+  flex-direction:column; align-items:center; justify-content:center;
+}
+.auth-box { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:36px; width:360px; }
+.auth-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--text); margin-bottom:6px; }
+.auth-sub { font-size:13px; color:var(--text3); margin-bottom:28px; }
+.form-group { margin-bottom:16px; }
+.form-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; display:block; }
+.form-input {
+  width:100%; background:var(--bg3); border:1px solid var(--border2); border-radius:8px;
+  padding:10px 14px; color:var(--text); font-family:'Manrope',sans-serif; font-size:14px;
+  outline:none; transition:border 0.15s;
+}
+.form-input:focus { border-color:var(--gold); }
+.btn-primary {
+  width:100%; padding:12px; border-radius:8px; border:none;
+  background:var(--gold); color:#0f0f0d; font-family:'Manrope',sans-serif;
+  font-size:14px; font-weight:600; cursor:pointer; transition:opacity 0.15s; margin-top:8px;
+}
+.btn-primary:hover { opacity:0.85; }
+.btn-secondary {
+  width:100%; padding:10px; border-radius:8px; border:1px solid var(--border2);
+  background:none; color:var(--text2); font-family:'Manrope',sans-serif;
+  font-size:13px; cursor:pointer; margin-top:8px; transition:all 0.15s;
+}
+.btn-secondary:hover { border-color:var(--gold); color:var(--gold2); }
+.auth-switch { font-size:12px; color:var(--text3); text-align:center; margin-top:16px; }
+.auth-switch a { color:var(--gold); cursor:pointer; text-decoration:none; }
+.auth-error { background:rgba(201,107,90,0.1); border:1px solid rgba(201,107,90,0.2); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--red); margin-top:12px; display:none; }
+
+/* ── FACILITATOR ── */
+#screen-facilitator { flex-direction:column; }
+.fac-header {
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  padding:16px 32px; display:flex; align-items:center; justify-content:space-between;
+}
+.fac-logo { font-family:'Playfair Display',serif; font-size:18px; color:var(--gold2); }
+.fac-body { display:grid; grid-template-columns:300px 1fr; flex:1; min-height:0; }
+.fac-sidebar { background:var(--bg2); border-right:1px solid var(--border); padding:20px; overflow-y:auto; }
+.fac-main { padding:28px 32px; overflow-y:auto; }
+.sidebar-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px; }
+.participant-card {
+  background:var(--bg3); border:1px solid var(--border); border-radius:10px;
+  padding:14px; margin-bottom:10px; cursor:pointer; transition:all 0.15s;
+}
+.participant-card:hover { border-color:var(--teal); }
+.participant-card.active { border-color:var(--gold); background:rgba(201,168,76,0.06); }
+.p-name { font-weight:600; font-size:13.5px; color:var(--text); margin-bottom:4px; }
+.p-step { font-size:11px; color:var(--text3); }
+.p-risk { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; margin-top:4px; }
+.risk-0 { background:rgba(74,158,138,0.15); color:var(--teal2); }
+.risk-1 { background:rgba(201,168,76,0.15); color:var(--gold2); }
+.risk-2 { background:rgba(201,107,90,0.15); color:var(--red); }
+
+.step-unlock-btn {
+  padding:8px 16px; border-radius:8px; border:1px solid var(--teal);
+  background:rgba(74,158,138,0.1); color:var(--teal2); font-family:'Manrope',sans-serif;
+  font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s;
+}
+.step-unlock-btn:hover { background:var(--teal); color:#0f0f0d; }
+
+/* ── PARTICIPANT DETAIL ── */
+.detail-header { margin-bottom:24px; }
+.detail-name { font-family:'Playfair Display',serif; font-size:24px; color:var(--text); }
+.detail-meta { font-size:13px; color:var(--text3); margin-top:4px; }
+
+.wheel-section { margin-bottom:28px; }
+.wheel-title { font-family:'Playfair Display',serif; font-size:17px; color:var(--text); margin-bottom:16px; }
+.wheel-wrap { display:flex; align-items:center; gap:32px; }
+.wheel-canvas-wrap { position:relative; width:200px; height:200px; flex-shrink:0; }
+.wheel-labels { flex:1; }
+.wheel-item { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.wheel-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.wheel-item-name { font-size:12px; color:var(--text2); flex:1; }
+.wheel-item-val { font-size:12px; font-weight:600; color:var(--text); }
+
+.ai-review {
+  background:rgba(124,111,205,0.06); border:1px solid rgba(124,111,205,0.15);
+  border-radius:var(--radius); padding:20px 24px; margin-bottom:24px;
+}
+.ai-review-title { font-size:11px; color:var(--purple); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px; font-weight:600; }
+.ai-review-body { font-size:13.5px; color:var(--text2); line-height:1.8; }
+.ai-review-btn {
+  margin-top:12px; padding:8px 16px; border-radius:8px; border:1px solid rgba(124,111,205,0.3);
+  background:rgba(124,111,205,0.1); color:var(--purple); font-family:'Manrope',sans-serif;
+  font-size:12px; cursor:pointer; transition:all 0.15s;
+}
+.ai-review-btn:hover { background:rgba(124,111,205,0.2); }
+
+.answers-list { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.answer-item { padding:14px 20px; border-bottom:1px solid var(--border); }
+.answer-item:last-child { border-bottom:none; }
+.answer-q { font-size:12px; color:var(--text3); margin-bottom:4px; }
+.answer-a { font-size:13.5px; color:var(--text); }
+
+/* ── PARTICIPANT ── */
+#screen-participant { flex-direction:column; }
+.part-header {
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  padding:14px 24px; display:flex; align-items:center; justify-content:space-between;
+}
+.part-logo { font-family:'Playfair Display',serif; font-size:16px; color:var(--gold2); }
+.part-user { font-size:12px; color:var(--text3); }
+.part-body { display:flex; flex:1; }
+.part-nav { width:240px; background:var(--bg2); border-right:1px solid var(--border); padding:16px 12px; }
+.step-nav-item {
+  padding:10px 12px; border-radius:8px; margin-bottom:4px; cursor:pointer;
+  display:flex; align-items:center; gap:10px; transition:background 0.15s;
+}
+.step-nav-item:hover { background:var(--bg3); }
+.step-nav-item.active { background:rgba(201,168,76,0.1); }
+.step-nav-item.locked { opacity:0.4; cursor:not-allowed; }
+.step-nav-num { width:24px; height:24px; border-radius:50%; background:var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:var(--text2); flex-shrink:0; }
+.step-nav-item.active .step-nav-num { background:var(--gold); border-color:var(--gold); color:#0f0f0d; }
+.step-nav-name { font-size:12px; color:var(--text2); }
+.step-nav-item.active .step-nav-name { color:var(--gold2); font-weight:500; }
+
+.part-main { flex:1; padding:28px 32px; overflow-y:auto; max-width:760px; }
+
+/* WHEEL participant */
+.part-wheel-section { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:24px; }
+.part-wheel-title { font-family:'Playfair Display',serif; font-size:15px; color:var(--text); margin-bottom:14px; }
+.wheel-sliders { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.slider-item label { font-size:11px; color:var(--text3); display:block; margin-bottom:4px; }
+.slider-item input[type=range] { width:100%; accent-color:var(--gold); }
+.slider-val { font-size:11px; color:var(--gold2); font-weight:600; float:right; }
+
+/* QUESTIONNAIRE */
+.quest-section { margin-bottom:24px; }
+.quest-title { font-family:'Playfair Display',serif; font-size:17px; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.quest-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; margin-bottom:12px; }
+.quest-q { font-size:14px; color:var(--text); margin-bottom:10px; font-weight:500; }
+.quest-textarea {
+  width:100%; background:var(--bg3); border:1px solid var(--border2); border-radius:8px;
+  padding:10px 14px; color:var(--text); font-family:'Manrope',sans-serif; font-size:13px;
+  outline:none; resize:vertical; min-height:80px; transition:border 0.15s; line-height:1.6;
+}
+.quest-textarea:focus { border-color:var(--gold); }
+.quest-options { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+.quest-opt {
+  padding:6px 14px; border-radius:20px; border:1px solid var(--border2);
+  background:none; color:var(--text2); font-family:'Manrope',sans-serif; font-size:12px;
+  cursor:pointer; transition:all 0.15s;
+}
+.quest-opt:hover { border-color:var(--gold); color:var(--gold2); }
+.quest-opt.selected { background:rgba(201,168,76,0.15); border-color:var(--gold); color:var(--gold2); }
+
+.scale-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
+.scale-btn {
+  width:36px; height:36px; border-radius:50%; border:1px solid var(--border2);
+  background:none; color:var(--text2); font-size:12px; font-weight:600; cursor:pointer;
+  transition:all 0.15s; font-family:'Manrope',sans-serif;
+}
+.scale-btn:hover { border-color:var(--gold); color:var(--gold2); }
+.scale-btn.selected { background:var(--gold); border-color:var(--gold); color:#0f0f0d; }
+.scale-label { font-size:11px; color:var(--text3); margin-left:4px; }
+
+.save-btn {
+  padding:12px 28px; border-radius:8px; border:none;
+  background:var(--gold); color:#0f0f0d; font-family:'Manrope',sans-serif;
+  font-size:14px; font-weight:600; cursor:pointer; transition:opacity 0.15s;
+}
+.save-btn:hover { opacity:0.85; }
+.save-ok { display:none; font-size:13px; color:var(--teal2); margin-left:12px; }
+
+/* DIARY */
+.diary-entry { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-bottom:10px; }
+.diary-date { font-size:11px; color:var(--text3); margin-bottom:6px; }
+.diary-text { font-size:13.5px; color:var(--text2); line-height:1.7; }
+
+/* UTILS */
+.pulse { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); animation:pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+.btn-logout { padding:6px 14px; border-radius:6px; border:1px solid var(--border2); background:none; color:var(--text3); font-family:'Manrope',sans-serif; font-size:12px; cursor:pointer; transition:all 0.15s; }
+.btn-logout:hover { border-color:var(--red); color:var(--red); }
+.section-divider { height:1px; background:var(--border); margin:24px 0; }
+.badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-step { background:rgba(201,168,76,0.1); color:var(--gold); border:1px solid rgba(201,168,76,0.2); }
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+@media(max-width:768px) {
+  .landing-cards { flex-direction:column; }
+  .fac-body { grid-template-columns:1fr; }
+  .fac-sidebar { display:none; }
+  .part-nav { display:none; }
+  .part-main { padding:16px; }
+  .wheel-wrap { flex-direction:column; }
+  .wheel-sliders { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ LANDING ══════════════════ -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-logo">Восстановление личности</div>
+  <div class="landing-sub">Путь преодоления · Д.В.П.</div>
+  <div class="landing-cards">
+    <div class="role-card" onclick="goAuth('facilitator')">
+      <div class="role-icon">🧭</div>
+      <div class="role-name">Ведущий</div>
+      <div class="role-desc">Управление группой и участниками</div>
+    </div>
+    <div class="role-card" onclick="goAuth('participant')">
+      <div class="role-icon">🌱</div>
+      <div class="role-name">Участник</div>
+      <div class="role-desc">Мой личный путь восстановления</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ AUTH ══════════════════ -->
+<div id="screen-auth" class="screen">
+  <div class="auth-box">
+    <div class="auth-title" id="authTitle">Вход</div>
+    <div class="auth-sub" id="authSub">Войди в свой аккаунт</div>
+    <div class="form-group" id="nameGroup" style="display:none">
+      <label class="form-label">Имя</label>
+      <input class="form-input" id="authName" type="text" placeholder="Как тебя зовут?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="authEmail" type="email" placeholder="email@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Пароль</label>
+      <input class="form-input" id="authPassword" type="password" placeholder="••••••••">
+    </div>
+    <div class="form-group" id="codeGroup" style="display:none">
+      <label class="form-label">Код группы</label>
+      <input class="form-input" id="authCode" type="text" placeholder="Получи у ведущего">
+    </div>
+    <button class="btn-primary" id="authSubmitBtn" onclick="handleAuth()">Войти</button>
+    <div class="auth-error" id="authError"></div>
+    <div class="auth-switch" id="authSwitch">
+      <span id="authSwitchText">Нет аккаунта?</span>
+      <a onclick="toggleAuthMode()"> <span id="authSwitchLink">Зарегистрироваться</span></a>
+    </div>
+    <button class="btn-secondary" onclick="showScreen('landing')">← Назад</button>
+  </div>
+</div>
+
+<!-- ══════════════════ FACILITATOR ══════════════════ -->
+<div id="screen-facilitator" class="screen">
+  <div class="fac-header">
+    <div class="fac-logo">Ведущий · Восстановление личности</div>
+    <button class="btn-logout" onclick="logout()">Выйти</button>
+  </div>
+  <div class="fac-body">
+    <div class="fac-sidebar">
+      <div class="sidebar-label">Участники группы</div>
+      <div id="participantsList"></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div class="sidebar-label">Код группы</div>
+        <div id="groupCodeDisplay" style="font-size:20px;font-weight:600;color:var(--gold);letter-spacing:0.1em;font-family:'Playfair Display',serif"></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">Дай участникам для входа</div>
+      </div>
+    </div>
+    <div class="fac-main" id="facMain">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:var(--text3);text-align:center">
+        <div style="font-size:40px;opacity:0.1;margin-bottom:16px">✦</div>
+        <div style="font-size:16px;color:var(--text2)">Выбери участника слева</div>
+        <div style="font-size:13px;margin-top:4px">чтобы увидеть его прогресс и AI-анализ</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PARTICIPANT ══════════════════ -->
+<div id="screen-participant" class="screen">
+  <div class="part-header">
+    <div class="part-logo">Мой путь · Восстановление</div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="part-user" id="partUserName"></div>
+      <button class="btn-logout" onclick="logout()">Выйти</button>
+    </div>
+  </div>
+  <div class="part-body">
+    <nav class="part-nav" id="partNav"></nav>
+    <main class="part-main" id="partMain">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:300px;color:var(--text3)">Загрузка...</div>
+    </main>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, onSnapshot, addDoc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCQpE2Ikt2V_V-Y5UB_cYV6SaZVWFM3ccs",
+  authDomain: "rehab-lichnost.firebaseapp.com",
+  projectId: "rehab-lichnost",
+  storageBucket: "rehab-lichnost.firebasestorage.app",
+  messagingSenderId: "636670167685",
+  appId: "1:636670167685:web:3c3ba6a792326a7e0677ec"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const PROXY = 'https://bibleproxy-production.up.railway.app';
+const FACILITATOR_EMAIL = 'facilitator@rehab.local';
+const GROUP_CODE = 'ПУТЬ2024';
+
+// ── STEP DATA ──
+const STEPS = [
+  { num:'1', name:'Честность и стабилизация', deviz:'Правда больнее иллюзии, но только правда лечит',
+    questions:[
+      { id:'q1', text:'Когда я понял что теряю контроль? Опиши конкретный момент.', type:'text' },
+      { id:'q2', text:'Что я скрывал от других?', type:'text' },
+      { id:'q3', text:'Что я скрывал от себя?', type:'text' },
+      { id:'q4', text:'Что уже разрушено? (тело, отношения, работа, деньги, вера)', type:'text' },
+      { id:'q5', text:'Насколько я готов принять помощь прямо сейчас?', type:'scale', min:1, max:10 },
+      { id:'q6', text:'Моя главная форма самообмана:', type:'options', options:['Отрицание','Минимизация','Рационализация','Перенос вины','Двойная жизнь'] },
+    ]
+  },
+  { num:'1.5', name:'Вторичная выгода', deviz:'Зависимость была решением — вопрос: чего?',
+    questions:[
+      { id:'q1', text:'Что вещество давало мне, что я не умел получать иначе?', type:'text' },
+      { id:'q2', text:'От чего оно меня защищало?', type:'text' },
+      { id:'q3', text:'Какую реальную потребность оно закрывало?', type:'options', options:['Снятие боли','Принадлежность/близость','Снятие стыда','Терпеть невыносимое','Почувствовать себя живым','Избежать одиночества'] },
+      { id:'q4', text:'Один здоровый способ закрыть ту же потребность:', type:'text' },
+    ]
+  },
+  { num:'2', name:'Тело: союзник, не враг', deviz:'Нам нужен повторяемый минимум, а не подвиг',
+    questions:[
+      { id:'q1', text:'Мои 3 ранних телесных сигнала (до срыва):', type:'text' },
+      { id:'q2', text:'Что происходит после 2-3 плохих ночей?', type:'text' },
+      { id:'q3', text:'Мой основной якорь саморегуляции:', type:'options', options:['Дыхание 4-7-8','Заземление 5-4-3-2-1','Двигательный сброс','Телесная молитва'] },
+      { id:'q4', text:'Мой режим на неделю (сон, питание, движение):', type:'text' },
+    ]
+  },
+  { num:'3', name:'Надежда и союз помощи', deviz:'Я не один. Помощь есть и я её принимаю',
+    questions:[
+      { id:'q1', text:'Опиши случай когда надежда была предана. Что ты решил после этого о Боге и людях?', type:'text' },
+      { id:'q2', text:'Моя форма ложного героизма:', type:'options', options:['«Я сам»','«Никто не поможет»','«Потом»','«Не хочу быть обузой»','«Уже пробовал»'] },
+      { id:'q3', text:'Кто в моей карте помощи? (имена и роли)', type:'text' },
+      { id:'q4', text:'Что я скажу человеку из карты помощи в ближайшие 48 часов?', type:'text' },
+    ]
+  },
+  { num:'4', name:'Образ Бога', deviz:'Богу Евангелий не нужно чтобы ты сначала стал идеальным',
+    questions:[
+      { id:'q1', text:'Если бы прямо сейчас ты встретил Бога — какое у Него было бы лицо? Что Он делает?', type:'text' },
+      { id:'q2', text:'Мой внутренний образ Бога чаще всего:', type:'options', options:['Судья','Дистант','Отсутствие','Холод','Требовательность','Разочарование','Любящий Отец'] },
+      { id:'q3', text:'На кого из реальных людей похож мой образ Бога?', type:'text' },
+      { id:'q4', text:'Что отличает мой образ от Бога которого показывает Иисус?', type:'text' },
+    ]
+  },
+  { num:'5', name:'Инвентаризация', deviz:'Я смотрю на себя без маски и без приговора',
+    questions:[
+      { id:'q1', text:'Мой повторяющийся паттерн (триггер → эмоция → мысль → поведение → последствие):', type:'text' },
+      { id:'q2', text:'5 личных триггеров с подробностями:', type:'text' },
+      { id:'q3', text:'Что я на самом деле искал за зависимым поведением?', type:'text' },
+      { id:'q4', text:'Список ущерба нанесённого другим:', type:'text' },
+    ]
+  },
+  { num:'6', name:'Решение и ответственность', deviz:'Я выбираю путь, а не настроение',
+    questions:[
+      { id:'q1', text:'Голос сопротивления во мне говорит:', type:'text' },
+      { id:'q2', text:'Голос выбора отвечает:', type:'text' },
+      { id:'q3', text:'Что я теряю если изменяюсь? Что получаю?', type:'text' },
+      { id:'q4', text:'Моё конкретное намерение на 30 дней:', type:'text' },
+      { id:'q5', text:'Кто знает о моём решении и задаёт конкретные вопросы?', type:'text' },
+    ]
+  },
+  { num:'7', name:'Прощение и освобождение', deviz:'Я отпускаю долг мести, но не сдаю границы',
+    questions:[
+      { id:'q1', text:'Моя самая живая боль связана с:', type:'text' },
+      { id:'q2', text:'Что эта обида делает с моей жизнью, сном, трезвостью?', type:'text' },
+      { id:'q3', text:'Чего я боюсь если отпущу?', type:'text' },
+      { id:'q4', text:'Что я не могу себе простить?', type:'text' },
+      { id:'q5', text:'Мои новые границы:', type:'text' },
+    ]
+  },
+  { num:'8', name:'Мудрость и различение', deviz:'Не всё что чувствую — правда',
+    questions:[
+      { id:'q1', text:'Какой голос у меня сейчас самый громкий — страха, гордости или мудрости?', type:'options', options:['Страх','Гордость','Мудрость','Смесь'] },
+      { id:'q2', text:'Последнее решение которое я пожалел — что говорило внутри перед ним?', type:'text' },
+      { id:'q3', text:'Как я проверю следующее важное решение?', type:'text' },
+    ]
+  },
+  { num:'9', name:'Защита от срыва', deviz:'Срыв начинается не с действия — а с разрешения себе',
+    questions:[
+      { id:'q1', text:'Лента прошлого срыва — что было за неделю, за 3 дня, за сутки, за час?', type:'text' },
+      { id:'q2', text:'Мои 5 красных флагов (тело, мысли, поведение, отношения, духовная жизнь):', type:'text' },
+      { id:'q3', text:'Антисрывной план на 24 часа тяги:', type:'text' },
+      { id:'q4', text:'Мой круг поддержки (3 реальных человека):', type:'text' },
+    ]
+  },
+  { num:'10', name:'Новая жизнь и смысл', deviz:'Трезвость без смысла — пустой окоп',
+    questions:[
+      { id:'q1', text:'Что делает мою жизнь стоящей? (люди, дело, вера, радость)', type:'text' },
+      { id:'q2', text:'Моя формула смысла одним предложением:', type:'text' },
+      { id:'q3', text:'Правило жизни на 90 дней (ритмы, люди, проверки):', type:'text' },
+      { id:'q4', text:'Как я хочу быть полезным — без спасательства?', type:'text' },
+    ]
+  },
+];
+
+const WHEEL_AREAS = [
+  { id:'honesty', name:'Честность', color:'#c9a84c' },
+  { id:'body', name:'Тело и режим', color:'#4a9e8a' },
+  { id:'relations', name:'Отношения', color:'#7c6fcd' },
+  { id:'spirit', name:'Духовность', color:'#5a9e6b' },
+  { id:'emotions', name:'Эмоции', color:'#c96b5a' },
+  { id:'purpose', name:'Смысл и цель', color:'#e8c97a' },
+  { id:'sobriety', name:'Трезвость', color:'#6bbfab' },
+  { id:'help', name:'Принятие помощи', color:'#a09bdd' },
+];
+
+// ── STATE ──
+let currentRole = 'participant';
+let currentUser = null;
+let authMode = 'login';
+let selectedParticipant = null;
+let currentStepIdx = 0;
+let participantData = {};
+
+// ── NAVIGATION ──
+window.showScreen = function(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+};
+
+window.goAuth = function(role) {
+  currentRole = role;
+  authMode = 'login';
+  updateAuthUI();
+  showScreen('auth');
+};
+
+window.toggleAuthMode = function() {
+  authMode = authMode === 'login' ? 'register' : 'login';
+  updateAuthUI();
+};
+
+function updateAuthUI() {
+  const isReg = authMode === 'register';
+  document.getElementById('authTitle').textContent = isReg ? 'Регистрация' : 'Вход';
+  document.getElementById('authSub').textContent = isReg ? 'Создай аккаунт участника' : (currentRole === 'facilitator' ? 'Вход для ведущего' : 'Войди в свой кабинет');
+  document.getElementById('nameGroup').style.display = isReg ? 'block' : 'none';
+  document.getElementById('codeGroup').style.display = (isReg && currentRole === 'participant') ? 'block' : 'none';
+  document.getElementById('authSubmitBtn').textContent = isReg ? 'Зарегистрироваться' : 'Войти';
+  document.getElementById('authSwitchText').textContent = isReg ? 'Уже есть аккаунт?' : 'Нет аккаунта?';
+  document.getElementById('authSwitchLink').textContent = isReg ? 'Войти' : 'Зарегистрироваться';
+  document.getElementById('authError').style.display = 'none';
+}
+
+window.handleAuth = async function() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errEl = document.getElementById('authError');
+  errEl.style.display = 'none';
+
+  try {
+    if (authMode === 'register') {
+      const name = document.getElementById('authName').value.trim();
+      const code = document.getElementById('authCode').value.trim();
+      if (currentRole === 'participant' && code !== GROUP_CODE) {
+        errEl.textContent = 'Неверный код группы. Получи его у ведущего.';
+        errEl.style.display = 'block';
+        return;
+      }
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        name, email, role: currentRole,
+        currentStep: 0, unlockedSteps: [0],
+        createdAt: new Date().toISOString(),
+        wheel: { honesty:3, body:3, relations:3, spirit:3, emotions:3, purpose:3, sobriety:3, help:3 },
+      });
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found': 'Пользователь не найден',
+      'auth/wrong-password': 'Неверный пароль',
+      'auth/email-already-in-use': 'Email уже используется',
+      'auth/weak-password': 'Пароль слишком короткий (минимум 6 символов)',
+      'auth/invalid-email': 'Неверный формат email',
+      'auth/invalid-credential': 'Неверный email или пароль',
+    };
+    errEl.textContent = msgs[e.code] || e.message;
+    errEl.style.display = 'block';
+  }
+};
+
+window.logout = async function() {
+  await signOut(auth);
+  showScreen('landing');
+};
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async user => {
+  if (!user) return;
+  currentUser = user;
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (!snap.exists()) return;
+  const data = snap.data();
+  participantData = data;
+  if (data.role === 'facilitator') {
+    initFacilitator();
+  } else {
+    initParticipant(data);
+  }
+});
+
+// ══════════════════════════════════════════
+// FACILITATOR
+// ══════════════════════════════════════════
+async function initFacilitator() {
+  showScreen('facilitator');
+  document.getElementById('groupCodeDisplay').textContent = GROUP_CODE;
+  loadParticipants();
+}
+
+async function loadParticipants() {
+  const q = query(collection(db, 'users'), where('role', '==', 'participant'));
+  onSnapshot(q, snap => {
+    const list = document.getElementById('participantsList');
+    if (snap.empty) {
+      list.innerHTML = '<div style="font-size:12px;color:var(--text3)">Участников пока нет</div>';
+      return;
+    }
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const p = d.data();
+      const step = STEPS[p.currentStep] || STEPS[0];
+      const risk = p.riskLevel || 0;
+      const card = document.createElement('div');
+      card.className = 'participant-card' + (selectedParticipant?.id === d.id ? ' active' : '');
+      card.innerHTML = `
+        <div class="p-name">${p.name || p.email}</div>
+        <div class="p-step">Шаг ${step.num} · ${step.name}</div>
+        <div class="p-risk risk-${risk}">${['Стабильно','Нестабильно','Высокий риск'][risk]}</div>
+      `;
+      card.onclick = () => showParticipantDetail(d.id, p);
+      list.appendChild(card);
+    });
+  });
+}
+
+async function showParticipantDetail(uid, p) {
+  selectedParticipant = { id: uid, ...p };
+  const main = document.getElementById('facMain');
+  const step = STEPS[p.currentStep] || STEPS[0];
+  const wheel = p.wheel || {};
+
+  main.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-name">${p.name || p.email}</div>
+      <div class="detail-meta">Шаг ${step.num} · ${step.name} &nbsp;·&nbsp; Зарегистрирован: ${new Date(p.createdAt).toLocaleDateString('ru')}</div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <select id="riskSelect" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Manrope',sans-serif;font-size:13px">
+        <option value="0" ${(p.riskLevel||0)===0?'selected':''}>Стабильно</option>
+        <option value="1" ${(p.riskLevel||0)===1?'selected':''}>Нестабильно</option>
+        <option value="2" ${(p.riskLevel||0)===2?'selected':''}>Высокий риск</option>
+      </select>
+      <button class="step-unlock-btn" onclick="unlockNextStep('${uid}', ${p.currentStep})">
+        ↑ Открыть следующий шаг
+      </button>
+      <button onclick="setRisk('${uid}')" class="step-unlock-btn" style="border-color:var(--gold);color:var(--gold2)">
+        Сохранить риск
+      </button>
+    </div>
+
+    <div class="wheel-section">
+      <div class="wheel-title">Колесо баланса</div>
+      <div class="wheel-wrap">
+        <div class="wheel-canvas-wrap">
+          <canvas id="wheelCanvas" width="200" height="200"></canvas>
+        </div>
+        <div class="wheel-labels" id="wheelLabels"></div>
+      </div>
+    </div>
+
+    <div class="ai-review" id="aiReviewBlock">
+      <div class="ai-review-title">🤖 AI-анализ участника</div>
+      <div class="ai-review-body" id="aiReviewBody">Нажми кнопку чтобы получить анализ на основе ответов участника</div>
+      <button class="ai-review-btn" onclick="generateAIReview('${uid}')">Сгенерировать анализ</button>
+    </div>
+
+    <div class="section-divider"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--text);margin-bottom:16px">Ответы участника</div>
+    <div id="answersContainer"><div style="color:var(--text3);font-size:13px">Загрузка ответов...</div></div>
+  `;
+
+  drawWheel('wheelCanvas', wheel);
+  renderWheelLabels('wheelLabels', wheel);
+  loadParticipantAnswers(uid);
+}
+
+window.setRisk = async function(uid) {
+  const val = parseInt(document.getElementById('riskSelect').value);
+  await updateDoc(doc(db, 'users', uid), { riskLevel: val });
+};
+
+window.unlockNextStep = async function(uid, currentIdx) {
+  const next = Math.min(currentIdx + 1, STEPS.length - 1);
+  const snap = await getDoc(doc(db, 'users', uid));
+  const data = snap.data();
+  const unlocked = data.unlockedSteps || [0];
+  if (!unlocked.includes(next)) unlocked.push(next);
+  await updateDoc(doc(db, 'users', uid), { currentStep: next, unlockedSteps: unlocked });
+  alert(`Шаг ${STEPS[next].num} открыт для участника!`);
+};
+
+async function loadParticipantAnswers(uid) {
+  const container = document.getElementById('answersContainer');
+  const snap = await getDocs(query(collection(db, 'users', uid, 'answers'), orderBy('savedAt', 'desc')));
+  if (snap.empty) {
+    container.innerHTML = '<div style="color:var(--text3);font-size:13px">Ответов пока нет</div>';
+    return;
+  }
+  container.innerHTML = '<div class="answers-list">' +
+    snap.docs.map(d => {
+      const a = d.data();
+      return `<div class="answer-item">
+        <div class="answer-q">Шаг ${a.stepNum} · ${a.questionText}</div>
+        <div class="answer-a">${a.answer || '—'}</div>
+      </div>`;
+    }).join('') + '</div>';
+}
+
+window.generateAIReview = async function(uid) {
+  const body = document.getElementById('aiReviewBody');
+  body.innerHTML = '<div style="display:flex;align-items:center;gap:8px"><div class="pulse"></div>Анализирую ответы...</div>';
+
+  const snap = await getDocs(query(collection(db, 'users', uid, 'answers'), orderBy('savedAt', 'desc')));
+  const answers = snap.docs.map(d => d.data());
+  const userSnap = await getDoc(doc(db, 'users', uid));
+  const userData = userSnap.data();
+
+  const answersText = answers.map(a => `Шаг ${a.stepNum} — ${a.questionText}: ${a.answer}`).join('\n');
+
+  const prompt = `Ты — AI-психолог помощник ведущего реабилитационной программы «Восстановление личности».
+
+Участник: ${userData.name}
+Текущий шаг: ${STEPS[userData.currentStep]?.name}
+
+Ответы участника:
+${answersText || 'Ответов пока нет'}
+
+Дай ведущему краткий анализ (3-4 абзаца):
+1. Что реально происходит с человеком — без клише
+2. Где самообман или избегание — конкретно
+3. На что ведущему обратить внимание на следующей встрече
+4. Один конкретный вопрос который стоит задать этому участнику
+
+Стиль: честно, без пафоса, для практикующего ведущего.`;
+
+  try {
+    const res = await fetch(PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, messages: [{ role: 'user', content: prompt }] }),
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Ошибка анализа';
+    body.innerHTML = text.replace(/\n/g, '<br>');
+    await updateDoc(doc(db, 'users', uid), { lastAIReview: text, lastReviewAt: new Date().toISOString() });
+  } catch(e) {
+    body.innerHTML = `<span style="color:var(--red)">Ошибка: ${e.message}</span>`;
+  }
+};
+
+// ══════════════════════════════════════════
+// PARTICIPANT
+// ══════════════════════════════════════════
+function initParticipant(data) {
+  showScreen('participant');
+  document.getElementById('partUserName').textContent = data.name || data.email;
+  renderPartNav(data);
+  renderPartStep(data.currentStep || 0, data);
+}
+
+function renderPartNav(data) {
+  const nav = document.getElementById('partNav');
+  const unlocked = data.unlockedSteps || [0];
+  nav.innerHTML = STEPS.map((s, i) => {
+    const isUnlocked = unlocked.includes(i);
+    const isCurrent = i === (data.currentStep || 0);
+    return `<div class="step-nav-item ${isCurrent ? 'active' : ''} ${!isUnlocked ? 'locked' : ''}"
+      onclick="${isUnlocked ? `selectStep(${i})` : 'alert(\"Этот шаг ещё не открыт. Дождись ведущего.\")'}">
+      <div class="step-nav-num">${s.num}</div>
+      <div class="step-nav-name">${s.name}</div>
+    </div>`;
+  }).join('');
+}
+
+window.selectStep = function(idx) {
+  currentStepIdx = idx;
+  renderPartStep(idx, participantData);
+};
+
+async function renderPartStep(idx, data) {
+  const main = document.getElementById('partMain');
+  const step = STEPS[idx];
+  const wheel = data.wheel || {};
+
+  main.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text)">Шаг ${step.num} · ${step.name}</h2>
+      </div>
+      <div style="font-size:13px;color:var(--text3);font-style:italic">${step.deviz}</div>
+    </div>
+
+    <div class="part-wheel-section">
+      <div class="part-wheel-title">Моё колесо баланса</div>
+      <div class="wheel-wrap">
+        <div class="wheel-canvas-wrap">
+          <canvas id="partWheelCanvas" width="200" height="200"></canvas>
+        </div>
+        <div style="flex:1">
+          <div class="wheel-sliders" id="wheelSlidersContainer"></div>
+          <button class="save-btn" onclick="saveWheel()" style="margin-top:8px;padding:8px 20px;font-size:13px">Сохранить</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quest-section">
+      <div class="quest-title">
+        📝 Вопросы шага
+        <span class="badge badge-step">Шаг ${step.num}</span>
+      </div>
+      <div id="questionsContainer"></div>
+      <div style="display:flex;align-items:center;margin-top:8px">
+        <button class="save-btn" onclick="saveAnswers()">Сохранить ответы</button>
+        <span class="save-ok" id="saveOk">✓ Сохранено</span>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="quest-section">
+      <div class="quest-title">📔 Дневник чувств</div>
+      <div class="quest-card">
+        <div class="quest-q">Сегодня я чувствую:</div>
+        <div class="quest-options" id="feelingOptions">
+          ${['Страх','Стыд','Злость','Надежда','Пустота','Благодарность','Тревога','Покой','Одиночество','Радость'].map(f =>
+            `<button class="quest-opt" onclick="toggleOpt(this)">${f}</button>`
+          ).join('')}
+        </div>
+        <textarea class="quest-textarea" id="diaryText" placeholder="Что происходит внутри сегодня? Без цензуры..." style="margin-top:12px"></textarea>
+      </div>
+      <button class="save-btn" onclick="saveDiary()" style="margin-top:8px;padding:8px 20px;font-size:13px">Записать в дневник</button>
+      <div id="diaryEntries" style="margin-top:16px"></div>
+    </div>
+  `;
+
+  drawWheel('partWheelCanvas', wheel);
+  renderWheelSliders(wheel);
+  renderQuestions(step);
+  loadDiary();
+}
+
+function renderWheelSliders(wheel) {
+  const container = document.getElementById('wheelSlidersContainer');
+  container.innerHTML = WHEEL_AREAS.map(a => `
+    <div class="slider-item">
+      <label>${a.name} <span class="slider-val" id="val-${a.id}">${wheel[a.id] || 5}</span></label>
+      <input type="range" min="1" max="10" value="${wheel[a.id] || 5}" id="slider-${a.id}"
+        oninput="document.getElementById('val-${a.id}').textContent=this.value; updateWheelLive()">
+    </div>
+  `).join('');
+}
+
+window.updateWheelLive = function() {
+  const vals = {};
+  WHEEL_AREAS.forEach(a => {
+    vals[a.id] = parseInt(document.getElementById('slider-' + a.id)?.value || 5);
+  });
+  drawWheel('partWheelCanvas', vals);
+};
+
+window.saveWheel = async function() {
+  const vals = {};
+  WHEEL_AREAS.forEach(a => {
+    vals[a.id] = parseInt(document.getElementById('slider-' + a.id)?.value || 5);
+  });
+  await updateDoc(doc(db, 'users', currentUser.uid), { wheel: vals });
+  participantData.wheel = vals;
+  drawWheel('partWheelCanvas', vals);
+};
+
+function renderQuestions(step) {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = step.questions.map((q, i) => {
+    let input = '';
+    if (q.type === 'text') {
+      input = `<textarea class="quest-textarea" id="ans-${q.id}" placeholder="Пиши честно..."></textarea>`;
+    } else if (q.type === 'scale') {
+      input = `<div class="scale-row">
+        ${Array.from({length:10},(_,j) => `<button class="scale-btn" onclick="selectScale(this,'${q.id}')" data-val="${j+1}">${j+1}</button>`).join('')}
+        <span class="scale-label" id="scale-label-${q.id}"></span>
+      </div>`;
+    } else if (q.type === 'options') {
+      input = `<div class="quest-options">
+        ${q.options.map(o => `<button class="quest-opt" onclick="selectOpt(this,'${q.id}')" data-val="${o}">${o}</button>`).join('')}
+      </div>`;
+    }
+    return `<div class="quest-card">
+      <div class="quest-q">${i+1}. ${q.text}</div>
+      ${input}
+    </div>`;
+  }).join('');
+
+  // Load existing answers
+  loadExistingAnswers(step);
+}
+
+async function loadExistingAnswers(step) {
+  try {
+    const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'answers'), where('stepNum', '==', step.num)));
+    snap.forEach(d => {
+      const a = d.data();
+      const el = document.getElementById('ans-' + a.questionId);
+      if (el) el.value = a.answer;
+      // scale
+      const scaleBtns = document.querySelectorAll(`[data-val="${a.answer}"]`);
+      scaleBtns.forEach(b => { if (b.closest('.scale-row')) b.classList.add('selected'); });
+      // options
+      const optBtns = document.querySelectorAll(`[data-val="${a.answer}"]`);
+      optBtns.forEach(b => { if (b.classList.contains('quest-opt')) b.classList.add('selected'); });
+    });
+  } catch(e) {}
+}
+
+window.selectScale = function(btn, qid) {
+  btn.closest('.scale-row').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('scale-label-' + qid).textContent = btn.dataset.val + ' / 10';
+};
+
+window.selectOpt = function(btn, qid) {
+  btn.closest('.quest-options').querySelectorAll('.quest-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+};
+
+window.toggleOpt = function(btn) {
+  btn.classList.toggle('selected');
+};
+
+window.saveAnswers = async function() {
+  const step = STEPS[currentStepIdx];
+  const batch = [];
+  for (const q of step.questions) {
+    let answer = '';
+    if (q.type === 'text') {
+      answer = document.getElementById('ans-' + q.id)?.value || '';
+    } else if (q.type === 'scale') {
+      const sel = document.querySelector(`#ans-${q.id} .selected, .scale-btn.selected`);
+      answer = sel?.dataset?.val || '';
+    } else if (q.type === 'options') {
+      const sel = document.querySelector(`.quest-opt.selected`);
+      answer = sel?.dataset?.val || sel?.textContent || '';
+    }
+    if (!answer) continue;
+    await addDoc(collection(db, 'users', currentUser.uid, 'answers'), {
+      stepNum: step.num, questionId: q.id, questionText: q.text,
+      answer, savedAt: new Date().toISOString(),
+    });
+  }
+  const ok = document.getElementById('saveOk');
+  ok.style.display = 'inline';
+  setTimeout(() => ok.style.display = 'none', 2000);
+};
+
+window.saveDiary = async function() {
+  const feelings = Array.from(document.querySelectorAll('#feelingOptions .quest-opt.selected')).map(b => b.textContent);
+  const text = document.getElementById('diaryText').value;
+  if (!text && feelings.length === 0) return;
+  await addDoc(collection(db, 'users', currentUser.uid, 'diary'), {
+    feelings, text, date: new Date().toISOString(),
+  });
+  document.getElementById('diaryText').value = '';
+  document.querySelectorAll('#feelingOptions .quest-opt').forEach(b => b.classList.remove('selected'));
+  loadDiary();
+};
+
+async function loadDiary() {
+  const container = document.getElementById('diaryEntries');
+  if (!container) return;
+  try {
+    const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'diary'), orderBy('date', 'desc')));
+    if (snap.empty) { container.innerHTML = ''; return; }
+    container.innerHTML = snap.docs.slice(0, 5).map(d => {
+      const e = d.data();
+      const date = new Date(e.date).toLocaleDateString('ru', { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' });
+      return `<div class="diary-entry">
+        <div class="diary-date">${date} ${e.feelings?.length ? '· ' + e.feelings.join(', ') : ''}</div>
+        <div class="diary-text">${e.text}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════
+// WHEEL DRAWING
+// ══════════════════════════════════════════
+function drawWheel(canvasId, values) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 100, cy = 100, r = 85;
+  const n = WHEEL_AREAS.length;
+  ctx.clearRect(0, 0, 200, 200);
+
+  // Background rings
+  for (let i = 1; i <= 10; i++) {
+    ctx.beginPath();
+    for (let j = 0; j < n; j++) {
+      const angle = (j / n) * Math.PI * 2 - Math.PI / 2;
+      const x = cx + (r * i / 10) * Math.cos(angle);
+      const y = cy + (r * i / 10) * Math.sin(angle);
+      j === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  // Spokes
+  for (let j = 0; j < n; j++) {
+    const angle = (j / n) * Math.PI * 2 - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  // Filled area
+  ctx.beginPath();
+  WHEEL_AREAS.forEach((a, j) => {
+    const val = (values[a.id] || 1) / 10;
+    const angle = (j / n) * Math.PI * 2 - Math.PI / 2;
+    const x = cx + r * val * Math.cos(angle);
+    const y = cy + r * val * Math.sin(angle);
+    j === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(201,168,76,0.25)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(201,168,76,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Dots
+  WHEEL_AREAS.forEach((a, j) => {
+    const val = (values[a.id] || 1) / 10;
+    const angle = (j / n) * Math.PI * 2 - Math.PI / 2;
+    const x = cx + r * val * Math.cos(angle);
+    const y = cy + r * val * Math.sin(angle);
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = a.color;
+    ctx.fill();
+  });
+}
+
+function renderWheelLabels(containerId, values) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = WHEEL_AREAS.map(a =>
+    `<div class="wheel-item">
+      <div class="wheel-dot" style="background:${a.color}"></div>
+      <div class="wheel-item-name">${a.name}</div>
+      <div class="wheel-item-val">${values[a.id] || '—'}/10</div>
+    </div>`
+  ).join('');
+}
+
+console.log('✅ Rehab app loaded');
+</script>
+</body>
+</html>
