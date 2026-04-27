@@ -639,6 +639,19 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  .f-tab-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .f-tab-btn.active { background: var(--gold); color: #0a0a0a; border-color: var(--gold); }
+  .f-tab-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
+
   /* Utility */
   .mt-8 { margin-top: 8px; }
   .mt-16 { margin-top: 16px; }
@@ -683,17 +696,23 @@
     <div class="auth-title" id="auth-title">Ведущий</div>
     <div class="auth-subtitle" id="auth-subtitle">Вход в систему</div>
 
-    <div id="auth-reg-fields" style="display:none">
+    <!-- Поля только для участника -->
+    <div id="participant-name-field" style="display:none">
       <div class="field-label">Имя</div>
       <input class="field-input" id="auth-name" type="text" placeholder="Ваше имя">
-      <div id="group-code-field">
-        <div class="field-label">Код группы</div>
-        <input class="field-input" id="auth-group" type="text" value="ПУТЬ2024">
-      </div>
     </div>
 
-    <div class="field-label">Email</div>
-    <input class="field-input" id="auth-email" type="email" placeholder="email@example.com">
+    <!-- Email только для ведущего -->
+    <div id="facilitator-email-field">
+      <div class="field-label">Email</div>
+      <input class="field-input" id="auth-email" type="email" placeholder="email@example.com">
+    </div>
+
+    <!-- Логин участника (имя как логин) -->
+    <div id="participant-login-field" style="display:none">
+      <div class="field-label">Имя (логин)</div>
+      <input class="field-input" id="auth-login" type="text" placeholder="Ваше имя">
+    </div>
 
     <div class="field-label">Пароль</div>
     <input class="field-input" id="auth-password" type="password" placeholder="••••••••">
@@ -712,18 +731,33 @@
 <div id="screen-facilitator" class="screen">
   <div class="app-header">
     <div class="app-logo">Восстановление личности</div>
-    <div class="app-user">
+    <div style="display:flex;gap:16px;align-items:center">
+      <div style="display:flex;gap:4px">
+        <button class="f-tab-btn active" id="tab-participants" onclick="switchFTab('participants')">Участники</button>
+        <button class="f-tab-btn" id="tab-program" onclick="switchFTab('program')">Программа</button>
+      </div>
       <span class="app-user-name" id="f-user-name"></span>
       <button class="btn-logout" onclick="logout()">Выйти</button>
     </div>
   </div>
-  <div class="facilitator-body">
+  <!-- Вкладка участники -->
+  <div id="ftab-participants" class="facilitator-body">
     <div class="f-sidebar">
       <div class="f-sidebar-title">Участники</div>
       <div id="participants-list"></div>
     </div>
     <div class="f-main" id="f-main">
       <div class="f-empty">← Выберите участника</div>
+    </div>
+  </div>
+  <!-- Вкладка программа -->
+  <div id="ftab-program" class="participant-body" style="display:none;flex:1">
+    <div class="p-sidebar">
+      <div class="p-sidebar-title">Шаги программы</div>
+      <div id="f-steps-nav"></div>
+    </div>
+    <div class="p-main" id="f-program-main">
+      <div class="f-empty">← Выберите шаг</div>
     </div>
   </div>
 </div>
@@ -1052,7 +1086,6 @@ let selectedStepId = 1;
 let selectedDayIndex = 0;
 let hwDone = {};
 
-// ─── SCREEN HELPERS ───
 window.showScreen = (id) => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1060,13 +1093,17 @@ window.showScreen = (id) => {
 
 window.enterAs = (role) => {
   currentRole = role;
-  const isReg = false;
+  isRegistering = false;
   document.getElementById('auth-title').textContent = role === 'facilitator' ? 'Ведущий' : 'Участник';
   document.getElementById('auth-subtitle').textContent = 'Вход в систему';
   document.getElementById('auth-btn').textContent = 'Войти';
-  document.getElementById('auth-reg-fields').style.display = 'none';
+
+  // ведущий: email, участник: логин по имени
+  document.getElementById('facilitator-email-field').style.display = role === 'facilitator' ? 'block' : 'none';
+  document.getElementById('participant-login-field').style.display = role === 'participant' ? 'block' : 'none';
+  document.getElementById('participant-name-field').style.display = 'none';
+
   document.getElementById('auth-toggle').innerHTML = 'Нет аккаунта? <a onclick="toggleAuth()">Зарегистрироваться</a>';
-  document.getElementById('group-code-field').style.display = role === 'participant' ? 'block' : 'none';
   document.getElementById('auth-error').style.display = 'none';
   showScreen('screen-auth');
 };
@@ -1074,49 +1111,69 @@ window.enterAs = (role) => {
 let isRegistering = false;
 window.toggleAuth = () => {
   isRegistering = !isRegistering;
-  document.getElementById('auth-reg-fields').style.display = isRegistering ? 'block' : 'none';
-  document.getElementById('group-code-field').style.display = (isRegistering && currentRole === 'participant') ? 'block' : 'none';
   document.getElementById('auth-btn').textContent = isRegistering ? 'Зарегистрироваться' : 'Войти';
   document.getElementById('auth-subtitle').textContent = isRegistering ? 'Создать аккаунт' : 'Вход в систему';
   document.getElementById('auth-toggle').innerHTML = isRegistering
     ? 'Уже есть аккаунт? <a onclick="toggleAuth()">Войти</a>'
     : 'Нет аккаунта? <a onclick="toggleAuth()">Зарегистрироваться</a>';
+
+  if (currentRole === 'participant') {
+    // при регистрации показываем поле имени (новое имя), скрываем логин
+    document.getElementById('participant-name-field').style.display = isRegistering ? 'block' : 'none';
+    document.getElementById('participant-login-field').style.display = isRegistering ? 'none' : 'block';
+  } else {
+    // ведущий всегда email
+    document.getElementById('facilitator-email-field').style.display = 'block';
+  }
   document.getElementById('auth-error').style.display = 'none';
 };
 
 window.doAuth = async () => {
-  const email = document.getElementById('auth-email').value.trim();
   const password = document.getElementById('auth-password').value;
   const errEl = document.getElementById('auth-error');
   errEl.style.display = 'none';
 
   try {
-    if (isRegistering) {
-      const name = document.getElementById('auth-name').value.trim();
-      const groupCode = document.getElementById('auth-group')?.value?.trim();
-      if (!name) { showError('Введите имя'); return; }
-      if (currentRole === 'participant' && groupCode !== 'ПУТЬ2024') {
-        showError('Неверный код группы'); return;
+    if (currentRole === 'participant') {
+      if (isRegistering) {
+        // регистрация участника: имя → имя@rehab.local
+        const name = document.getElementById('auth-name').value.trim();
+        if (!name) { showError('Введите имя'); return; }
+        const fakeEmail = name.toLowerCase().replace(/\s+/g, '_') + '@rehab.local';
+        const cred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          name, email: fakeEmail, role: 'participant',
+          unlockedStep: 1, createdAt: new Date().toISOString(),
+        });
+      } else {
+        // вход участника по имени
+        const login = document.getElementById('auth-login').value.trim();
+        if (!login) { showError('Введите имя'); return; }
+        const fakeEmail = login.toLowerCase().replace(/\s+/g, '_') + '@rehab.local';
+        await signInWithEmailAndPassword(auth, fakeEmail, password);
       }
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      const userData = {
-        name, email,
-        role: currentRole === 'facilitator' ? 'facilitator' : 'participant',
-        unlockedStep: 1,
-        createdAt: new Date().toISOString(),
-      };
-      await setDoc(doc(db, 'users', cred.user.uid), userData);
     } else {
-      await signInWithEmailAndPassword(auth, email, password);
+      // ведущий: обычный email
+      const email = document.getElementById('auth-email').value.trim();
+      if (isRegistering) {
+        const name = document.getElementById('auth-name')?.value?.trim() || 'Ведущий';
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          name, email, role: 'facilitator',
+          createdAt: new Date().toISOString(),
+        });
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
     }
   } catch(e) {
     const msgs = {
       'auth/user-not-found':'Пользователь не найден',
       'auth/wrong-password':'Неверный пароль',
-      'auth/email-already-in-use':'Email уже используется',
-      'auth/invalid-email':'Неверный email',
+      'auth/email-already-in-use':'Это имя уже занято',
+      'auth/invalid-email':'Неверный формат',
       'auth/weak-password':'Пароль минимум 6 символов',
-      'auth/invalid-credential':'Неверный email или пароль',
+      'auth/invalid-credential':'Неверное имя или пароль',
     };
     showError(msgs[e.code] || e.message);
   }
@@ -1153,7 +1210,39 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ─── FACILITATOR ───
+// ─── FACILITATOR TABS ───
+window.switchFTab = (tab) => {
+  document.getElementById('ftab-participants').style.display = tab === 'participants' ? 'grid' : 'none';
+  document.getElementById('ftab-program').style.display = tab === 'program' ? 'grid' : 'none';
+  document.getElementById('tab-participants').classList.toggle('active', tab === 'participants');
+  document.getElementById('tab-program').classList.toggle('active', tab === 'program');
+  if (tab === 'program') renderFacilitatorProgram();
+};
+
+function renderFacilitatorProgram() {
+  const nav = document.getElementById('f-steps-nav');
+  if (nav.innerHTML !== '') return; // already rendered
+  nav.innerHTML = STEPS.map(s =>
+    `<div class="step-nav-item" onclick="openFStep(${s.id})">
+      <div class="step-nav-num">${s.id}</div>
+      <div class="step-nav-info">
+        <div class="step-nav-name">${s.name}</div>
+        <div class="step-nav-sub">${s.phase.split('—')[1]?.trim() || ''}</div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+window.openFStep = (stepId) => {
+  document.querySelectorAll('#f-steps-nav .step-nav-item').forEach((el, i) => {
+    el.classList.toggle('active', STEPS[i]?.id === stepId);
+  });
+  selectedStepId = stepId;
+  selectedDayIndex = 0;
+  renderStepContentIn('f-program-main');
+};
+
+// ─── FACILITATOR PARTICIPANTS ───
 async function loadParticipants() {
   const snap = await getDocs(collection(db, 'users'));
   const list = document.getElementById('participants-list');
@@ -1263,13 +1352,13 @@ window.openStep = (stepId) => {
   document.querySelectorAll('.step-nav-item').forEach((el, i) => {
     el.classList.toggle('active', STEPS[i]?.id === stepId);
   });
-  renderStepContent();
+  renderStepContentIn('p-main');
 };
 
-function renderStepContent() {
+function renderStepContentIn(containerId) {
   const step = STEPS.find(s => s.id === selectedStepId);
   if (!step) return;
-  const main = document.getElementById('p-main');
+  const main = document.getElementById(containerId);
 
   const tabsHtml = step.days.map((d, i) => `
     <div class="day-tab ${d.type === 'meeting' || d.type === 'individual' ? 'meeting-day' : ''} ${i === selectedDayIndex ? 'active' : ''}"
