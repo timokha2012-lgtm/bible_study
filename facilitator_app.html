@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ведущий · Восстановление личности</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap');
+:root{
+  --bg:#0d0d0d;--s1:#111;--s2:#161616;--s3:#1c1c1c;
+  --b1:#222;--b2:#2a2a2a;--b3:#333;
+  --gold:#c8a04a;--gold2:#deb96a;--gold3:#f0d090;
+  --text:#e0dbd0;--text2:#888070;--text3:#554f45;
+  --red:#a03030;--red2:#c04040;
+  --green:#2a6040;--green2:#3a8055;
+  --yellow:#806020;--yellow2:#a07830;
+  --blue:#204060;--blue2:#305878;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* LOGIN */
+#login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;}
+.login-box{width:360px;padding:48px 40px;border:1px solid var(--b2);}
+.login-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text2);margin-bottom:32px;}
+.login-title{font-family:'Spectral',serif;font-size:32px;font-weight:300;color:var(--gold);margin-bottom:4px;line-height:1.2;}
+.login-sub{font-size:11px;color:var(--text3);margin-bottom:36px;}
+.inp{width:100%;background:var(--s2);border:1px solid var(--b2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;padding:11px 14px;outline:none;transition:border-color .15s;}
+.inp:focus{border-color:var(--gold);}
+.btn-login{width:100%;background:var(--gold);color:#0d0d0d;border:none;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:400;letter-spacing:.1em;padding:12px;cursor:pointer;margin-top:16px;transition:background .15s;}
+.btn-login:hover{background:var(--gold2);}
+.login-err{font-size:11px;color:var(--red2);margin-top:10px;display:none;}
+
+/* SHELL */
+#app{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.topbar{height:44px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 20px;gap:20px;flex-shrink:0;}
+.topbar-logo{font-family:'Spectral',serif;font-size:15px;color:var(--gold);font-weight:300;letter-spacing:.02em;}
+.topbar-sep{width:1px;height:20px;background:var(--b2);}
+.tab-btn{background:transparent;border:none;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;padding:4px 10px;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-btn:hover:not(.active){color:var(--text);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.topbar-user{font-size:11px;color:var(--text3);}
+.btn-logout{background:transparent;border:1px solid var(--b2);color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;cursor:pointer;transition:all .15s;}
+.btn-logout:hover{border-color:var(--red2);color:var(--red2);}
+
+/* MAIN LAYOUT */
+.main-area{flex:1;display:flex;overflow:hidden;}
+
+/* LEFT PANEL */
+.left-panel{width:220px;border-right:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0;}
+.panel-header{padding:12px 16px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--b1);}
+.nav-list{flex:1;overflow-y:auto;}
+.nav-item{padding:9px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .1s;display:flex;align-items:center;gap:8px;}
+.nav-item:hover{background:var(--s2);}
+.nav-item.active{border-left-color:var(--gold);background:var(--s2);}
+.nav-num{font-size:18px;font-family:'Spectral',serif;color:var(--text3);width:20px;text-align:right;flex-shrink:0;line-height:1;}
+.nav-item.active .nav-num{color:var(--gold);}
+.nav-info{flex:1;min-width:0;}
+.nav-name{font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav-phase{font-size:9px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* CONTENT AREA */
+.content-area{flex:1;display:flex;overflow:hidden;}
+.step-content{flex:1;overflow-y:auto;padding:32px 40px;max-width:820px;}
+.step-content::-webkit-scrollbar{width:4px;}
+.step-content::-webkit-scrollbar-track{background:transparent;}
+.step-content::-webkit-scrollbar-thumb{background:var(--b2);}
+
+/* STEP PAGE */
+.step-badge{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.step-title{font-family:'Spectral',serif;font-size:36px;font-weight:300;color:var(--gold);line-height:1.1;margin-bottom:6px;}
+.step-theme{font-size:12px;color:var(--text2);margin-bottom:28px;}
+.step-deviz{border-left:2px solid var(--gold3);padding:10px 16px;font-family:'Spectral',serif;font-style:italic;font-size:14px;color:var(--text2);margin-bottom:32px;line-height:1.6;}
+
+/* SECTION */
+.sec{margin-bottom:28px;}
+.sec-title{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);padding-bottom:8px;border-bottom:1px solid var(--b1);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-title-icon{font-size:12px;}
+
+/* PASSPORT TABLE */
+.passport-table{width:100%;border-collapse:collapse;}
+.passport-table td{padding:8px 12px;border:1px solid var(--b1);font-size:12px;vertical-align:top;line-height:1.6;}
+.passport-table td:first-child{color:var(--text2);width:160px;white-space:nowrap;}
+.passport-table td:last-child{color:var(--text);}
+
+/* BLOCKS */
+.meeting-block{border:1px solid var(--b1);margin-bottom:8px;overflow:hidden;}
+.block-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;transition:background .1s;}
+.block-head:hover{background:var(--s2);}
+.block-head-left{display:flex;align-items:center;gap:10px;}
+.block-num{font-size:10px;color:var(--text3);width:24px;}
+.block-title{font-size:12px;color:var(--text);}
+.block-dur{font-size:10px;color:var(--gold);padding:2px 8px;border:1px solid var(--b2);}
+.block-chevron{font-size:10px;color:var(--text3);transition:transform .2s;}
+.meeting-block.open .block-chevron{transform:rotate(180deg);}
+.block-body{padding:0 14px;max-height:0;overflow:hidden;transition:max-height .25s ease,padding .2s;font-size:12px;color:var(--text2);line-height:1.8;white-space:pre-line;}
+.meeting-block.open .block-body{max-height:600px;padding:12px 14px 14px;}
+
+/* MONITOR TABLE */
+.monitor-row{display:grid;grid-template-columns:100px 1fr 1fr 1fr;border:1px solid var(--b1);margin-bottom:4px;}
+.monitor-cell{padding:8px 12px;font-size:11px;border-right:1px solid var(--b1);line-height:1.5;}
+.monitor-cell:last-child{border-right:none;}
+.monitor-cell.label{color:var(--text2);font-size:10px;}
+.monitor-ok{background:rgba(42,96,64,.15);color:var(--green2);}
+.monitor-warn{background:rgba(128,96,32,.15);color:var(--yellow2);}
+.monitor-danger{background:rgba(160,48,48,.15);color:var(--red2);}
+.monitor-head{background:var(--s2);color:var(--text3);font-size:9px;letter-spacing:.1em;text-transform:uppercase;}
+
+/* PHRASES */
+.phrase-item{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-left:2px solid var(--b2);margin-bottom:6px;font-size:12px;color:var(--text);line-height:1.6;transition:border-color .15s;}
+.phrase-item:hover{border-left-color:var(--gold);}
+.phrase-item::before{content:'›';color:var(--gold);font-size:14px;flex-shrink:0;margin-top:1px;}
+
+/* ERRORS */
+.error-item{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-left:2px solid var(--red);margin-bottom:6px;font-size:12px;color:var(--text2);line-height:1.6;}
+.error-item::before{content:'✕';color:var(--red2);font-size:10px;flex-shrink:0;margin-top:3px;}
+
+/* CRITERIA / LIST */
+.check-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:12px;color:var(--text2);line-height:1.6;border-bottom:1px solid var(--b1);}
+.check-item::before{content:'◦';color:var(--gold);flex-shrink:0;margin-top:2px;}
+
+/* HW */
+.hw-item{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1px solid var(--b1);margin-bottom:6px;font-size:12px;color:var(--text);line-height:1.6;}
+.hw-num{color:var(--gold);font-size:10px;flex-shrink:0;margin-top:2px;width:16px;}
+
+/* DAY TABS */
+.day-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.day-tab{padding:6px 14px;border:1px solid var(--b2);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.05em;color:var(--text2);cursor:pointer;transition:all .15s;}
+.day-tab:hover{border-color:var(--gold);color:var(--text);}
+.day-tab.active{background:rgba(200,160,74,.1);border-color:var(--gold);color:var(--gold);}
+.day-tab.meeting{border-color:rgba(200,160,74,.3);}
+.day-content{display:none;}
+.day-content.active{display:block;}
+.day-type-badge{display:inline-block;padding:2px 10px;font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;}
+.badge-meeting{background:rgba(200,160,74,.1);color:var(--gold);border:1px solid rgba(200,160,74,.3);}
+.badge-self{background:rgba(136,128,112,.1);color:var(--text2);border:1px solid var(--b2);}
+.badge-individual{background:rgba(42,96,64,.1);color:var(--green2);border:1px solid rgba(42,96,64,.3);}
+.day-meeting-title{font-family:'Spectral',serif;font-size:22px;font-weight:300;color:var(--text);margin-bottom:4px;}
+.day-time{font-size:10px;color:var(--text3);margin-bottom:6px;}
+.day-goal{padding:10px 14px;border-left:2px solid var(--gold);background:rgba(200,160,74,.05);font-size:12px;color:var(--text);line-height:1.7;margin-bottom:20px;}
+
+/* RED FLAGS BOX */
+.red-flags-box{background:rgba(160,48,48,.08);border:1px solid rgba(160,48,48,.25);padding:16px 20px;margin-bottom:20px;}
+.rf-title{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--red2);margin-bottom:10px;}
+.rf-item{font-size:11px;color:var(--text2);padding:4px 0;display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.rf-item::before{content:'⚠';color:var(--red2);font-size:10px;flex-shrink:0;}
+
+/* AI PANEL */
+.ai-panel{width:360px;border-left:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0;}
+.ai-header{padding:12px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.ai-dot{width:6px;height:6px;background:var(--green2);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.ai-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);}
+.ai-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.ai-messages::-webkit-scrollbar{width:3px;}
+.ai-messages::-webkit-scrollbar-thumb{background:var(--b2);}
+.ai-msg{padding:10px 13px;font-size:12px;line-height:1.7;}
+.ai-msg.assistant{background:var(--s2);border:1px solid var(--b1);color:var(--text);}
+.ai-msg.user{background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.2);color:var(--text);align-self:flex-end;max-width:90%;}
+.ai-msg.system{background:rgba(42,96,64,.1);border:1px solid rgba(42,96,64,.2);color:var(--text2);font-size:11px;font-style:italic;}
+.ai-typing{padding:10px 13px;font-size:11px;color:var(--text3);font-style:italic;}
+.ai-input-area{padding:12px 16px;border-top:1px solid var(--b1);flex-shrink:0;}
+.ai-context{font-size:9px;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;text-transform:uppercase;}
+.ai-textarea{width:100%;background:var(--s2);border:1px solid var(--b2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;padding:9px 12px;outline:none;resize:none;min-height:60px;max-height:120px;transition:border-color .15s;line-height:1.6;}
+.ai-textarea:focus{border-color:var(--gold);}
+.ai-send{width:100%;background:transparent;border:1px solid var(--b2);color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;padding:8px;cursor:pointer;margin-top:6px;transition:all .15s;}
+.ai-send:hover{border-color:var(--gold);color:var(--gold);}
+.ai-quick-btns{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.quick-btn{background:transparent;border:1px solid var(--b2);color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:9px;padding:4px 8px;cursor:pointer;transition:all .15s;line-height:1.4;}
+.quick-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* PARTICIPANTS TAB */
+.participants-layout{display:flex;height:100%;overflow:hidden;}
+.p-list{width:240px;border-right:1px solid var(--b1);overflow-y:auto;flex-shrink:0;}
+.p-item{padding:10px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .1s;}
+.p-item:hover{background:var(--s2);}
+.p-item.active{border-left-color:var(--gold);background:var(--s2);}
+.p-name{font-size:12px;color:var(--text);}
+.p-step{font-size:10px;color:var(--text3);margin-top:2px;}
+.p-flag{display:inline-block;padding:1px 6px;font-size:9px;border:1px solid;margin-top:4px;}
+.flag-green{color:var(--green2);border-color:var(--green2);}
+.flag-red{color:var(--red2);border-color:var(--red2);}
+.p-detail{flex:1;padding:32px 40px;overflow-y:auto;}
+.p-detail-name{font-family:'Spectral',serif;font-size:28px;font-weight:300;color:var(--text);margin-bottom:4px;}
+.p-detail-login{font-size:11px;color:var(--text3);margin-bottom:24px;}
+.step-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;margin-bottom:16px;}
+.step-tile{border:1px solid var(--b1);padding:12px;text-align:center;}
+.step-tile.current{border-color:var(--gold);background:rgba(200,160,74,.06);}
+.step-tile.done{border-color:var(--b2);}
+.tile-num{font-family:'Spectral',serif;font-size:24px;color:var(--text3);line-height:1;}
+.step-tile.current .tile-num,.step-tile.done .tile-num{color:var(--gold);}
+.tile-status{font-size:9px;color:var(--text3);margin-top:3px;}
+.btn-unlock{background:var(--gold);color:#0d0d0d;border:none;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;padding:9px 18px;cursor:pointer;margin-top:12px;transition:background .15s;}
+.btn-unlock:hover{background:var(--gold2);}
+.btn-add-p{width:100%;background:transparent;border:1px dashed var(--b2);color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;padding:10px;cursor:pointer;transition:all .15s;margin-bottom:8px;}
+.btn-add-p:hover{border-color:var(--gold);color:var(--gold);}
+.flag-card{background:rgba(160,48,48,.06);border:1px solid rgba(160,48,48,.2);padding:12px 14px;margin-bottom:8px;}
+.flag-card-title{font-size:10px;color:var(--red2);margin-bottom:4px;letter-spacing:.05em;}
+.flag-card-body{font-size:11px;color:var(--text2);line-height:1.6;}
+.flag-card-date{font-size:9px;color:var(--text3);margin-top:4px;}
+.diary-entry{border:1px solid var(--b1);padding:10px 14px;margin-bottom:6px;}
+.diary-date{font-size:9px;color:var(--text3);margin-bottom:4px;}
+.diary-text{font-size:11px;color:var(--text2);line-height:1.6;}
+
+/* WHEEL MINI */
+.wheel-mini-wrap{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start;}
+
+/* SCROLL */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--b2);}
+
+/* EMPTY */
+.empty-state{padding:48px;color:var(--text3);font-size:12px;text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <div class="login-label">Программа восстановления личности</div>
+    <div class="login-title">Кабинет<br>ведущего</div>
+    <div class="login-sub">Введите пароль для входа</div>
+    <input class="inp" id="pwd-input" type="password" placeholder="пароль" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Войти</button>
+    <div class="login-err" id="login-err">Неверный пароль</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">Восстановление личности</div>
+    <div class="topbar-sep"></div>
+    <button class="tab-btn active" id="tab-program" onclick="switchTab('program')">Программа</button>
+    <button class="tab-btn" id="tab-participants" onclick="switchTab('participants')">Участники</button>
+    <div class="topbar-right">
+      <span class="topbar-user">Ведущий</span>
+      <button class="btn-logout" onclick="doLogout()">Выйти</button>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <!-- PROGRAM TAB -->
+    <div id="view-program" class="main-area" style="flex:1;overflow:hidden;">
+      <div class="left-panel">
+        <div class="panel-header">Шаги программы</div>
+        <div class="nav-list" id="steps-nav"></div>
+      </div>
+      <div class="content-area">
+        <div class="step-content" id="step-content">
+          <div class="empty-state">← Выберите шаг</div>
+        </div>
+        <div class="ai-panel">
+          <div class="ai-header">
+            <div class="ai-dot"></div>
+            <div class="ai-label">AI-ассистент ведущего</div>
+          </div>
+          <div class="ai-messages" id="ai-msgs">
+            <div class="ai-msg system">Выберите шаг программы — отвечу на любые вопросы по сценарию встречи, фразам, реакциям участников.</div>
+          </div>
+          <div class="ai-input-area">
+            <div class="ai-context" id="ai-context">контекст: не выбран</div>
+            <div class="ai-quick-btns" id="quick-btns"></div>
+            <textarea class="ai-textarea" id="ai-input" placeholder="Спросите о сценарии встречи, фразах, красных флагах..." onkeydown="aiKey(event)" rows="3"></textarea>
+            <button class="ai-send" onclick="sendAI()">Отправить →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARTICIPANTS TAB -->
+    <div id="view-participants" style="display:none;flex:1;overflow:hidden;">
+      <div class="participants-layout">
+        <div class="p-list" id="p-list">
+          <div style="padding:10px 16px;">
+            <button class="btn-add-p" onclick="showAddParticipant()">+ Добавить участника</button>
+          </div>
+          <div id="p-list-inner"></div>
+        </div>
+        <div class="p-detail" id="p-detail">
+          <div class="empty-state">← Выберите участника</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, orderBy, limit }
+  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const FB = {
+  apiKey:"AIzaSyCQpE2Ikt2V_V-Y5UB_cYV6SaZVWFM3ccs",
+  authDomain:"rehab-lichnost.firebaseapp.com",
+  projectId:"rehab-lichnost",
+  storageBucket:"rehab-lichnost.firebasestorage.app",
+  messagingSenderId:"636670167685",
+  appId:"1:636670167685:web:3c3ba6a792326a7e0677ec"
+};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const PROXY = 'https://bibleproxy-production.up.railway.app';
+const PWD = 'ПУТЬ2024';
+
+// ══════════════════════════════════════════════
+// PROGRAM DATA — VERBATIM FROM MANUAL
+// ══════════════════════════════════════════════
+const STEPS = [
+{
+  id:1, name:'Возвращение к дружбе', phase:'ШАГ 1 · ФАЗА ПРОБУЖДЕНИЯ',
+  deviz:'«Я уже не называю вас рабами... но Я назвал вас друзьями» — Ин. 15:15',
+  passport:{
+    'Длительность':'14 дней',
+    'Место в программе':'Входной шаг',
+    'Формат':'2 групповые встречи по 100–110 мин, 1 индивидуальная встреча 45–60 мин, ежедневные практики, контрольные точки: День 1, День 7, День 14',
+    'Ключевая тема':'Переход от лжи, изоляции и внутреннего распада к правде, помощи и живому присутствию',
+    'Основная идея':'Зависимость не живёт на свету. Она требует лжи, скрытности и расщепления. Первый шаг — чтобы человек перестал прятаться и начал возвращаться в реальность'
+  },
+  stepGoal:'Цель первого шага — не просто добиться признания проблемы, а помочь участнику выйти из самообмана и начать восстановление отношений: с Богом, с собой, с людьми. Этот шаг открывает не тему «какой я плохой», а тему: «где я перестал быть живым, честным и присутствующим?»',
+  expectedResults:['говорит о себе конкретнее и честнее','видит реальные последствия зависимости','различает хотя бы 3 формы своего самообмана','сделал минимум 1 честный контакт','принял помощь не на словах, а на деле','имеет письменную карту помощи','имеет план ближайших 7 дней','владеет минимум 2 техниками стабилизации'],
+  criteria:['Не отрицает и не приукрашивает свою ситуацию','Может назвать конкретные разрушения, а не говорить общими словами','Распознаёт минимум 3 формы самообмана','Сделал минимум 1 честный контакт','Заполнил карту помощи','Составил письменный план 7 дней','Выполнил не менее 70% домашних заданий','Прошёл входную и итоговую самооценку'],
+  facilitatorTasks:['создать безопасную и прозрачную рамку','снизить сопротивление','вывести участника из тумана в факты','помочь назвать цену самообмана','перевести инсайт в конкретные шаги','обеспечить опору на ближайшие 7 дней'],
+  facilitatorPosition:'Партнёрство. Я не судья, не дознаватель и не прокурор. Я сопровождаю человека в правду.\nПринятие. Человек больше своей зависимости. Мы не отрицаем зло, но и не сводим личность к провалу.\nСострадание. Давление не рождает честности. Стыд не лечит.\nЯсность. Мы не называем самообман духовностью. Мы не принимаем красивые слова вместо реальных шагов.',
+  redFlags:['острая абстиненция','выраженная паника','психотические симптомы','суицидальные мысли','сильная диссоциация','спутанность сознания','тяжёлая бессонница в течение нескольких суток','неконтролируемая агрессия','неспособность удерживать тему и инструкции'],
+  dissociation:'Признаки: стеклянный взгляд; участник «исчезает» из контакта; отвечает механически; замирает; перестаёт чувствовать тело; говорит «меня как будто нет», «я ничего не чувствую».\n\nДействия ведущего: остановить углубление; вернуть человека в комнату и тело; замедлить темп; перейти к стабилизации; не требовать откровенности в этот момент.',
+  facilitatorPhrases:{
+    support:['«Спасибо, что сказал это прямо»','«Мы не торопимся»','«Правда — это не конец. Это начало»','«Ты можешь идти настолько глубоко, насколько выдерживаешь сегодня»','«Я против лжи, но я за человека»','«Нам не нужно красиво звучать. Нам нужно быть настоящими»'],
+    reality:['«Скажи это фактами»','«Что именно произошло?»','«Когда именно это бывает?»','«Что ты сделал, а не что ты чувствовал вообще?»','«Как выглядит это в жизни, а не в теории?»'],
+    shame:['«Мы сейчас не выносим приговор. Мы называем реальность»','«Твоя боль не отменяет твою ценность»','«Стыд хочет, чтобы ты исчез. Мы учимся не исчезать»'],
+    intel:['«Ты это хорошо понял. А что ты уже сделал?»','«Это звучит умно. А где здесь ты живой?»','«Как это проявилось на этой неделе?»','«Что изменилось в действии?»']
+  },
+  facilitatorErrors:['спорить с участником ради победы','давить авторитетом','морализировать','стыдить','навешивать ярлыки','превращать встречу в допрос','требовать полной откровенности до появления опоры','путать слёзы с прогрессом','путать религиозную правильность с реальным движением'],
+  structure:['День 1 — входная оценка, групповая встреча 1','Дни 2–6 — домашние задания, ежедневный мини-мониторинг','Дни 5–8 — индивидуальная встреча','День 7 — промежуточная оценка','Дни 8–13 — продолжение домашних заданий, практики, честный контакт, планирование','День 14 — групповая встреча 2, итоговая оценка шага'],
+  monitoring:[
+    {zone:'Честность',ok:'конкретен',warn:'частично уходит',danger:'живёт в тумане'},
+    {zone:'Контакт',ok:'остаётся в связи',warn:'колеблется',danger:'исчезает'},
+    {zone:'Стыд',ok:'выдерживает',warn:'шатко',danger:'самоуничтожается'},
+    {zone:'Помощь',ok:'просит',warn:'обещает, но не делает',danger:'отвергает'},
+    {zone:'План',ok:'есть и пользуется',warn:'есть формально',danger:'нет'},
+  ],
+  scriptures:['Ин 15:15','Ин 8:32','Пс 31','Пс 50'],
+  meetings:[
+    {
+      id:'m1', label:'Встреча 1 · День 1', type:'meeting',
+      title:'Правда о себе без грима', time:'105 минут',
+      goal:'Вывести участника из самообмана. Создать безопасную рамку для честности.',
+      blocks:[
+        {n:'1',t:'Вход и рамка',dur:'10 мин',body:'Сегодня не нужно выглядеть лучше, чем ты есть.\nНаша цель — не унизить человека, а вернуть его в правду.\nТы можешь говорить столько, сколько можешь сегодня.\n\nПравила группы:\n• говорим о себе\n• не перебиваем\n• не даём непрошеных советов\n• не стыдим\n• можно взять паузу\n• можно отказаться отвечать\n• всё сказанное остаётся внутри группы'},
+        {n:'2',t:'Чек-ин',dur:'10 мин',body:'Каждый отвечает на два вопроса:\n1) С каким состоянием я пришёл?\n2) Что мне сейчас труднее всего признать?\n\nЗадача ведущего: не комментировать длинно, а отражать и кратко собирать сказанное.'},
+        {n:'3',t:'Мини-лекция: «Почему зависимость питается ложью»',dur:'15 мин',body:'Кратко раскрыть: отрицание; минимизацию; рационализацию; перенос вины; двойную жизнь; духовную маскировку.\n\nКлючевая мысль: зависимость требует не только вещества — она требует искажения реальности.\n\nФраза ведущего: «Ложь — не потому, что ты чудовище. Ложь — потому, что зависимость не живёт на свету».'},
+        {n:'4',t:'Писание и смысл',dur:'15 мин',body:'Тексты: Ин. 15:15; Ин. 8:32; Пс. 31; Пс. 50.\n\nЛогика разбора:\n• раб скрывает; друг открывается\n• правда освобождает\n• исповедание — это возвращение в реальность, а не саморазрушение\n\nНЕ делать проповедь — вернуть текст в жизнь участника.'},
+        {n:'5',t:'Практика: «Моя реальность без грима»',dur:'20 мин',body:'Инструкция: отвечать конкретно, фактами, без литературщины.\n\nВопросы:\n1) Когда я понял, что теряю контроль?\n2) Что я скрывал от других?\n3) Что я скрывал от себя?\n4) Какими фразами я оправдывал себя?\n5) Что уже разрушено?\n6) Что разрушится следующим, если ничего не менять?\n\nЗадача ведущего: возвращать в конкретику. Не «всё стало плохо», а «сорвал обещание», «солгал», «потерял деньги», «ушёл из контакта».'},
+        {n:'6',t:'Практика: «Цена самообмана»',dur:'15 мин',body:'Участники заполняют таблицу по сферам:\n• тело\n• психика\n• отношения\n• работа/служение\n• деньги\n• вера/совесть\n\nЦель: помочь участнику увидеть цену не абстрактно, а предметно.'},
+        {n:'7',t:'Практика: «Какой я в отношениях»',dur:'15 мин',body:'Вопросы:\n• Где я использовал людей вместо любви?\n• Где я требовал доверия, сам не будучи честным?\n• Где я играл роль?\n• Какой я друг на самом деле?\n• Хотел бы я сам иметь рядом такого человека?\n\nЗадача ведущего: не дать группе скатиться ни в самоунижение, ни в морализаторство.'},
+        {n:'8',t:'Круг обсуждения',dur:'10 мин',body:'Фраза для завершения каждого: «Сегодня я увидел о себе...»\n\nВедущий кратко собирает — не интерпретирует.'},
+        {n:'9',t:'Завершение и заземление',dur:'5 мин',body:'3 медленных выдоха. Почувствовать стопы. Назвать 3 предмета вокруг.\nСказать вместе: «Я здесь. Я жив. Мне не нужно решить всю жизнь сегодня».'},
+      ],
+      homework:['Заполнить входную шкалу самооценки — День 1 (10 показателей)','Письменно: 3 формы моего самообмана с конкретными примерами','Позвонить одному человеку и сказать правду о своём состоянии']
+    },
+    {
+      id:'ind', label:'Индивидуальная · Дни 5–8', type:'individual',
+      title:'Индивидуальная встреча', time:'45–60 минут',
+      goal:'Проверить что происходит в реальном человеке, а не только в его групповом образе.',
+      blocks:[
+        {n:'',t:'Вопросы для индивидуальной встречи',dur:'45–60 мин',body:'• Что тебе было труднее всего признать?\n• Где ты ещё продолжаешь врать или недоговаривать?\n• Где ты сейчас больше в стыде, чем в правде?\n• Чего ты боишься, если будешь честным?\n• Кому тебе нужно сказать правду?\n• Что сейчас сильнее всего угрожает твоей трезвости?\n• Где тебе нужна помощь уже на этой неделе?\n• Какой шаг ты готов сделать в ближайшие 24 часа?'},
+        {n:'',t:'Что отслеживает ведущий',dur:'',body:'• живой контакт или роль\n• конкретику или туман\n• готовность принимать помощь\n• риск самонаказания\n• риск исчезновения после эмоционально сильной встречи'},
+      ],
+      homework:['Сделать конкретный шаг в течение 24 часов после встречи','Заполнить карту помощи']
+    },
+    {
+      id:'m2', label:'Встреча 2 · День 14', type:'meeting',
+      title:'Принятие помощи и план 7 дней', time:'105 минут',
+      goal:'Перевести честность в систему. Помочь участнику выйти с конкретным планом. Инсайт без системы умирает.',
+      blocks:[
+        {n:'1',t:'Чек-ин по неделе',dur:'10 мин',body:'Каждый отвечает:\n• Где я заметил привычную ложь?\n• Где я был честен?\n• Что было самым трудным?\n• Сделал ли я шаг в контакт?'},
+        {n:'2',t:'Мини-лекция: «Инсайт без системы умирает»',dur:'20 мин',body:'Ключевая мысль: понять мало. Почувствовать мало. Даже признать мало. Если нет структуры, зависимость быстро отыграет всё обратно.\n\nФраза ведущего: «Если у тебя нет плана, старая система очень быстро предложит свой».'},
+        {n:'3',t:'Практика: «Карта помощи»',dur:'20 мин',body:'Участник отвечает письменно:\n• Когда мне особенно опасно?\n• Какие признаки срыва у меня появляются заранее?\n• Кому я могу позвонить или написать?\n• Что я должен сделать в первые 15 минут риска?\n\nОбязательные категории контактов:\n— ведущий/наставник\n— участник группы\n— близкий человек, знающий правду\n— запасной контакт'},
+        {n:'4',t:'Практика: «План 7 дней»',dur:'20 мин',body:'Участник заполняет минимальный недельный ритм:\n• подъём\n• сон\n• еда\n• молитва/тишина\n• честный контакт\n• полезное действие\n• вечерний чек-ин\n\nПринцип: НЕ идеальный план — реальный, выполнимый.'},
+        {n:'5',t:'Практика: «Фраза разворота»',dur:'15 мин',body:'Каждый завершает три фразы письменно:\n\nЯ перестаю...\nЯ начинаю...\nЯ прошу...'},
+        {n:'6',t:'Завершающий круг',dur:'15 мин',body:'Фраза: «Мой ближайший честный шаг после этой встречи...»\n\nВедущий кратко благословляет каждого.'},
+      ],
+      homework:['Жить по плану 7 дней','Использовать карту помощи при необходимости','Заполнить итоговую шкалу самооценки — День 14','Прочитать введение в Шаг 2']
+    }
+  ]
+},
+{
+  id:2, name:'Тело: союзник, а не враг', phase:'ШАГ 2 · ФАЗА СТАБИЛИЗАЦИИ',
+  deviz:'Срыв начинается не с действия — а с разрешения себе',
+  passport:{
+    'Место в программе':'2-й месяц 8-месячного курса',
+    'Формат':'2 групповые встречи по 100–110 минут, ежедневные короткие практики, телесный дневник, итоговая оценка',
+    'Главная цель':'Научить участника замечать телесные сигналы до срыва и поддерживать минимальный ритм сна, питания, движения и паузы',
+    'Ключевые инструменты':'Карта тела, дыхание 4–7–8, заземление 5–4–3–2–1, двигательный сброс, телесная молитва, дневник тела',
+    'Итог шага':'Участник знает свои ранние сигналы, использует хотя бы один якорь и имеет выполнимый недельный ритм'
+  },
+  stepGoal:'Тело перестаёт быть врагом. Участник учится замечать ранние сигналы тяги, осваивает простые якоря саморегуляции и выстраивает минимальный физический ритм.',
+  expectedResults:['Может назвать минимум 3 телесных сигнала, которые предшествуют тяге, срыву или эмоциональному обрушению','Выбрал и реально применяет хотя бы 1 рабочий якорь саморегуляции','Составил минимальный недельный ритм по сну, еде, воде, движению и паузе','Различает физиологическое напряжение, эмоциональный перегруз и уже включившийся сценарий зависимости','Перестаёт воспринимать базовую заботу о теле как нечто «недуховное» или постыдное'],
+  criteria:['Названы 3 главных телесных триггера','Выбранный якорь используется минимум 5 дней из 7','Дневник тела заполнен не менее 6 дней','Минимальный ритм составлен реалистично, без героизма и самообмана','Участник может связать нарушение режима с ростом уязвимости к срыву'],
+  facilitatorPosition:'Ведущий действует без нажима, без морализаторства и без телесного насилия. Он не вытягивает исповедь и не объясняет участнику его реакции «лучше него». Задача — помочь участнику заметить факты, выдержать контакт с собой и перевести осознание в конкретный повторяемый ритм.\n\n• Партнёрство вместо давления\n• Принятие вместо стыда\n• Ясность вместо туманных рассуждений\n• Малые выполнимые шаги вместо красивых обещаний\n• Наблюдение за телом вместо интерпретации за участника',
+  redFlags:['Выраженная паника при фокусе на теле','Сильная диссоциация: человек как будто «исчезает», тупеет, стекленеет, теряет контакт','Спутанность, агрессия, невозможность удерживать простую инструкцию','Многодневная бессонница, на фоне которой резко растёт импульсивность','Попытка ведущего продавить упражнение в обход сопротивления участника'],
+  facilitatorErrors:['Заставлять участника закрывать глаза или долго фокусироваться на теле, если это его перегружает','Стыдить за усталость, сбой режима или сильные телесные реакции','Подменять шаг длинной лекцией о дисциплине','Делать вид, что тело — это вторичный, почти ненужный слой','Путать простой телесный навык с «низкой планкой духовности»'],
+  facilitatorPhrases:{
+    support:['«Твоё тело сейчас не против тебя. Оно просто подаёт сигнал тем языком, который у него есть»','«Нам сейчас не нужен подвиг. Нам нужен повторяемый минимум»','«Если тебе нужен сон, вода и пауза — это не поражение, а реальность»','«Мы не боремся с твоим телом. Мы учимся его слушать раньше, чем тебя снесёт»','«Реалистичный план лучше красивого самообмана»']
+  },
+  monitoring:[
+    {zone:'Сон',ok:'спит более-менее ровно',warn:'неровный, 1–2 плохие ночи',danger:'сильный срыв сна, истощение'},
+    {zone:'Телесный контакт',ok:'замечает сигналы',warn:'замечает задним числом',danger:'не замечает или отрезан'},
+    {zone:'Тяга',ok:'замечает заранее',warn:'успевает не всегда',danger:'осознаёт слишком поздно'},
+    {zone:'Якорь',ok:'применяет сам',warn:'вспоминает после подсказки',danger:'не применяет'},
+    {zone:'Ритм',ok:'минимум выполняется',warn:'выполняется частично',danger:'полный хаос, много обещаний'},
+  ],
+  scriptures:['3 Цар 19:1–8','Пс 23','Рим 12:1'],
+  meetings:[
+    {
+      id:'m1', label:'Встреча А', type:'meeting',
+      title:'Я живу не отдельно от тела', time:'100–110 минут',
+      goal:'Вернуть человеку контакт с телом без стыда и мистификации.',
+      blocks:[
+        {n:'1',t:'Чек-ин',dur:'10 мин',body:'• Как ты спал?\n• Где тело было союзником на этой неделе?\n• Где тело уже кричало, а ты сделал вид, что не слышишь?\n\nВедущий не принимает абстракции, мягко возвращает к фактам.'},
+        {n:'2',t:'Мини-лекция',dur:'15 мин',body:'Объяснить простым языком: если тело истощено, нервная система перегрета, а сон сорван — вероятность импульсивного поведения возрастает. Это не «недостаток веры», а реальная уязвимость, которую нельзя игнорировать.'},
+        {n:'3',t:'Библейский текст — 3 Цар 19:1–8',dur:'15 мин',body:'Восстановление начинается не с обвинения и не с подвига, а с питания, воды, отдыха и продолжения пути. Задача ведущего — не делать проповедь, а вернуть текст в плоскость практики.'},
+        {n:'4',t:'Упражнение «Карта тела»',dur:'20 мин',body:'Участник отмечает, где в теле он чаще замечает тревогу, стыд, пустоту, злость, оцепенение и тягу. Затем отвечает письменно:\n• что появляется раньше — мысль или телесный сигнал?\n• что я обычно игнорирую?\n• к чему это приводит через несколько часов?'},
+        {n:'5',t:'Работа «Мой сон и мой хаос»',dur:'15 мин',body:'Участник описывает что происходит с ним после 2–3 плохих ночей: как меняется тяга, раздражение, духовная собранность и способность просить помощи.'},
+        {n:'6',t:'Круг',dur:'10 мин',body:'• «Сегодня я заметил...»\n• «Самое неприятное открытие...»\n• «На этой неделе я проверю...»'},
+        {n:'7',t:'Завершение',dur:'5 мин',body:'Короткая молитва или минута тишины с открытыми глазами.'},
+      ],
+      homework:['Вести дневник тела утром и вечером 7 дней подряд','Выбрать основной якорь и применять его ежедневно','Соблюдать минимальный недельный ритм','Письменно ответить на вопросы по 3 Цар 19:1–8','Подготовить список «Мои 3 ранних телесных сигнала»']
+    },
+    {
+      id:'m2', label:'Встреча Б', type:'meeting',
+      title:'Якоря, ритм и телесная трезвость', time:'100–110 минут',
+      goal:'Дать рабочие якоря и минимальный ритм. Участник выбирает якорь и план на неделю.',
+      blocks:[
+        {n:'1',t:'Чек-ин',dur:'10 мин',body:'• Что участник заметил в теле?\n• Что сработало?\n• Где он снова пытался быть героем, а не живым человеком?'},
+        {n:'2',t:'Ввод «Три якоря»',dur:'15 мин',body:'Ведущий показывает три базовых способа саморегуляции:\n\nДыхание 4–7–8: вдох 4 счёта, задержка 7, выдох 8. Мягкий способ снизить физиологическое напряжение и замедлить внутренний разгон.\n\nЗаземление 5–4–3–2–1: 5 вещей вижу, 4 слышу, 3 могу потрогать, 2 чувствую запах, 1 чувствую вкус. Возвращает из внутреннего тумана к реальности через органы чувств.\n\nДвигательный сброс: пройтись, 10 приседаний, холодная вода, выход на воздух. Короткое действие телом.'},
+        {n:'3',t:'Практика якорей',dur:'20 мин',body:'Каждый участник пробует все три варианта и отмечает, что работает лучше при тревоге, тумане, суете или онемении.'},
+        {n:'4',t:'Минимальный физический ритм',dur:'20 мин',body:'Заполняется реальный план на 7 дней:\n• сон\n• первый приём пищи\n• вода\n• движение\n• пауза без телефона\n\nКлючевой принцип: 70% реальности лучше 100% фантазии.'},
+        {n:'5',t:'Телесная молитва',dur:'10 мин',body:'Стопы на полу, спокойное дыхание, короткая фраза внимания к настоящему моменту. Без мистификации.\n\nТелесная молитва — не особая техника «для посвящённых», а простое пребывание перед Богом без бегства из собственного тела.'},
+        {n:'6',t:'Домашнее задание и закрепление',dur:'5 мин',body:'Ведущий проверяет, понял ли участник как именно и когда он будет выполнять задания.'},
+      ],
+      homework:['Продолжать дневник тела','Применять выбранный якорь ежедневно','Жить по минимальному ритму','Подготовить к следующей встрече список «Мои 3 ранних телесных сигнала»']
+    }
+  ]
+},
+{
+  id:3, name:'Надежда и союз помощи', phase:'ШАГ 3 · ФАЗА СТАБИЛИЗАЦИИ',
+  deviz:'Если человек красиво говорит о надежде, но никому не звонит — это ещё не Шаг 3, а литературный кружок',
+  passport:{
+    'Место в программе':'3-й месяц 8-месячного курса',
+    'Формат':'2 групповые встречи по 100–110 минут, домашняя работа, письменные листы, промежуточный и итоговый контроль',
+    'Главная цель':'Перевести участника от надежды-контракта к надежде-доверию и от изоляции к реальному принятию помощи',
+    'Психологическое ядро':'Выученная беспомощность, ложный героизм, магическое мышление',
+    'Итог шага':'Есть реальная карта поддержки, хотя бы одно конкретное действие принятия помощи и честное различение между ожиданием сделки и доверием пути'
+  },
+  stepGoal:'Участник выходит из изоляции, различает ложную и настоящую надежду, строит реальную карту помощи и делает хотя бы одно конкретное действие принятия поддержки.',
+  expectedResults:['Может объяснить разницу между надеждой-контрактом и надеждой-доверием на своих примерах','Честно видит как прошлые предательства надежды повлияли на его закрытость','Участник имеет реальную карту поддержки с именами и контактами','Участник совершил хотя бы одно действие принятия помощи','Написал честную молитву неверия без религиозной маски'],
+  criteria:['Различает надежду-сделку и надежду-доверие','Заполнил карту помощи с реальными людьми','Выполнил хотя бы один пункт контракта принятия помощи','Может назвать свои формы ложного героизма','Не требует от себя или Бога мгновенного результата как условия продолжения пути'],
+  facilitatorPosition:'Ведущий здесь не продаёт надежду и не давит авторитетом. Его задача — выдержать боль участника, не испугаться его сомнений и помочь превратить надежду из лозунга в практику отношений. Ведущий работает спокойно, честно и без духовной театральности.\n\n• Сначала слышать боль, потом вести к шагу\n• Не уговаривать «просто верить»\n• Не становиться единственным спасателем\n• Показывать, что принятие помощи — это не слабость, а новая форма силы\n• Разбивать путь на конкретные выполнимые действия',
+  redFlags:['Фразы участника: «Я сам», «никто не нужен», «если мне не помогли сразу, значит помощи нет»','Попытка заключить с Богом или программой сделку: «если сделаю это, обязаны вернуть то»','Полная пустота карты поддержки — человек никого не допускает вообще','Участник делает вид, что согласен, но не совершает ни одного конкретного действия принятия помощи','Ведущий становится главным и единственным контактом вне программы'],
+  facilitatorErrors:['Стыдить человека за отсутствие веры, злость на Бога или усталость от несбывшихся ожиданий','Подменять живую надежду религиозным внушением','Навязывать участнику зависимость от одного лидера или от своей фигуры','Обещать то, чего ведущий не может гарантировать','Превращать карту помощи в контрольный инструмент или в форму давления'],
+  facilitatorPhrases:{
+    support:['«Это больно. И это реальный опыт. Я слышу тебя»','«Принять помощь — не слабость. Это первый акт новой силы»','«Если у тебя никого нет, значит первым кругом помощи сейчас становится группа. Это не теория, это уже реальность»','«Мы не будем делать вид, что у тебя много веры. Нам нужна честность, а не красивый звук»','«Надежда-доверие идёт вперёд, даже когда не может продиктовать Богу сроки»']
+  },
+  monitoring:[
+    {zone:'Надежда',ok:'видит путь, даже если страшно',warn:'сомневается, но остаётся в контакте',danger:'всё бессмысленно, путь обесценен'},
+    {zone:'Помощь',ok:'просит и принимает',warn:'просит частично',danger:'изолируется, говорит «я сам»'},
+    {zone:'Карта',ok:'есть реальные люди',warn:'есть 1–2 контакта, нет устойчивости',danger:'карты нет или она фиктивна'},
+    {zone:'Действие',ok:'сделал шаг в 48 часов',warn:'откладывает, но обсуждает',danger:'полный саботаж действия'},
+    {zone:'Доверие',ok:'не требует сделки',warn:'колеблется между доверием и контролем',danger:'жёстко требует мгновенного результата'},
+  ],
+  scriptures:['Ин 11:1–44','Мк 9:24','Пс 120'],
+  meetings:[
+    {
+      id:'m1', label:'Встреча А', type:'meeting',
+      title:'История надежды и её предательства', time:'100–110 минут',
+      goal:'Участник видит, где его надежда была сломана и как это влияет на настоящее.',
+      blocks:[
+        {n:'1',t:'Чек-ин',dur:'10 мин',body:'• Где на этой неделе ты снова почувствовал «всё бесполезно»?\n• Где захотел закрыться?\n• Как выглядело твоё внутреннее «я сам»?'},
+        {n:'2',t:'Ввод в тему',dur:'15 мин',body:'Ведущий объясняет: у зависимого человека надежда часто не просто ослабла, а многократно была предана. Поэтому мы не требуем мгновенной веры, а начинаем с честной истории разрушенной надежды.'},
+        {n:'3',t:'Письменная работа «История моей надежды»',dur:'20 мин',body:'Участник вспоминает 3–5 эпизодов, когда он надеялся и пережил предательство, крах ожиданий или стыд. Затем отвечает:\n• что я решил о Боге после этого?\n• что я решил о людях?\n• что я решил о себе?'},
+        {n:'4',t:'Таблица «Ложная / настоящая надежда»',dur:'20 мин',body:'Примеры контрактной надежды:\n• «Если я хожу в группу, мне обязаны вернуть семью»\n• «Если молюсь, боль должна уйти быстро»\n\nПримеры надежды-доверия:\n• «Я иду путём восстановления, даже если не вижу всего результата»'},
+        {n:'5',t:'Разбор текста',dur:'15 мин',body:'Ведущий использует историю Лазаря (Ин 11) — ожидание не совпадает с графиком человека, но помощь не исчезает. Задача — показать разницу между сделкой и доверием.'},
+        {n:'6',t:'Круг',dur:'15 мин',body:'• «Что во мне убивает надежду?»\n• «Где я требую мгновенного результата?»\n• «Что для меня сегодня значит не закрыться?»'},
+        {n:'7',t:'Завершение',dur:'5 мин',body:'Короткая тишина или молитва без давления на чувства.'},
+      ],
+      homework:['Заполнить «Лист надежды»: 3 примера, когда надежда всё же выжила','Завершить карту союза помощи','Выполнить первый шаг из контракта принятия помощи: звонок, сообщение или встреча','Вести трёхдневный журнал «Знаки того, что я не один»','Прочитать Ин 11:1–44 и Псалом 120, ответить письменно']
+    },
+    {
+      id:'m2', label:'Встреча Б', type:'meeting',
+      title:'Союз помощи и конкретные действия', time:'100–110 минут',
+      goal:'Участник создаёт карту помощи и делает первый реальный шаг принятия поддержки.',
+      blocks:[
+        {n:'1',t:'Чек-ин',dur:'10 мин',body:'• Что участник понял о своей старой надежде?\n• Где увидел сделку вместо доверия?'},
+        {n:'2',t:'Психологическое ядро',dur:'15 мин',body:'Ведущий коротко объясняет три ловушки:\n• Выученная беспомощность — «всё равно ничего не изменится»\n• Ложный героизм — «я сам справлюсь без помощи»\n• Магическое мышление — «если правильно помолиться/поступить, Бог обязан помочь»\n\nЭто не «слова из учебника» — это способы, которыми человек саботирует путь.'},
+        {n:'3',t:'Упражнение «Карта реальной поддержки»',dur:'20 мин',body:'Участник записывает конкретных людей:\n• Кому можно позвонить в кризис?\n• Кому можно сказать правду?\n• Кто может быть свидетелем?\n• Кто поможет не исчезнуть в тишине?\n\nИмена и контакты обязательны.'},
+        {n:'4',t:'«Контракт принятия помощи»',dur:'20 мин',body:'Участник письменно фиксирует:\n• Кому я позвоню/напишу в ближайшие 48 часов?\n• Что именно скажу?\n• О чём попрошу?\n• Как не сорву этот шаг?'},
+        {n:'5',t:'Молитва неверия',dur:'15 мин',body:'Формула по Мк 9:24: «Верую, Господи, помоги моему неверию». Участник пишет честный текст без духовного глянца.'},
+        {n:'6',t:'Закрепление',dur:'10 мин',body:'Ведущий собирает конкретику: кто, когда, каким способом, с какой просьбой. Без расплывчатого «ну, постараюсь».'},
+        {n:'7',t:'Завершение',dur:'5 мин',body:'Напоминание: принять помощь — это не капитуляция перед слабостью, а выход из старой изоляции.'},
+      ],
+      homework:['Выполнить конкретный шаг из контракта принятия помощи','Завершить карту поддержки','Продолжать дневник']
+    }
+  ]
+},
+];
+
+// State
+let currentStep = null;
+let currentMeeting = null;
+let aiHistory = [];
+let selectedPid = null;
+
+// ─── LOGIN ───
+window.doLogin = () => {
+  const v = document.getElementById('pwd-input').value;
+  if(v === PWD){
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').style.display='flex';
+    renderStepsNav();
+    loadParticipants();
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+};
+window.doLogout = () => {
+  document.getElementById('login').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('pwd-input').value='';
+};
+
+// ─── TABS ───
+window.switchTab = (tab) => {
+  document.getElementById('tab-program').classList.toggle('active', tab==='program');
+  document.getElementById('tab-participants').classList.toggle('active', tab==='participants');
+  document.getElementById('view-program').style.display = tab==='program'?'flex':'none';
+  document.getElementById('view-participants').style.display = tab==='participants'?'flex':'none';
+};
+
+// ─── STEPS NAV ───
+function renderStepsNav(){
+  const nav = document.getElementById('steps-nav');
+  nav.innerHTML = STEPS.map(s => `
+    <div class="nav-item" onclick="openStep(${s.id})">
+      <div class="nav-num">${s.id}</div>
+      <div class="nav-info">
+        <div class="nav-name">${s.name}</div>
+        <div class="nav-phase">${s.phase}</div>
+      </div>
+    </div>`).join('');
+}
+
+window.openStep = (id) => {
+  currentStep = STEPS.find(s=>s.id===id);
+  currentMeeting = null;
+  document.querySelectorAll('.nav-item').forEach((el,i) => el.classList.toggle('active', STEPS[i]?.id===id));
+  renderStepPage();
+  updateAiContext();
+  // Add quick prompts
+  setQuickBtns([
+    'Как открыть встречу?',
+    'Что делать при диссоциации?',
+    'Красные флаги сейчас?',
+    'Фразы против стыда',
+    'Что делать если молчит?',
+  ]);
+};
+
+function renderStepPage(){
+  const s = currentStep;
+  if(!s) return;
+  const el = document.getElementById('step-content');
+
+  // Meetings tabs
+  const tabsHtml = s.meetings.map((m,i) => `
+    <div class="day-tab ${m.type==='meeting'?'meeting':''} ${i===0?'active':''}" onclick="openMeeting('${m.id}','${s.id}')">${m.label}</div>
+  `).join('');
+
+  const meetingsHtml = s.meetings.map((m,i) => renderMeetingHtml(m,i)).join('');
+
+  // Monitoring
+  const monHtml = s.monitoring ? `
+    <div class="monitor-row">
+      <div class="monitor-cell monitor-head label">Зона</div>
+      <div class="monitor-cell monitor-head">🟢 Стабильно</div>
+      <div class="monitor-cell monitor-head">🟡 Нестабильно</div>
+      <div class="monitor-cell monitor-head">🔴 Высокий риск</div>
+    </div>
+    ${s.monitoring.map(r=>`
+      <div class="monitor-row">
+        <div class="monitor-cell label">${r.zone}</div>
+        <div class="monitor-cell monitor-ok">${r.ok}</div>
+        <div class="monitor-cell monitor-warn">${r.warn}</div>
+        <div class="monitor-cell monitor-danger">${r.danger}</div>
+      </div>`).join('')}` : '';
+
+  // Phrases
+  const phrasesHtml = s.facilitatorPhrases ? Object.entries(s.facilitatorPhrases).map(([k,arr])=>`
+    <div style="margin-bottom:12px">
+      <div style="font-size:9px;letter-spacing:.15em;color:var(--text3);text-transform:uppercase;margin-bottom:6px">${{support:'Поддержка',reality:'Возврат в реальность',shame:'Против стыда',intel:'Против интеллектуализации'}[k]||k}</div>
+      ${arr.map(p=>`<div class="phrase-item">${p}</div>`).join('')}
+    </div>`).join('') : '';
+
+  el.innerHTML = `
+    <div class="step-badge">${s.phase}</div>
+    <div class="step-title">${s.name}</div>
+    <div class="step-theme">${s.stepGoal||''}</div>
+    <div class="step-deviz">${s.deviz}</div>
+
+    <!-- Passport -->
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">📋</span>Паспорт шага</div>
+      <table class="passport-table">
+        ${Object.entries(s.passport||{}).map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
+      </table>
+    </div>
+
+    <!-- Red Flags -->
+    ${s.redFlags ? `
+    <div class="red-flags-box">
+      <div class="rf-title">⚠ Красные флаги — немедленная реакция</div>
+      ${s.redFlags.map(f=>`<div class="rf-item">${f}</div>`).join('')}
+      ${s.dissociation?`<div style="margin-top:12px;font-size:11px;color:var(--text2);line-height:1.7;border-top:1px solid rgba(160,48,48,.2);padding-top:10px">${s.dissociation}</div>`:''}
+    </div>` : ''}
+
+    <!-- Facilitator position -->
+    ${s.facilitatorPosition ? `
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">🎯</span>Позиция ведущего</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8;white-space:pre-line">${s.facilitatorPosition}</div>
+    </div>` : ''}
+
+    <!-- Phrases -->
+    ${phrasesHtml ? `
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">💬</span>Формулировки ведущего</div>
+      ${phrasesHtml}
+    </div>` : ''}
+
+    <!-- Errors -->
+    ${s.facilitatorErrors ? `
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">✕</span>Ошибки ведущего — не делать</div>
+      ${s.facilitatorErrors.map(e=>`<div class="error-item">${e}</div>`).join('')}
+    </div>` : ''}
+
+    <!-- Criteria -->
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">✓</span>Критерии прохождения шага</div>
+      ${s.criteria.map(c=>`<div class="check-item">${c}</div>`).join('')}
+    </div>
+
+    <!-- Monitoring -->
+    ${monHtml ? `
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">📊</span>Мониторинг изменений</div>
+      ${monHtml}
+    </div>` : ''}
+
+    <!-- Meetings -->
+    <div class="sec">
+      <div class="sec-title"><span class="sec-title-icon">📅</span>Сценарии встреч</div>
+      <div class="day-tabs">${tabsHtml}</div>
+      ${meetingsHtml}
+    </div>
+  `;
+}
+
+function renderMeetingHtml(m, idx){
+  const typeBadge = m.type==='meeting'?'badge-meeting':m.type==='individual'?'badge-individual':'badge-self';
+  const typeLabel = m.type==='meeting'?'Групповая встреча':m.type==='individual'?'Индивидуальная встреча':'Самостоятельно';
+  const blocksHtml = m.blocks.map(b=>`
+    <div class="meeting-block" id="blk-${m.id}-${b.n}">
+      <div class="block-head" onclick="toggleBlock('blk-${m.id}-${b.n}')">
+        <div class="block-head-left">
+          <div class="block-num">${b.n}</div>
+          <div class="block-title">${b.t}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${b.dur?`<div class="block-dur">${b.dur}</div>`:''}
+          <div class="block-chevron">▾</div>
+        </div>
+      </div>
+      <div class="block-body">${b.body}</div>
+    </div>`).join('');
+  const hwHtml = m.homework ? m.homework.map((h,i)=>`
+    <div class="hw-item"><div class="hw-num">${i+1}.</div>${h}</div>`).join('') : '';
+  return `
+    <div class="day-content ${idx===0?'active':''}" id="day-${m.id}">
+      <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
+      <div class="day-meeting-title">${m.title}</div>
+      <div class="day-time">⏱ ${m.time}</div>
+      <div class="day-goal">${m.goal}</div>
+      ${blocksHtml}
+      ${hwHtml ? `
+      <div class="sec" style="margin-top:16px">
+        <div class="sec-title"><span class="sec-title-icon">📝</span>Домашнее задание</div>
+        ${hwHtml}
+      </div>` : ''}
+    </div>`;
+}
+
+window.openMeeting = (mid, sid) => {
+  const s = STEPS.find(x=>x.id==sid);
+  currentMeeting = s?.meetings.find(m=>m.id===mid);
+  document.querySelectorAll('.day-tab').forEach(t => {
+    const isActive = t.textContent === (currentMeeting?.label||'');
+    t.classList.toggle('active', isActive);
+  });
+  document.querySelectorAll('.day-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('day-'+mid)?.classList.add('active');
+  updateAiContext();
+  setQuickBtns([
+    'Как начать эту встречу?',
+    'Участник уходит в рассуждения',
+    'Участник молчит',
+    'Участник плачет — что делать?',
+    'Как закрыть встречу?',
+  ]);
+};
+
+window.toggleBlock = (id) => {
+  document.getElementById(id)?.classList.toggle('open');
+};
+
+// ─── AI ───
+function updateAiContext(){
+  const ctx = currentMeeting
+    ? `Шаг ${currentStep?.id} · ${currentMeeting.title}`
+    : currentStep ? `Шаг ${currentStep?.id} · ${currentStep?.name}` : 'не выбран';
+  document.getElementById('ai-context').textContent = 'контекст: ' + ctx;
+}
+
+function setQuickBtns(btns){
+  document.getElementById('quick-btns').innerHTML = btns.map(b=>
+    `<button class="quick-btn" onclick="quickAsk('${b}')">${b}</button>`
+  ).join('');
+}
+
+window.quickAsk = (txt) => {
+  document.getElementById('ai-input').value = txt;
+  sendAI();
+};
+
+window.aiKey = (e) => {
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendAI(); }
+};
+
+window.sendAI = async () => {
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  addMsg('user', text);
+
+  // Build system
+  const stepData = currentStep ? JSON.stringify({
+    name: currentStep.name,
+    goal: currentStep.stepGoal,
+    position: currentStep.facilitatorPosition,
+    redFlags: currentStep.redFlags,
+    errors: currentStep.facilitatorErrors,
+    phrases: currentStep.facilitatorPhrases,
+    meeting: currentMeeting ? {title:currentMeeting.title, goal:currentMeeting.goal, blocks:currentMeeting.blocks.map(b=>({title:b.t,body:b.body}))} : null
+  }) : '{}';
+
+  const system = `Ты — AI-ассистент ведущего программы «Восстановление личности».
+Ведущий работает с группой людей в реабилитации. Сейчас он ведёт: ${currentStep?.name || 'не выбрано'}.
+${currentMeeting ? `Конкретная встреча: ${currentMeeting.title}.` : ''}
+
+Данные из методички по текущему шагу:
+${stepData}
+
+Твои задачи:
+• Отвечать на практические вопросы по сценарию встречи
+• Подсказывать конкретные фразы из методички
+• Помогать реагировать на поведение участников (молчание, слёзы, агрессия, уход в рассуждения, диссоциация)
+• Предупреждать об ошибках ведущего
+• Объяснять логику упражнений
+
+Стиль: кратко, конкретно, по делу. Максимум 4-5 предложений. Ссылайся на методичку.`;
+
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'ai-typing';
+  typing.textContent = '...';
+  document.getElementById('ai-msgs').appendChild(typing);
+  document.getElementById('ai-msgs').scrollTop = 9999;
+
+  try {
+    const msgs = [...aiHistory.slice(-10), {role:'user',content:text}];
+    const res = await fetch(PROXY, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system,messages:msgs})
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Нет ответа';
+    document.getElementById('ai-typing')?.remove();
+    addMsg('assistant', reply);
+    aiHistory.push({role:'user',content:text},{role:'assistant',content:reply});
+  } catch(e) {
+    document.getElementById('ai-typing')?.remove();
+    addMsg('assistant','Ошибка соединения.');
+  }
+};
+
+function addMsg(role, text){
+  const el = document.getElementById('ai-msgs');
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role}`;
+  div.textContent = text;
+  el.appendChild(div);
+  el.scrollTop = 9999;
+}
+
+// ─── PARTICIPANTS ───
+async function loadParticipants(){
+  const snap = await getDocs(collection(db,'participants'));
+  const list = document.getElementById('p-list-inner');
+  list.innerHTML = '';
+  const flagsSnap = await getDocs(collection(db,'flags'));
+  const unread = {};
+  flagsSnap.forEach(d => {
+    const f = d.data();
+    if(!f.read) unread[f.participantId] = (unread[f.participantId]||0)+1;
+  });
+  snap.forEach(d => {
+    const data = d.data();
+    const item = document.createElement('div');
+    item.className = 'p-item';
+    item.dataset.uid = d.id;
+    const flags = unread[d.id]||0;
+    item.innerHTML = `
+      <div class="p-name">${data.name}</div>
+      <div class="p-step">Шаг ${data.unlockedStep||1}</div>
+      ${flags ? `<span class="p-flag flag-red">🚩 ${flags}</span>` : `<span class="p-flag flag-green">активен</span>`}
+    `;
+    item.onclick = () => selectParticipant(d.id, data);
+    list.appendChild(item);
+  });
+}
+
+window.showAddParticipant = () => {
+  document.getElementById('p-detail').innerHTML = `
+    <div style="max-width:480px">
+      <div style="font-family:'Spectral',serif;font-size:28px;font-weight:300;color:var(--text);margin-bottom:20px">Новый участник</div>
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Имя участника (логин для входа)</div>
+      <input class="inp" id="new-name" type="text" placeholder="Например: Иван или Иван_К">
+      <button class="btn-unlock" style="margin-top:16px" onclick="createParticipant()">Создать участника</button>
+      <div style="font-size:11px;color:var(--red2);margin-top:10px;display:none" id="add-err"></div>
+    </div>`;
+};
+
+window.createParticipant = async () => {
+  const name = document.getElementById('new-name').value.trim();
+  if(!name) return;
+  const key = name.toLowerCase().replace(/\s+/g,'_');
+  const existing = await getDoc(doc(db,'participants',key));
+  if(existing.exists()){
+    document.getElementById('add-err').textContent = 'Участник с таким именем уже есть';
+    document.getElementById('add-err').style.display = 'block';
+    return;
+  }
+  await setDoc(doc(db,'participants',key),{
+    name, unlockedStep:1, wheelDone:false, createdAt:new Date().toISOString()
+  });
+  await loadParticipants();
+  const snap = await getDoc(doc(db,'participants',key));
+  selectParticipant(key, snap.data());
+};
+
+async function selectParticipant(uid, data){
+  selectedPid = uid;
+  document.querySelectorAll('.p-item').forEach(el => el.classList.toggle('active', el.dataset.uid===uid));
+  const unlocked = data.unlockedStep||1;
+
+  // Load flags
+  let flagsHtml = '';
+  try {
+    const fs = await getDocs(query(collection(db,'flags'),orderBy('createdAt','desc')));
+    const pFlags = [];
+    fs.forEach(d => { if(d.data().participantId===uid) pFlags.push({id:d.id,...d.data()}); });
+    if(pFlags.length){
+      flagsHtml = `
+        <div style="margin-bottom:24px">
+          <div style="font-size:9px;letter-spacing:.15em;color:var(--red2);text-transform:uppercase;margin-bottom:10px">🚩 Сигналы AI (${pFlags.length})</div>
+          ${pFlags.slice(0,8).map(f=>`
+            <div class="flag-card">
+              <div class="flag-card-title">${f.title}</div>
+              <div class="flag-card-body">${f.body}</div>
+              <div class="flag-card-date">${f.createdAt?new Date(f.createdAt).toLocaleString('ru'):''}</div>
+            </div>`).join('')}
+        </div>`;
+    }
+  } catch(e){}
+
+  // Load diary
+  let diaryHtml = '';
+  try {
+    const ds = await getDocs(query(collection(db,'participants',uid,'diary'),orderBy('createdAt','desc'),limit(5)));
+    if(!ds.empty){
+      diaryHtml = `
+        <div style="margin-bottom:24px">
+          <div style="font-size:9px;letter-spacing:.15em;color:var(--text3);text-transform:uppercase;margin-bottom:10px">Последние записи дневника</div>
+          ${[...ds.docs].map(d=>`
+            <div class="diary-entry">
+              <div class="diary-date">${d.data().createdAt?new Date(d.data().createdAt).toLocaleString('ru'):''}</div>
+              <div class="diary-text">${d.data().text||''}</div>
+            </div>`).join('')}
+        </div>`;
+    }
+  } catch(e){}
+
+  const stepsHtml = STEPS.map(s => {
+    const cls = s.id<unlocked?'done':s.id===unlocked?'current':'';
+    const status = s.id<unlocked?'пройден':s.id===unlocked?'текущий':'закрыт';
+    return `<div class="step-tile ${cls}"><div class="tile-num">${s.id}</div><div class="tile-status">${status}</div></div>`;
+  }).join('');
+
+  document.getElementById('p-detail').innerHTML = `
+    <div class="p-detail-name">${data.name}</div>
+    <div class="p-detail-login">логин: ${uid}</div>
+    ${flagsHtml}
+    <div style="margin-bottom:24px">
+      <div style="font-size:9px;letter-spacing:.15em;color:var(--text3);text-transform:uppercase;margin-bottom:10px">Шаги программы</div>
+      <div class="step-grid">${stepsHtml}</div>
+      ${unlocked<STEPS.length ? `<button class="btn-unlock" onclick="unlockNext('${uid}',${unlocked})">Открыть Шаг ${unlocked+1}</button>` : '<div style="color:var(--gold);font-size:11px;margin-top:10px">Программа завершена ✦</div>'}
+    </div>
+    ${diaryHtml}
+  `;
+}
+
+window.unlockNext = async (uid, cur) => {
+  const next = cur+1;
+  await updateDoc(doc(db,'participants',uid),{unlockedStep:next});
+  // AI generates signal questions for next step
+  const step = STEPS.find(s=>s.id===next);
+  if(step){
+    try {
+      const pSnap = await getDoc(doc(db,'participants',uid));
+      const pData = pSnap.data();
+      const scores = pData.wheelScores||{};
+      const weak = ['body','mind','relations','work','money','faith'].filter(a=>(scores[a]||5)<=5);
+      const res = await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:250,
+          messages:[{role:'user',content:`Участник ${pData.name} переходит на Шаг ${next} «${step.name}». Слабые зоны по колесу: ${weak.join(', ')||'нет'}. Составь 3 конкретных сигнальных вопроса для ведущего — что проверить на этом шаге. Только 3 вопроса, каждый с новой строки.`}]})
+      });
+      const d = await res.json();
+      const q = d.content?.[0]?.text||'';
+      await addDoc(collection(db,'flags'),{
+        participantId:uid,participantName:pData.name,
+        title:`Переход на Шаг ${next} — сигнальные вопросы`,
+        body:q,type:'info',createdAt:new Date().toISOString(),read:false
+      });
+    } catch(e){}
+  }
+  const snap = await getDoc(doc(db,'participants',uid));
+  selectParticipant(uid,snap.data());
+  await loadParticipants();
+};
+</script>
+</body>
+</html>
