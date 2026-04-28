@@ -5,672 +5,200 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Восстановление личности</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
-
-  :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface2: #1c1c1c;
-    --border: #2a2a2a;
-    --gold: #c9a84c;
-    --gold2: #e8c97a;
-    --text: #e8e4dc;
-    --text2: #8a8478;
-    --red: #c0392b;
-    --green: #27ae60;
-    --yellow: #f39c12;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-  }
-
-  /* ── SCREENS ── */
-  .screen { display: none; min-height: 100vh; }
-  .screen.active { display: flex; flex-direction: column; }
-
-  /* ── LANDING ── */
-  #screen-landing {
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(ellipse at 50% 0%, #1a1508 0%, var(--bg) 70%);
-  }
-  .landing-inner { text-align: center; padding: 40px 20px; }
-  .landing-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(36px, 8vw, 72px);
-    font-weight: 300;
-    color: var(--gold);
-    letter-spacing: 0.02em;
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
-  .landing-sub {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 60px;
-  }
-  .role-cards {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .role-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 36px 40px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 200px;
-  }
-  .role-card:hover {
-    border-color: var(--gold);
-    background: var(--surface2);
-    transform: translateY(-2px);
-  }
-  .role-icon { font-size: 36px; margin-bottom: 16px; }
-  .role-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .role-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
-
-  /* ── AUTH ── */
-  #screen-auth {
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(ellipse at 50% 0%, #1a1508 0%, var(--bg) 70%);
-  }
-  .auth-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    width: 100%;
-    max-width: 420px;
-    margin: 20px;
-  }
-  .auth-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--gold);
-    margin-bottom: 4px;
-  }
-  .auth-subtitle { font-size: 12px; color: var(--text2); margin-bottom: 28px; }
-  .field-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; margin-top: 16px; }
-  .field-input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .field-input:focus { border-color: var(--gold); }
-  .btn-primary {
-    width: 100%;
-    background: var(--gold);
-    color: #0a0a0a;
-    border: none;
-    border-radius: 8px;
-    padding: 13px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 24px;
-    transition: background 0.2s;
-  }
-  .btn-primary:hover { background: var(--gold2); }
-  .btn-secondary {
-    width: 100%;
-    background: transparent;
-    color: var(--text2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 13px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: all 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
-  .auth-error {
-    background: rgba(192,57,43,0.15);
-    border: 1px solid rgba(192,57,43,0.4);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: #e74c3c;
-    margin-top: 14px;
-    display: none;
-  }
-  .auth-toggle { text-align: center; margin-top: 16px; font-size: 12px; color: var(--text2); }
-  .auth-toggle a { color: var(--gold); cursor: pointer; text-decoration: none; }
-  .auth-toggle a:hover { text-decoration: underline; }
-
-  /* ── APP SHELL ── */
-  .app-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .app-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    color: var(--gold);
-    font-weight: 400;
-  }
-  .app-user { display: flex; align-items: center; gap: 12px; }
-  .app-user-name { font-size: 13px; color: var(--text2); }
-  .btn-logout {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text2);
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-logout:hover { border-color: var(--red); color: var(--red); }
-
-  /* ── FACILITATOR ── */
-  #screen-facilitator { flex-direction: column; }
-  .facilitator-body { flex: 1; display: grid; grid-template-columns: 280px 1fr; overflow: hidden; }
-  .f-sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    padding: 20px 0;
-  }
-  .f-sidebar-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text2); padding: 0 20px 12px; }
-  .participant-item {
-    padding: 12px 20px;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-    transition: all 0.15s;
-  }
-  .participant-item:hover { background: var(--surface2); }
-  .participant-item.active { border-left-color: var(--gold); background: var(--surface2); }
-  .p-name { font-size: 14px; color: var(--text); margin-bottom: 3px; }
-  .p-step { font-size: 11px; color: var(--text2); }
-  .p-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 500;
-    margin-top: 4px;
-  }
-  .badge-green { background: rgba(39,174,96,0.2); color: var(--green); }
-  .badge-yellow { background: rgba(243,156,18,0.2); color: var(--yellow); }
-  .badge-red { background: rgba(192,57,43,0.2); color: var(--red); }
-
-  .f-main { overflow-y: auto; padding: 32px; }
-  .f-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text2); font-size: 14px; }
-
-  .participant-detail { max-width: 700px; }
-  .detail-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .detail-email { font-size: 13px; color: var(--text2); margin-bottom: 28px; }
-
-  .detail-section { margin-bottom: 28px; }
-  .detail-section-title {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .steps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-  .step-tile {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    text-align: center;
-    transition: all 0.15s;
-  }
-  .step-tile.unlocked { border-color: rgba(201,168,76,0.4); }
-  .step-tile.current { border-color: var(--gold); background: rgba(201,168,76,0.08); }
-  .step-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    color: var(--text2);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .step-tile.unlocked .step-num,
-  .step-tile.current .step-num { color: var(--gold); }
-  .step-status { font-size: 10px; color: var(--text2); }
-  .step-tile.current .step-status { color: var(--gold2); }
-
-  .btn-open-step {
-    background: var(--gold);
-    color: #0a0a0a;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 14px;
-    transition: background 0.2s;
-  }
-  .btn-open-step:hover { background: var(--gold2); }
-
-  .answers-list { display: flex; flex-direction: column; gap: 12px; }
-  .answer-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-  .answer-q { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
-  .answer-a { font-size: 14px; color: var(--text); line-height: 1.6; }
-  .answer-date { font-size: 11px; color: var(--text2); margin-top: 6px; }
-
-  /* ── PARTICIPANT ── */
-  #screen-participant { flex-direction: column; }
-  .participant-body { flex: 1; display: grid; grid-template-columns: 240px 1fr; overflow: hidden; }
-  .p-sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    padding: 20px 0;
-  }
-  .p-sidebar-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text2); padding: 0 16px 12px; }
-  .step-nav-item {
-    padding: 10px 16px;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .step-nav-item:hover:not(.locked) { background: var(--surface2); }
-  .step-nav-item.active { border-left-color: var(--gold); background: var(--surface2); }
-  .step-nav-item.locked { opacity: 0.4; cursor: default; }
-  .step-nav-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    color: var(--text2);
-    width: 24px;
-    flex-shrink: 0;
-  }
-  .step-nav-item.active .step-nav-num,
-  .step-nav-item:not(.locked):hover .step-nav-num { color: var(--gold); }
-  .step-nav-info { flex: 1; min-width: 0; }
-  .step-nav-name { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .step-nav-sub { font-size: 10px; color: var(--text2); margin-top: 2px; }
-  .lock-icon { font-size: 12px; color: var(--text2); }
-
-  .p-main { overflow-y: auto; padding: 32px; }
-
-  .step-content { max-width: 680px; }
-  .step-phase-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: rgba(201,168,76,0.15);
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 20px;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-  .step-big-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 300;
-    color: var(--text);
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-  .step-deviz {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 16px;
-    color: var(--text2);
-    margin-bottom: 32px;
-    padding-left: 16px;
-    border-left: 2px solid var(--gold);
-  }
-
-  /* Days tabs */
-  .days-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-  .day-tab {
-    padding: 8px 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .day-tab:hover { border-color: var(--gold); color: var(--text); }
-  .day-tab.active { background: rgba(201,168,76,0.12); border-color: var(--gold); color: var(--gold); }
-  .day-tab.meeting-day { border-color: rgba(201,168,76,0.4); }
-
-  /* Day content */
-  .day-content { display: none; }
-  .day-content.active { display: block; }
-
-  .day-header { margin-bottom: 24px; }
-  .day-type-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-  .badge-meeting { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
-  .badge-self { background: rgba(138,132,120,0.15); color: var(--text2); border: 1px solid var(--border); }
-  .badge-individual { background: rgba(39,174,96,0.15); color: var(--green); border: 1px solid rgba(39,174,96,0.3); }
-
-  .day-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .day-time { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
-  .day-goal {
-    background: var(--surface2);
-    border-left: 3px solid var(--gold);
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.6;
-    margin-bottom: 24px;
-  }
-
-  /* Blocks */
-  .blocks-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
-  .block-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .block-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .block-header:hover { background: rgba(255,255,255,0.03); }
-  .block-title { font-size: 13px; font-weight: 500; color: var(--text); }
-  .block-dur { font-size: 11px; color: var(--gold); }
-  .block-body {
-    padding: 0 16px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.7;
-  }
-  .block-item.open .block-body { max-height: 400px; padding: 0 16px 16px; }
-  .block-chevron { font-size: 12px; color: var(--text2); transition: transform 0.2s; }
-  .block-item.open .block-chevron { transform: rotate(180deg); }
-
-  /* Monitor */
-  .monitor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
-  .monitor-card {
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  .monitor-green { background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.25); }
-  .monitor-yellow { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.25); }
-  .monitor-red { background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.25); }
-  .monitor-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .monitor-green .monitor-label { color: var(--green); }
-  .monitor-yellow .monitor-label { color: var(--yellow); }
-  .monitor-red .monitor-label { color: var(--red); }
-
-  /* Prayers */
-  .prayer-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
-  .prayer-item {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 14px;
-    background: var(--surface2);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.5;
-  }
-  .prayer-item::before { content: '✦'; color: var(--gold); font-size: 10px; margin-top: 3px; flex-shrink: 0; }
-
-  /* Homework */
-  .hw-list { display: flex; flex-direction: column; gap: 8px; }
-  .hw-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .hw-item:hover { border-color: var(--gold); }
-  .hw-item.done { opacity: 0.5; text-decoration: line-through; }
-  .hw-check {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--border);
-    border-radius: 4px;
-    flex-shrink: 0;
-    margin-top: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    transition: all 0.15s;
-  }
-  .hw-item.done .hw-check { background: var(--gold); border-color: var(--gold); color: #0a0a0a; }
-
-  /* Scripture */
-  .scripture-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-  .scripture-btn {
-    padding: 8px 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .scripture-btn:hover { border-color: var(--gold); color: var(--gold); }
-
-  .scripture-result {
-    background: var(--surface2);
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 10px;
-    padding: 20px;
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.8;
-    margin-top: 14px;
-    display: none;
-  }
-  .scripture-loading { color: var(--text2); font-style: italic; }
-
-  /* Section headers */
-  .section-h {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* Wheel */
-  .wheel-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-  canvas#wheel { width: 100%; max-width: 260px; }
-  .wheel-sliders { display: flex; flex-direction: column; gap: 10px; }
-  .slider-row { display: flex; flex-direction: column; gap: 4px; }
-  .slider-label { display: flex; justify-content: space-between; font-size: 12px; }
-  .slider-name { color: var(--text2); }
-  .slider-val { color: var(--gold); font-weight: 500; }
-  input[type=range] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--gold);
-    cursor: pointer;
-  }
-
-  /* Diary */
-  .diary-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-  .diary-textarea {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    resize: vertical;
-    min-height: 100px;
-    transition: border-color 0.2s;
-  }
-  .diary-textarea:focus { border-color: var(--gold); }
-  .btn-save-diary {
-    align-self: flex-end;
-    background: var(--gold);
-    color: #0a0a0a;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-save-diary:hover { background: var(--gold2); }
-  .diary-entries { display: flex; flex-direction: column; gap: 10px; }
-  .diary-entry {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-  }
-  .diary-entry-date { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
-  .diary-entry-text { font-size: 13px; color: var(--text); line-height: 1.7; }
-
-  /* Loading */
-  .loader {
-    display: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .f-tab-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text2);
-    border-radius: 6px;
-    padding: 6px 14px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .f-tab-btn.active { background: var(--gold); color: #0a0a0a; border-color: var(--gold); }
-  .f-tab-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
-
-  /* Utility */
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
-  .mt-24 { margin-top: 24px; }
-  .mb-16 { margin-bottom: 16px; }
-
-  @media (max-width: 768px) {
-    .facilitator-body,
-    .participant-body { grid-template-columns: 1fr; }
-    .f-sidebar,
-    .p-sidebar { display: none; }
-    .monitor-grid { grid-template-columns: 1fr; }
-    .wheel-wrap { grid-template-columns: 1fr; }
-  }
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--gold:#c9a84c;--gold2:#e8c97a;--text:#e8e4dc;--text2:#8a8478;--red:#c0392b;--green:#27ae60;--yellow:#f39c12;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+/* LANDING */
+#screen-landing{align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0%,#1a1508 0%,var(--bg) 70%);}
+.landing-inner{text-align:center;padding:40px 20px;}
+.landing-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,8vw,72px);font-weight:300;color:var(--gold);letter-spacing:.02em;line-height:1.1;margin-bottom:8px;}
+.landing-sub{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text2);margin-bottom:60px;}
+.role-cards{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:36px 40px;cursor:pointer;transition:all .2s;width:200px;}
+.role-card:hover{border-color:var(--gold);background:var(--surface2);transform:translateY(-2px);}
+.role-icon{font-size:36px;margin-bottom:16px;}
+.role-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);margin-bottom:6px;}
+.role-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+/* AUTH */
+#screen-auth{align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0%,#1a1508 0%,var(--bg) 70%);}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;width:100%;max-width:420px;margin:20px;}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);margin-bottom:4px;}
+.auth-subtitle{font-size:12px;color:var(--text2);margin-bottom:28px;}
+.field-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;margin-top:16px;}
+.field-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.field-input:focus{border-color:var(--gold);}
+.btn-primary{width:100%;background:var(--gold);color:#0a0a0a;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;margin-top:24px;transition:background .2s;}
+.btn-primary:hover{background:var(--gold2);}
+.btn-secondary{width:100%;background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;cursor:pointer;margin-top:10px;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.auth-error{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:8px;padding:10px 14px;font-size:13px;color:#e74c3c;margin-top:14px;display:none;}
+/* HEADER */
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.app-logo{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:var(--red);color:var(--red);}
+.f-tab-btn{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;transition:all .15s;margin-left:4px;}
+.f-tab-btn.active{background:var(--gold);color:#0a0a0a;border-color:var(--gold);}
+/* FACILITATOR */
+#screen-facilitator{flex-direction:column;}
+.facilitator-body{flex:1;display:grid;grid-template-columns:280px 1fr;overflow:hidden;height:calc(100vh - 56px);}
+.f-sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:20px 0;}
+.f-sidebar-title{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);padding:0 20px 12px;}
+.participant-item{padding:12px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.participant-item:hover{background:var(--surface2);}
+.participant-item.active{border-left-color:var(--gold);background:var(--surface2);}
+.p-name{font-size:14px;color:var(--text);margin-bottom:3px;}
+.p-step{font-size:11px;color:var(--text2);}
+.p-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:500;margin-top:4px;}
+.badge-green{background:rgba(39,174,96,.2);color:var(--green);}
+.badge-red{background:rgba(192,57,43,.2);color:var(--red);}
+.f-main{overflow-y:auto;padding:32px;}
+.f-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text2);}
+/* FLAG */
+.flag-card{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.3);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.flag-title{font-size:12px;font-weight:600;color:var(--red);margin-bottom:4px;}
+.flag-body{font-size:13px;color:var(--text);line-height:1.6;}
+.flag-date{font-size:11px;color:var(--text2);margin-top:4px;}
+.flag-unread{border-color:var(--red);background:rgba(192,57,43,.15);}
+/* PARTICIPANT */
+#screen-participant{flex-direction:column;}
+.participant-body{flex:1;display:grid;grid-template-columns:240px 1fr;overflow:hidden;height:calc(100vh - 56px);}
+.p-sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:20px 0;}
+.p-sidebar-title{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);padding:0 16px 12px;}
+.step-nav-item{padding:10px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;display:flex;align-items:center;gap:10px;}
+.step-nav-item:hover:not(.locked){background:var(--surface2);}
+.step-nav-item.active{border-left-color:var(--gold);background:var(--surface2);}
+.step-nav-item.locked{opacity:.4;cursor:default;}
+.step-nav-num{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--text2);width:24px;}
+.step-nav-item.active .step-nav-num{color:var(--gold);}
+.step-nav-name{font-size:12px;color:var(--text);}
+.step-nav-sub{font-size:10px;color:var(--text2);margin-top:2px;}
+.p-main{overflow-y:auto;padding:32px;}
+/* WHEEL SCREEN */
+#screen-wheel{align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0%,#1a1508 0%,var(--bg) 70%);padding:40px 20px;}
+.wheel-screen-inner{max-width:680px;width:100%;}
+.wheel-screen-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);margin-bottom:8px;}
+.wheel-screen-sub{font-size:13px;color:var(--text2);margin-bottom:32px;line-height:1.6;}
+/* AI CHAT */
+#screen-ai{flex-direction:column;}
+.ai-body{flex:1;display:flex;flex-direction:column;max-width:720px;margin:0 auto;width:100%;padding:24px 24px 0;}
+.ai-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-bottom:16px;}
+.ai-msg{padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.7;max-width:85%;}
+.ai-msg.ai{background:var(--surface);border:1px solid var(--border);align-self:flex-start;}
+.ai-msg.user{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);align-self:flex-end;}
+.ai-msg.system{background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.2);align-self:center;font-size:12px;color:var(--text2);text-align:center;max-width:100%;}
+.ai-input-row{display:flex;gap:10px;padding:16px 0 24px;}
+.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:48px;max-height:120px;}
+.ai-input:focus{border-color:var(--gold);}
+.ai-send{background:var(--gold);color:#0a0a0a;border:none;border-radius:8px;padding:12px 20px;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;}
+.ai-send:hover{background:var(--gold2);}
+.ai-typing{color:var(--text2);font-style:italic;font-size:13px;padding:8px 0;}
+/* STEP CONTENT */
+.step-content{max-width:680px;}
+.step-phase-badge{display:inline-block;padding:4px 12px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:20px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.step-big-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--text);line-height:1.2;margin-bottom:6px;}
+.step-deviz{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text2);margin-bottom:32px;padding-left:16px;border-left:2px solid var(--gold);}
+.days-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.day-tab{padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;}
+.day-tab:hover{border-color:var(--gold);color:var(--text);}
+.day-tab.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold);}
+.day-tab.meeting-day{border-color:rgba(201,168,76,.4);}
+.day-content{display:none;}
+.day-content.active{display:block;}
+.day-type-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:500;margin-bottom:8px;}
+.badge-meeting{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);}
+.badge-self{background:rgba(138,132,120,.15);color:var(--text2);border:1px solid var(--border);}
+.badge-individual{background:rgba(39,174,96,.15);color:var(--green);border:1px solid rgba(39,174,96,.3);}
+.day-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--text);margin-bottom:4px;}
+.day-time{font-size:12px;color:var(--text2);margin-bottom:16px;}
+.day-goal{background:var(--surface2);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:24px;}
+.block-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;}
+.block-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;}
+.block-header:hover{background:rgba(255,255,255,.03);}
+.block-title{font-size:13px;font-weight:500;color:var(--text);}
+.block-dur{font-size:11px;color:var(--gold);}
+.block-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line;}
+.block-item.open .block-body{max-height:500px;padding:0 16px 16px;}
+.block-chevron{font-size:12px;color:var(--text2);transition:transform .2s;}
+.block-item.open .block-chevron{transform:rotate(180deg);}
+.monitor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.monitor-card{border-radius:10px;padding:14px;font-size:12px;line-height:1.5;}
+.monitor-green{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.25);}
+.monitor-yellow{background:rgba(243,156,18,.1);border:1px solid rgba(243,156,18,.25);}
+.monitor-red{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.25);}
+.monitor-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.monitor-green .monitor-label{color:var(--green);}
+.monitor-yellow .monitor-label{color:var(--yellow);}
+.monitor-red .monitor-label{color:var(--red);}
+.prayer-item{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:8px;}
+.prayer-item::before{content:'✦';color:var(--gold);font-size:10px;margin-top:3px;flex-shrink:0;}
+.hw-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s;margin-bottom:8px;}
+.hw-item:hover{border-color:var(--gold);}
+.hw-item.done{opacity:.5;text-decoration:line-through;}
+.hw-check{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.hw-item.done .hw-check{background:var(--gold);border-color:var(--gold);color:#0a0a0a;}
+.scripture-btn{padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;margin-right:8px;margin-bottom:8px;}
+.scripture-btn:hover{border-color:var(--gold);color:var(--gold);}
+.scripture-result{background:var(--surface2);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:20px;font-size:13px;color:var(--text);line-height:1.8;margin-top:14px;display:none;}
+.section-h{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.detail-section{margin-bottom:28px;}
+.detail-section-title{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+/* WHEEL */
+.wheel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+.wheel-sliders{display:flex;flex-direction:column;gap:10px;}
+.slider-row{display:flex;flex-direction:column;gap:4px;}
+.slider-label{display:flex;justify-content:space-between;font-size:12px;}
+.slider-name{color:var(--text2);}
+.slider-val{color:var(--gold);font-weight:500;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer;}
+/* DIARY */
+.diary-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;resize:vertical;min-height:100px;}
+.diary-textarea:focus{border-color:var(--gold);}
+.btn-save-diary{background:var(--gold);color:#0a0a0a;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;margin-top:10px;}
+.diary-entry{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+.diary-entry-date{font-size:11px;color:var(--text2);margin-bottom:6px;}
+.diary-entry-text{font-size:13px;color:var(--text);line-height:1.7;}
+/* QUESTIONNAIRE */
+.quest-screen{max-width:580px;margin:0 auto;width:100%;padding:40px 20px;}
+.quest-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--gold);margin-bottom:8px;}
+.quest-sub{font-size:13px;color:var(--text2);margin-bottom:32px;line-height:1.6;}
+.quest-q{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.quest-q-text{font-size:14px;color:var(--text);margin-bottom:14px;line-height:1.6;}
+.quest-q-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:vertical;min-height:70px;}
+.quest-q-area:focus{border-color:var(--gold);}
+.quest-scale{display:flex;gap:8px;margin-top:8px;}
+.scale-btn{flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;text-align:center;transition:all .15s;color:var(--text2);}
+.scale-btn:hover{border-color:var(--gold);}
+.scale-btn.selected{background:var(--gold);border-color:var(--gold);color:#0a0a0a;font-weight:600;}
+/* STEPS GRID */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-bottom:16px;}
+.step-tile{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.step-tile.unlocked{border-color:rgba(201,168,76,.4);}
+.step-tile.current{border-color:var(--gold);background:rgba(201,168,76,.08);}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text2);line-height:1;margin-bottom:4px;}
+.step-tile.unlocked .step-num,.step-tile.current .step-num{color:var(--gold);}
+.step-status{font-size:10px;color:var(--text2);}
+.btn-open-step{background:var(--gold);color:#0a0a0a;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;margin-top:14px;}
+.detail-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--text);margin-bottom:4px;}
+.detail-email{font-size:13px;color:var(--text2);margin-bottom:20px;}
+.answer-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;}
+.answer-a{font-size:14px;color:var(--text);line-height:1.6;}
+.answer-date{font-size:11px;color:var(--text2);margin-top:6px;}
+/* NAV BOTTOM (participant) */
+.p-bottom-nav{display:flex;gap:4px;padding:8px 16px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.p-nav-btn{flex:1;background:transparent;border:none;color:var(--text2);padding:8px 4px;font-size:11px;cursor:pointer;border-radius:6px;transition:all .15s;text-align:center;}
+.p-nav-btn:hover,.p-nav-btn.active{background:rgba(201,168,76,.1);color:var(--gold);}
+.p-nav-icon{font-size:18px;display:block;margin-bottom:2px;}
+@media(max-width:768px){.facilitator-body,.participant-body{grid-template-columns:1fr;}.f-sidebar,.p-sidebar{display:none;}.monitor-grid{grid-template-columns:1fr;}.wheel-wrap{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<!-- ═══ LANDING ═══ -->
+<!-- LANDING -->
 <div id="screen-landing" class="screen active">
   <div class="landing-inner">
     <div class="landing-title">Восстановление<br>личности</div>
@@ -690,71 +218,59 @@
   </div>
 </div>
 
-<!-- ═══ AUTH ═══ -->
+<!-- AUTH -->
 <div id="screen-auth" class="screen">
   <div class="auth-box">
     <div class="auth-title" id="auth-title">Ведущий</div>
     <div class="auth-subtitle" id="auth-subtitle">Введите пароль</div>
-
-    <!-- Поле имени — только для участника -->
     <div id="participant-name-field" style="display:none">
       <div class="field-label">Ваше имя</div>
       <input class="field-input" id="auth-name" type="text" placeholder="Введите имя">
     </div>
-
-    <!-- Пароль — только для ведущего -->
     <div id="facilitator-password-field" style="display:none">
       <div class="field-label">Пароль ведущего</div>
       <input class="field-input" id="auth-password" type="password" placeholder="••••••••">
     </div>
-
-    <button class="btn-primary" id="auth-btn" onclick="doAuth()">Войти</button>
+    <button class="btn-primary" onclick="doAuth()">Войти</button>
     <div class="auth-error" id="auth-error"></div>
     <button class="btn-secondary" onclick="showScreen('screen-landing')">← Назад</button>
   </div>
 </div>
 
-<!-- ═══ FACILITATOR ═══ -->
-<div id="screen-facilitator" class="screen">
+<!-- WHEEL ONBOARDING -->
+<div id="screen-wheel" class="screen">
+  <div class="wheel-screen-inner">
+    <div class="wheel-screen-title">Колесо баланса</div>
+    <div class="wheel-screen-sub" id="wheel-onboard-sub">Прежде чем начать — ответь честно на несколько вопросов. Это займёт 5 минут и поможет нам понять где ты сейчас.</div>
+    <div id="wheel-questions-container"></div>
+    <button class="btn-primary" id="wheel-submit-btn" onclick="submitWheelQuestionnaire()" style="display:none">Сохранить и начать программу</button>
+  </div>
+</div>
+
+<!-- AI CHAT -->
+<div id="screen-ai" class="screen">
   <div class="app-header">
     <div class="app-logo">Восстановление личности</div>
-    <div style="display:flex;gap:16px;align-items:center">
-      <div style="display:flex;gap:4px">
-        <button class="f-tab-btn active" id="tab-participants" onclick="switchFTab('participants')">Участники</button>
-        <button class="f-tab-btn" id="tab-program" onclick="switchFTab('program')">Программа</button>
-      </div>
-      <span class="app-user-name" id="f-user-name"></span>
-      <button class="btn-logout" onclick="logout()">Выйти</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:13px;color:var(--text2)" id="ai-user-name"></span>
+      <button class="btn-logout" onclick="backToParticipant()">← Назад</button>
     </div>
   </div>
-  <!-- Вкладка участники -->
-  <div id="ftab-participants" class="facilitator-body">
-    <div class="f-sidebar">
-      <div class="f-sidebar-title">Участники</div>
-      <div id="participants-list"></div>
-    </div>
-    <div class="f-main" id="f-main">
-      <div class="f-empty">← Выберите участника</div>
-    </div>
-  </div>
-  <!-- Вкладка программа -->
-  <div id="ftab-program" class="participant-body" style="display:none;flex:1">
-    <div class="p-sidebar">
-      <div class="p-sidebar-title">Шаги программы</div>
-      <div id="f-steps-nav"></div>
-    </div>
-    <div class="p-main" id="f-program-main">
-      <div class="f-empty">← Выберите шаг</div>
+  <div class="ai-body">
+    <div class="ai-messages" id="ai-messages"></div>
+    <div class="ai-input-row">
+      <textarea class="ai-input" id="ai-input" placeholder="Напиши что думаешь или чувствуешь..." onkeydown="aiKeydown(event)" rows="1"></textarea>
+      <button class="ai-send" onclick="sendAiMessage()">Отправить</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ PARTICIPANT ═══ -->
+<!-- PARTICIPANT -->
 <div id="screen-participant" class="screen">
   <div class="app-header">
     <div class="app-logo">Восстановление личности</div>
-    <div class="app-user">
-      <span class="app-user-name" id="p-user-name"></span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:13px;color:var(--text2)" id="p-user-name"></span>
       <button class="btn-logout" onclick="logout()">Выйти</button>
     </div>
   </div>
@@ -762,6 +278,9 @@
     <div class="p-sidebar">
       <div class="p-sidebar-title">Шаги программы</div>
       <div id="steps-nav"></div>
+      <div style="padding:16px;border-top:1px solid var(--border);margin-top:16px;">
+        <button class="btn-primary" style="font-size:12px;padding:10px" onclick="openAiChat()">💬 Поговорить с AI</button>
+      </div>
     </div>
     <div class="p-main" id="p-main">
       <div class="f-empty">← Выберите шаг</div>
@@ -769,579 +288,489 @@
   </div>
 </div>
 
-<!-- ═══ FIREBASE ═══ -->
+<!-- FACILITATOR -->
+<div id="screen-facilitator" class="screen">
+  <div class="app-header">
+    <div class="app-logo">Восстановление личности</div>
+    <div style="display:flex;gap:4px;align-items:center">
+      <button class="f-tab-btn active" id="tab-participants" onclick="switchFTab('participants')">Участники</button>
+      <button class="f-tab-btn" id="tab-program" onclick="switchFTab('program')">Программа</button>
+      <button class="btn-logout" style="margin-left:12px" onclick="logout()">Выйти</button>
+    </div>
+  </div>
+  <div id="ftab-participants" class="facilitator-body">
+    <div class="f-sidebar">
+      <div class="f-sidebar-title">Участники</div>
+      <div id="participants-list"></div>
+    </div>
+    <div class="f-main" id="f-main"><div class="f-empty">← Выберите участника</div></div>
+  </div>
+  <div id="ftab-program" class="facilitator-body" style="display:none">
+    <div class="f-sidebar">
+      <div class="f-sidebar-title" style="padding:0 20px 12px">Шаги</div>
+      <div id="f-steps-nav"></div>
+    </div>
+    <div class="f-main" id="f-program-main"><div class="f-empty">← Выберите шаг</div></div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, orderBy, where }
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, orderBy, limit }
   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCQpE2Ikt2V_V-Y5UB_cYV6SaZVWFM3ccs",
-  authDomain: "rehab-lichnost.firebaseapp.com",
-  projectId: "rehab-lichnost",
-  storageBucket: "rehab-lichnost.firebasestorage.app",
-  messagingSenderId: "636670167685",
-  appId: "1:636670167685:web:3c3ba6a792326a7e0677ec"
+  apiKey:"AIzaSyCQpE2Ikt2V_V-Y5UB_cYV6SaZVWFM3ccs",
+  authDomain:"rehab-lichnost.firebaseapp.com",
+  projectId:"rehab-lichnost",
+  storageBucket:"rehab-lichnost.firebasestorage.app",
+  messagingSenderId:"636670167685",
+  appId:"1:636670167685:web:3c3ba6a792326a7e0677ec"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ─── PROGRAM DATA ───
+// ═══ PROGRAM DATA ═══
 const STEPS = [
-  { id:1, name:'Честность', theme:'Правда о себе без грима', phase:'ФАЗА 1 — ПРОБУЖДЕНИЕ',
-    deviz:'Правда больнее иллюзии, но только правда лечит',
-    scriptures:['Ин 15:15','Ин 8:32','Пс 31','Пс 50'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Правда о себе без грима',
-        time:'105 мин · групповая встреча',
-        goal:'Вывести участников из самообмана. Создать безопасную рамку для честности.',
-        blocks:[
-          {t:'Вход и рамка',dur:'10 мин',body:'Объяснить правила группы. Сегодня не нужно выглядеть лучше чем есть. Правила: говорим о себе, не перебиваем, не стыдим, можно взять паузу.'},
-          {t:'Чек-ин',dur:'10 мин',body:'Каждый отвечает: 1) С каким состоянием я пришёл? 2) Что мне сейчас труднее всего признать?'},
-          {t:'Мини-лекция',dur:'15 мин',body:'Почему зависимость питается ложью. Отрицание, минимизация, рационализация, перенос вины. Фраза: «Ложь — не потому что ты чудовище. Ложь — потому что зависимость не живёт на свету».'},
-          {t:'Писание',dur:'15 мин',body:'Ин 15:15 и Ин 8:32. Раб скрывает — друг открывается. Правда освобождает. Не делать проповедь — вернуть текст в жизнь.'},
-          {t:'Практика: Моя реальность без грима',dur:'20 мин',body:'Письменно — конкретно, фактами:\n• Когда я понял что теряю контроль?\n• Что я скрывал от других?\n• Что я скрывал от себя?\n• Что уже разрушено?'},
-          {t:'Практика: Цена самообмана',dur:'15 мин',body:'Таблица по сферам: тело, психика, отношения, работа, деньги, вера. Помочь увидеть цену предметно.'},
-          {t:'Завершение',dur:'5 мин',body:'3 медленных выдоха. Почувствовать стопы. Сказать: «Я здесь. Я жив. Мне не нужно решить всю жизнь сегодня».'},
-        ],
-        prayers:['За смелость сказать правду — себе и Богу','Против духа осуждения в группе','За безопасность и доверие в пространстве'],
-        monitor:{green:'Говорит конкретно. Называет факты. Не оправдывается.',yellow:'Уходит в умные рассуждения. Частично честен.',red:'Живёт в тумане. Полное отрицание.'},
-        homework:['Лист честности — 10 вопросов из тетради','Один честный разговор с близким человеком','Пс 31 или Пс 50 — прочитать и записать отклик'],
-      },
-      { d:2, type:'self', label:'День 2', title:'Самообман — конкретно',
-        time:'Самостоятельная работа',
-        goal:'Углубить понимание форм самообмана. Перейти от общих слов к конкретным эпизодам.',
-        blocks:[
-          {t:'Утренний чек-ин',dur:'10 мин',body:'Письменно: Когда вчера я хотел соврать или исчезнуть? Что чувствовал? Что сделал? Что было бы честнее?'},
-          {t:'Работа с тетрадью',dur:'30 мин',body:'Раздел «Мои формы самообмана». Отрицание, минимизация, рационализация, перенос вины — найди конкретные примеры из своей жизни.'},
-          {t:'Молитва',dur:'10 мин',body:'Открытая молитва честности: рассказать Богу один конкретный случай самообмана без оправданий.'},
-        ],
-        prayers:['О силе честности перед собой','О доверии к Богу в момент открытости'],
-        monitor:{green:'Находит конкретные примеры.',yellow:'Описывает общее без деталей.',red:'Не может привести ни одного примера.'},
-        homework:['Заполнить раздел тетради «Цена самообмана»'],
-      },
-      { d:3, type:'self', label:'День 3', title:'Что я прячу',
-        time:'Самостоятельная работа',
-        goal:'Выйти на конкретные зоны утаивания.',
-        blocks:[
-          {t:'Три зоны',dur:'20 мин',body:'Письменно: Что я прячу от Бога? От других? От себя? По каждому пункту — конкретный факт, не ощущение.'},
-          {t:'Письмо',dur:'20 мин',body:'Написать письмо себе — тому, кем хотел бы быть. Без идеализации — честно.'},
-        ],
-        prayers:['О смелости выйти из укрытия','Против стыда который ведёт к изоляции'],
-        monitor:{green:'Называет конкретные факты.',yellow:'Говорит абстрактно.',red:'Не хочет или не может заходить в эту зону.'},
-        homework:['Дочитать раздел о честности в тетради'],
-      },
-      { d:4, type:'individual', label:'День 4 · Индив.', title:'Индивидуальная встреча',
-        time:'45–60 мин · с ведущим',
-        goal:'Углубить честность в безопасном контакте один на один.',
-        blocks:[
-          {t:'Открытие',dur:'10 мин',body:'Что было самым трудным за эти дни? Что хотел избежать?'},
-          {t:'Разбор тетради',dur:'20 мин',body:'Просмотреть заполненные разделы. Задать вопросы по конкретным фактам. Не оценивать — уточнять.'},
-          {t:'Вопрос в глубину',dur:'15 мин',body:'«Есть что-то, о чём ты ещё не сказал — ни мне, ни себе?» Держать паузу. Не торопить.'},
-          {t:'Домашнее задание',dur:'5 мин',body:'Договориться о конкретном задании до групповой встречи.'},
-        ],
-        prayers:['О мудрости ведущего','О безопасности и открытости участника'],
-        monitor:{green:'Говорит о конкретных фактах. Не защищается.',yellow:'Частично открыт.',red:'Закрыт. Отвечает формально.'},
-        homework:['Выполнить договорённое задание'],
-      },
-      { d:5, type:'self', label:'День 5', title:'Честность с Богом',
-        time:'Самостоятельная работа',
-        goal:'Перенести честность в измерение отношений с Богом.',
-        blocks:[
-          {t:'Псалом 31',dur:'15 мин',body:'Прочитать медленно. Найти фразу которая резонирует. Записать почему.'},
-          {t:'Разговор с Богом',dur:'20 мин',body:'Написать письмо Богу — как другу. Без религиозных формул. Только факты и чувства.'},
-        ],
-        prayers:['О доверии к Богу как к Другу','О снятии страха быть отвергнутым'],
-        monitor:{green:'Пишет конкретно и лично.',yellow:'Уходит в религиозные клише.',red:'Не может обратиться к Богу напрямую.'},
-        homework:['Перечитать письмо и подчеркнуть самое честное предложение'],
-      },
-      { d:6, type:'self', label:'День 6', title:'Инвентаризация',
-        time:'Самостоятельная работа',
-        goal:'Составить честный список ущерба от самообмана по всем сферам.',
-        blocks:[
-          {t:'Таблица ущерба',dur:'30 мин',body:'По сферам: тело, психика, отношения, работа, деньги, вера. Конкретные факты — не оценки.'},
-          {t:'Благодарность',dur:'10 мин',body:'Найти 3 факта за которые можно быть благодарным несмотря ни на что.'},
-        ],
-        prayers:['О принятии реальности без осуждения себя'],
-        monitor:{green:'Таблица заполнена конкретно.',yellow:'Общие слова без фактов.',red:'Таблица пустая.'},
-        homework:['Подготовиться к итоговой встрече — что хочу сказать группе'],
-      },
-      { d:7, type:'meeting', label:'День 7 · Встреча Б', title:'Итог первого шага',
-        time:'90 мин · групповая встреча',
-        goal:'Подвести итог шага. Отметить движение. Перейти к следующему шагу.',
-        blocks:[
-          {t:'Чек-ин',dur:'10 мин',body:'Каждый: что изменилось за эту неделю? Одним конкретным фактом.'},
-          {t:'Свидетельства',dur:'25 мин',body:'Каждый делится: что было самым трудным? Что открылось? Не духовные отчёты — живые факты.'},
-          {t:'Писание',dur:'15 мин',body:'2 Кор 5:19-21. Примирение как основа восстановления.'},
-          {t:'Молитва шага',dur:'10 мин',body:'«Господь, я больше не вру о своём состоянии. Помоги выйти из хаоса».'},
-          {t:'Переход',dur:'10 мин',body:'Объяснить Шаг 2. Что ждёт впереди.'},
-        ],
-        prayers:['За каждого участника по имени','За смелость продолжать'],
-        monitor:{green:'Говорит конкретно. Видна динамика.',yellow:'Формальное участие.',red:'Не изменилось ничего или регресс.'},
-        homework:['Прочитать введение в Шаг 2 в тетради'],
-      },
-    ]
+  {id:1,name:'Честность',theme:'Правда о себе без грима',phase:'ФАЗА 1 — ПРОБУЖДЕНИЕ',
+   deviz:'Правда больнее иллюзии, но только правда лечит',
+   scriptures:['Ин 15:15','Ин 8:32','Пс 31','Пс 50'],
+   days:[
+    {d:1,type:'meeting',label:'День 1 · Встреча А',title:'Правда о себе без грима',time:'105 мин · групповая встреча',
+     goal:'Вывести участников из самообмана. Создать безопасную рамку для честности.',
+     blocks:[
+      {t:'Вход и рамка',dur:'10 мин',body:'Объяснить правила группы. Сегодня не нужно выглядеть лучше чем есть. Правила: говорим о себе, не перебиваем, не стыдим, можно взять паузу.'},
+      {t:'Чек-ин',dur:'10 мин',body:'Каждый отвечает: 1) С каким состоянием я пришёл? 2) Что мне сейчас труднее всего признать?'},
+      {t:'Мини-лекция',dur:'15 мин',body:'Почему зависимость питается ложью. Отрицание, минимизация, рационализация, перенос вины.\n«Ложь — не потому что ты чудовище. Ложь — потому что зависимость не живёт на свету».'},
+      {t:'Писание',dur:'15 мин',body:'Ин 15:15 и Ин 8:32. Раб скрывает — друг открывается. Правда освобождает. Не делать проповедь — вернуть текст в жизнь.'},
+      {t:'Практика: Моя реальность без грима',dur:'20 мин',body:'Письменно — конкретно, фактами:\n• Когда я понял что теряю контроль?\n• Что я скрывал от других?\n• Что я скрывал от себя?\n• Что уже разрушено?'},
+      {t:'Практика: Цена самообмана',dur:'15 мин',body:'Таблица по сферам: тело, психика, отношения, работа, деньги, вера. Помочь увидеть цену предметно.'},
+      {t:'Завершение',dur:'5 мин',body:'3 медленных выдоха. Почувствовать стопы. «Я здесь. Я жив. Мне не нужно решить всю жизнь сегодня».'},
+     ],
+     monitor:{green:'Говорит конкретно. Называет факты. Не оправдывается.',yellow:'Уходит в умные рассуждения. Частично честен.',red:'Живёт в тумане. Полное отрицание.'},
+     prayers:['За смелость сказать правду — себе и Богу','Против духа осуждения в группе','За безопасность и доверие'],
+     homework:['Лист честности — 10 вопросов из тетради','Один честный разговор с близким','Пс 31 или Пс 50 — прочитать и записать отклик'],
+    },
+    {d:2,type:'self',label:'День 2',title:'Самообман — конкретно',time:'Самостоятельная работа',
+     goal:'Перейти от общих слов к конкретным эпизодам.',
+     blocks:[
+      {t:'Утренний чек-ин',dur:'10 мин',body:'Письменно: Когда вчера я хотел соврать или исчезнуть? Что чувствовал? Что сделал?'},
+      {t:'Работа с тетрадью',dur:'30 мин',body:'Раздел «Мои формы самообмана». Найди конкретные примеры из своей жизни.'},
+      {t:'Молитва',dur:'10 мин',body:'Открытая молитва честности: рассказать Богу один конкретный случай самообмана без оправданий.'},
+     ],
+     monitor:{green:'Находит конкретные примеры.',yellow:'Описывает общее без деталей.',red:'Не может привести ни одного примера.'},
+     prayers:['О силе честности перед собой','О доверии к Богу'],
+     homework:['Заполнить раздел тетради «Цена самообмана»'],
+    },
+    {d:3,type:'self',label:'День 3',title:'Что я прячу',time:'Самостоятельная работа',
+     goal:'Выйти на конкретные зоны утаивания.',
+     blocks:[
+      {t:'Три зоны',dur:'20 мин',body:'Письменно: Что я прячу от Бога? От других? От себя? По каждому — конкретный факт.'},
+      {t:'Письмо себе',dur:'20 мин',body:'Написать письмо себе — тому, кем хотел бы быть. Без идеализации — честно.'},
+     ],
+     monitor:{green:'Называет конкретные факты.',yellow:'Говорит абстрактно.',red:'Не хочет заходить в эту зону.'},
+     prayers:['О смелости выйти из укрытия','Против стыда который ведёт к изоляции'],
+     homework:['Дочитать раздел о честности в тетради'],
+    },
+    {d:4,type:'individual',label:'День 4 · Индив.',title:'Индивидуальная встреча',time:'45–60 мин · с ведущим',
+     goal:'Углубить честность в безопасном контакте один на один.',
+     blocks:[
+      {t:'Открытие',dur:'10 мин',body:'Что было самым трудным за эти дни? Что хотел избежать?'},
+      {t:'Разбор тетради',dur:'20 мин',body:'Просмотреть заполненные разделы. Задавать вопросы по конкретным фактам. Не оценивать — уточнять.'},
+      {t:'Вопрос в глубину',dur:'15 мин',body:'«Есть что-то о чём ты ещё не сказал — ни мне, ни себе?» Держать паузу. Не торопить.'},
+      {t:'ДЗ',dur:'5 мин',body:'Договориться о конкретном задании до групповой встречи.'},
+     ],
+     monitor:{green:'Говорит о конкретных фактах. Не защищается.',yellow:'Частично открыт.',red:'Закрыт. Отвечает формально.'},
+     prayers:['О мудрости ведущего','О безопасности участника'],
+     homework:['Выполнить договорённое задание'],
+    },
+    {d:5,type:'self',label:'День 5',title:'Честность с Богом',time:'Самостоятельная работа',
+     goal:'Перенести честность в измерение отношений с Богом.',
+     blocks:[
+      {t:'Псалом 31',dur:'15 мин',body:'Прочитать медленно. Найти фразу которая резонирует. Записать почему.'},
+      {t:'Письмо Богу',dur:'20 мин',body:'Написать письмо Богу — как другу. Без религиозных формул. Только факты и чувства.'},
+     ],
+     monitor:{green:'Пишет конкретно и лично.',yellow:'Уходит в религиозные клише.',red:'Не может обратиться к Богу напрямую.'},
+     prayers:['О доверии к Богу как Другу','О снятии страха быть отвергнутым'],
+     homework:['Перечитать письмо и подчеркнуть самое честное предложение'],
+    },
+    {d:6,type:'self',label:'День 6',title:'Инвентаризация',time:'Самостоятельная работа',
+     goal:'Составить честный список ущерба по всем сферам.',
+     blocks:[
+      {t:'Таблица ущерба',dur:'30 мин',body:'По сферам: тело, психика, отношения, работа, деньги, вера. Конкретные факты — не оценки.'},
+      {t:'Благодарность',dur:'10 мин',body:'Найти 3 факта за которые можно быть благодарным несмотря ни на что.'},
+     ],
+     monitor:{green:'Таблица заполнена конкретно.',yellow:'Общие слова без фактов.',red:'Таблица пустая.'},
+     prayers:['О принятии реальности без осуждения себя'],
+     homework:['Подготовиться к итоговой встрече — что хочу сказать группе'],
+    },
+    {d:7,type:'meeting',label:'День 7 · Встреча Б',title:'Итог первого шага',time:'90 мин · групповая встреча',
+     goal:'Подвести итог шага. Отметить движение. Перейти к следующему шагу.',
+     blocks:[
+      {t:'Чек-ин',dur:'10 мин',body:'Каждый: что изменилось за неделю? Одним конкретным фактом.'},
+      {t:'Свидетельства',dur:'25 мин',body:'Каждый делится: что было самым трудным? Что открылось? Не духовные отчёты — живые факты.'},
+      {t:'Писание',dur:'15 мин',body:'2 Кор 5:19-21. Примирение как основа восстановления.'},
+      {t:'Молитва шага',dur:'10 мин',body:'«Господь, я больше не вру о своём состоянии. Помоги выйти из хаоса».'},
+      {t:'Переход',dur:'10 мин',body:'Объяснить Шаг 2. Что ждёт впереди.'},
+     ],
+     monitor:{green:'Говорит конкретно. Видна динамика.',yellow:'Формальное участие.',red:'Не изменилось ничего или регресс.'},
+     prayers:['За каждого участника по имени','За смелость продолжать'],
+     homework:['Прочитать введение в Шаг 2 в тетради'],
+    },
+   ]
   },
-  { id:2, name:'Инвентаризация', theme:'Взгляд без оправданий', phase:'ФАЗА 1 — ПРОБУЖДЕНИЕ',
-    deviz:'Нельзя изменить то, чего не видишь',
-    scriptures:['Пс 139:23-24','Иак 5:16','Иез 36:26'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Взгляд без оправданий',
-        time:'105 мин · групповая встреча',
-        goal:'Начать честную инвентаризацию без самоосуждения.',
-        blocks:[
-          {t:'Открытие',dur:'10 мин',body:'Что такое моральная инвентаризация? Это не суд — это опись. Как у бухгалтера: что есть, без оценки.'},
-          {t:'Инструмент: 4 колонки',dur:'25 мин',body:'Кого я обидел? Что я сделал? Как это задело меня? Какова моя роль? Заполняем первые 3-5 строк.'},
-          {t:'Работа в парах',dur:'20 мин',body:'Поделиться с партнёром одним пунктом из инвентаризации. Партнёр слушает — не советует.'},
-          {t:'Писание',dur:'15 мин',body:'Пс 139:23-24. «Испытай меня и узнай помышления мои». Бог не боится нашей тьмы.'},
-          {t:'Завершение',dur:'10 мин',body:'Что было труднее всего написать? Что удивило?'},
-        ],
-        prayers:['За смелость смотреть в лицо правде','Против самоосуждения и против минимизации'],
-        monitor:{green:'Называет конкретные имена и факты.',yellow:'Пишет общее без деталей.',red:'Не может начать или отказывается.'},
-        homework:['Продолжить инвентаризацию — минимум 10 строк','Иак 5:16 — запомнить наизусть'],
-      },
-    ]
+  {id:2,name:'Инвентаризация',theme:'Взгляд без оправданий',phase:'ФАЗА 1 — ПРОБУЖДЕНИЕ',
+   deviz:'Нельзя изменить то чего не видишь',scriptures:['Пс 139:23-24','Иак 5:16','Иез 36:26'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Взгляд без оправданий',time:'105 мин · групповая встреча',
+    goal:'Начать честную инвентаризацию без самоосуждения.',
+    blocks:[
+     {t:'Открытие',dur:'10 мин',body:'Что такое моральная инвентаризация? Это не суд — это опись. Как у бухгалтера: что есть, без оценки.'},
+     {t:'Инструмент: 4 колонки',dur:'25 мин',body:'Кого я обидел? Что я сделал? Как это задело меня? Какова моя роль? Заполняем первые 3-5 строк.'},
+     {t:'Работа в парах',dur:'20 мин',body:'Поделиться с партнёром одним пунктом. Партнёр слушает — не советует.'},
+     {t:'Писание',dur:'15 мин',body:'Пс 139:23-24. «Испытай меня и узнай помышления мои». Бог не боится нашей тьмы.'},
+     {t:'Завершение',dur:'10 мин',body:'Что было труднее всего написать? Что удивило?'},
+    ],
+    monitor:{green:'Называет конкретные имена и факты.',yellow:'Пишет общее без деталей.',red:'Не может начать или отказывается.'},
+    prayers:['За смелость смотреть правде в лицо','Против самоосуждения'],
+    homework:['Продолжить инвентаризацию — минимум 10 строк','Иак 5:16 — запомнить наизусть'],
+   }]
   },
-  { id:3, name:'Признание', theme:'Сказать вслух', phase:'ФАЗА 2 — ГЛУБИНА',
-    deviz:'Тайное не лечится',
-    scriptures:['Иак 5:16','1 Ин 1:9','Пс 32:5'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Сказать вслух',
-        time:'90 мин · групповая встреча',
-        goal:'Подготовить участника к признанию. Понять его смысл и границы.',
-        blocks:[
-          {t:'Зачем говорить вслух',dur:'15 мин',body:'Психологический механизм: тайное держит власть. Произнесённое — перестаёт владеть. Это не исповедь для наказания — это освобождение.'},
-          {t:'Кому и как',dur:'20 мин',body:'Кому я могу это сказать? Критерии безопасного человека. Ведущий, духовный наставник, близкий. Не всем подряд.'},
-          {t:'Практика',dur:'30 мин',body:'Написать что именно собираюсь сказать. Потом — прочитать ведущему или партнёру.'},
-        ],
-        prayers:['За смелость произнести','За безопасное пространство'],
-        monitor:{green:'Назвал конкретно. Готов говорить.',yellow:'Обобщает. Уходит от деталей.',red:'Не готов. Страх или стыд блокирует.'},
-        homework:['Назначить встречу для признания'],
-      },
-    ]
+  {id:3,name:'Признание',theme:'Сказать вслух',phase:'ФАЗА 2 — ГЛУБИНА',
+   deviz:'Тайное не лечится',scriptures:['Иак 5:16','1 Ин 1:9','Пс 32:5'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Сказать вслух',time:'90 мин · групповая встреча',
+    goal:'Подготовить участника к признанию.',
+    blocks:[
+     {t:'Зачем говорить вслух',dur:'15 мин',body:'Тайное держит власть. Произнесённое — перестаёт владеть. Это не исповедь для наказания — это освобождение.'},
+     {t:'Кому и как',dur:'20 мин',body:'Критерии безопасного человека. Ведущий, духовный наставник, близкий. Не всем подряд.'},
+     {t:'Практика',dur:'30 мин',body:'Написать что именно собираюсь сказать. Потом — прочитать ведущему или партнёру.'},
+    ],
+    monitor:{green:'Назвал конкретно. Готов говорить.',yellow:'Обобщает. Уходит от деталей.',red:'Страх или стыд блокирует.'},
+    prayers:['За смелость произнести','За безопасное пространство'],
+    homework:['Назначить встречу для признания'],
+   }]
   },
-  { id:4, name:'Образ Бога', theme:'С кем я разговариваю', phase:'ФАЗА 2 — ГЛУБИНА',
-    deviz:'Мы исцеляемся к образу Того, Кем видим Бога',
-    scriptures:['Лк 15:20','Рим 8:15','1 Ин 4:18'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'С кем я на самом деле разговариваю',
-        time:'90 мин · групповая встреча',
-        goal:'Выявить реальный (а не декларируемый) образ Бога у каждого участника.',
-        blocks:[
-          {t:'Открытие',dur:'10 мин',body:'Чек-ин: одно слово — какое лицо у Бога когда ты падаешь? Первая реакция честнее всего.'},
-          {t:'Теория образа',dur:'15 мин',body:'Образ Бога формируется через опыт с отцом, авторитетными фигурами, религиозной общиной. Это не богословие — это внутренняя реальность.'},
-          {t:'Упражнение: два стула',dur:'25 мин',body:'Один стул — я. Второй — Бог каким я его воспринимаю. Скажи ему что-нибудь. Потом — пересядь. Что бы Он сказал тебе?'},
-          {t:'Писание',dur:'15 мин',body:'Лк 15:20 — отец увидел издалека и побежал навстречу. Не ждал. Побежал. Что это говорит об образе?'},
-          {t:'Закрытие',dur:'10 мин',body:'Что открылось? Чем отличается мой образ Бога от того что в тексте?'},
-        ],
-        prayers:['О встрече с настоящим Богом а не с проекцией','Против религиозного страха'],
-        monitor:{green:'Называет конкретный образ и его источник.',yellow:'Говорит доктринально. Уходит от личного.',red:'Не может обратиться к Богу напрямую. Блок.'},
-        homework:['Написать: Откуда взялся мой образ Бога? (не богословие — факты из жизни)'],
-      },
-    ]
+  {id:4,name:'Образ Бога',theme:'С кем я разговариваю',phase:'ФАЗА 2 — ГЛУБИНА',
+   deviz:'Мы исцеляемся к образу Того Кем видим Бога',scriptures:['Лк 15:20','Рим 8:15','1 Ин 4:18'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'С кем я на самом деле разговариваю',time:'90 мин · групповая встреча',
+    goal:'Выявить реальный образ Бога у каждого участника.',
+    blocks:[
+     {t:'Открытие',dur:'10 мин',body:'Чек-ин: одно слово — какое лицо у Бога когда ты падаешь?'},
+     {t:'Теория образа',dur:'15 мин',body:'Образ Бога формируется через опыт с отцом, авторитетными фигурами, религиозной общиной.'},
+     {t:'Упражнение: два стула',dur:'25 мин',body:'Один стул — я. Второй — Бог каким я его воспринимаю. Скажи ему что-нибудь. Потом пересядь. Что бы Он сказал?'},
+     {t:'Писание',dur:'15 мин',body:'Лк 15:20 — отец увидел издалека и побежал навстречу. Не ждал. Побежал.'},
+    ],
+    monitor:{green:'Называет конкретный образ и его источник.',yellow:'Говорит доктринально. Уходит от личного.',red:'Не может обратиться к Богу напрямую.'},
+    prayers:['О встрече с настоящим Богом а не с проекцией','Против религиозного страха'],
+    homework:['Написать: Откуда взялся мой образ Бога? (не богословие — факты из жизни)'],
+   }]
   },
-  { id:5, name:'Прощение', theme:'Освободить долг', phase:'ФАЗА 3 — ИСЦЕЛЕНИЕ',
-    deviz:'Прощение — не оправдание. Прощение — свобода',
-    scriptures:['Мф 6:12','Лк 6:37','Кол 3:13'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Освободить долг',
-        time:'90 мин · групповая встреча',
-        goal:'Разобрать что такое прощение — и чем оно не является.',
-        blocks:[
-          {t:'Демифологизация',dur:'15 мин',body:'Прощение — это не: «то что случилось — нормально», не забывание, не восстановление отношений. Прощение — это: освобождение должника от долга. Ты освобождаешь себя.'},
-          {t:'Список',dur:'20 мин',body:'Кого мне нужно простить? Список без оценки. Просто имена.'},
-          {t:'Работа с одним именем',dur:'25 мин',body:'Выбрать одного человека. Написать: что он сделал, как это задело, что я хочу взамен, что будет если я это отпущу.'},
-        ],
-        prayers:['О силе которая больше обиды','Против права мстить которое держит нас в плену'],
-        monitor:{green:'Видит прощение как освобождение себя.',yellow:'Путает прощение с оправданием.',red:'Категорически не готов. «Он не заслуживает».'},
-        homework:['Продолжить список','Молиться за одного человека из списка — не прося чувств, только действие'],
-      },
-    ]
+  {id:5,name:'Прощение',theme:'Освободить долг',phase:'ФАЗА 3 — ИСЦЕЛЕНИЕ',
+   deviz:'Прощение — не оправдание. Прощение — свобода',scriptures:['Мф 6:12','Лк 6:37','Кол 3:13'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Освободить долг',time:'90 мин · групповая встреча',
+    goal:'Разобрать что такое прощение — и чем оно не является.',
+    blocks:[
+     {t:'Демифологизация',dur:'15 мин',body:'Прощение — это не: «то что случилось — нормально». Прощение — это: освобождение должника от долга. Ты освобождаешь себя.'},
+     {t:'Список',dur:'20 мин',body:'Кого мне нужно простить? Список без оценки. Просто имена.'},
+     {t:'Работа с одним именем',dur:'25 мин',body:'Что он сделал, как это задело, что я хочу взамен, что будет если отпущу.'},
+    ],
+    monitor:{green:'Видит прощение как освобождение себя.',yellow:'Путает прощение с оправданием.',red:'Категорически не готов.'},
+    prayers:['О силе которая больше обиды','Против права мстить'],
+    homework:['Продолжить список','Молиться за одного человека из списка'],
+   }]
   },
-  { id:6, name:'Возмещение', theme:'Исправить что можно', phase:'ФАЗА 3 — ИСЦЕЛЕНИЕ',
-    deviz:'Слова без действий — красивый самообман',
-    scriptures:['Лк 19:8','Мф 5:23-24','Иез 33:15'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Исправить что можно',
-        time:'90 мин · групповая встреча',
-        goal:'Составить план возмещения. Отделить что возможно от что невозможно.',
-        blocks:[
-          {t:'Принцип',dur:'10 мин',body:'Возмещение — не наказание себя. Это конкретное действие для исправления ущерба. Если невозможно напрямую — косвенно.'},
-          {t:'Список',dur:'20 мин',body:'Из инвентаризации — кому я причинил реальный ущерб? Что конкретно можно сделать? Когда?'},
-          {t:'Ограничения',dur:'15 мин',body:'Когда НЕ делать возмещение: если это навредит другому человеку ещё больше, если ты используешь это как повод для контакта с опасным человеком.'},
-        ],
-        prayers:['О мужестве делать конкретные шаги','О мудрости различать что делать а что нет'],
-        monitor:{green:'Называет конкретные шаги с датами.',yellow:'Говорит что хотел бы но не планирует.',red:'Убеждён что ничего нельзя исправить.'},
-        homework:['Сделать один шаг возмещения до следующей встречи'],
-      },
-    ]
+  {id:6,name:'Возмещение',theme:'Исправить что можно',phase:'ФАЗА 3 — ИСЦЕЛЕНИЕ',
+   deviz:'Слова без действий — красивый самообман',scriptures:['Лк 19:8','Мф 5:23-24','Иез 33:15'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Исправить что можно',time:'90 мин · групповая встреча',
+    goal:'Составить план возмещения.',
+    blocks:[
+     {t:'Принцип',dur:'10 мин',body:'Возмещение — не наказание себя. Это конкретное действие для исправления ущерба.'},
+     {t:'Список',dur:'20 мин',body:'Кому я причинил реальный ущерб? Что конкретно можно сделать? Когда?'},
+     {t:'Ограничения',dur:'15 мин',body:'Когда НЕ делать: если навредит другому ещё больше, если создаёт повод для опасного контакта.'},
+    ],
+    monitor:{green:'Называет конкретные шаги с датами.',yellow:'Говорит что хотел бы но не планирует.',red:'Убеждён что ничего нельзя исправить.'},
+    prayers:['О мужестве делать конкретные шаги','О мудрости различать что делать а что нет'],
+    homework:['Сделать один шаг возмещения до следующей встречи'],
+   }]
   },
-  { id:7, name:'Поддержание', theme:'Ежедневная практика', phase:'ФАЗА 4 — ЗРЕЛОСТЬ',
-    deviz:'Восстановление — не событие. Это образ жизни',
-    scriptures:['1 Фес 5:17','Евр 10:25','Рим 12:2'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Ежедневная практика',
-        time:'90 мин · групповая встреча',
-        goal:'Сформировать устойчивые ежедневные практики поддержания трезвости.',
-        blocks:[
-          {t:'Три кита',dur:'20 мин',body:'Молитва (утро), инвентаризация (вечер), честный контакт (хотя бы один раз в день). Это минимум.'},
-          {t:'Мой распорядок',dur:'20 мин',body:'Написать конкретный план дня. Не идеальный — реальный. Когда просыпаюсь? Когда молюсь? Кому звоню?'},
-          {t:'Якоря',dur:'15 мин',body:'Что держит меня когда трудно? Не «Бог» как слово — а конкретные практики, люди, места.'},
-        ],
-        prayers:['О постоянстве маленьких шагов','Против усталости от правильных вещей'],
-        monitor:{green:'Называет конкретный распорядок.',yellow:'Всё понимает но не планирует конкретно.',red:'«Я и так стараюсь» — без структуры.'},
-        homework:['Жить по написанному распорядку 3 дня подряд'],
-      },
-    ]
+  {id:7,name:'Поддержание',theme:'Ежедневная практика',phase:'ФАЗА 4 — ЗРЕЛОСТЬ',
+   deviz:'Восстановление — не событие. Это образ жизни',scriptures:['1 Фес 5:17','Евр 10:25','Рим 12:2'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Ежедневная практика',time:'90 мин · групповая встреча',
+    goal:'Сформировать устойчивые ежедневные практики.',
+    blocks:[
+     {t:'Три кита',dur:'20 мин',body:'Молитва (утро), инвентаризация (вечер), честный контакт (хотя бы один раз в день). Это минимум.'},
+     {t:'Мой распорядок',dur:'20 мин',body:'Написать конкретный план дня. Не идеальный — реальный. Когда молюсь? Кому звоню?'},
+     {t:'Якоря',dur:'15 мин',body:'Что держит меня когда трудно? Не «Бог» как слово — а конкретные практики, люди, места.'},
+    ],
+    monitor:{green:'Называет конкретный распорядок.',yellow:'Всё понимает но не планирует конкретно.',red:'«Я и так стараюсь» — без структуры.'},
+    prayers:['О постоянстве маленьких шагов','Против усталости от правильных вещей'],
+    homework:['Жить по написанному распорядку 3 дня подряд'],
+   }]
   },
-  { id:8, name:'Служение', theme:'Из принятого — отдать', phase:'ФАЗА 4 — ЗРЕЛОСТЬ',
-    deviz:'Лучший способ удержать — отдать',
-    scriptures:['Гал 6:2','2 Кор 1:3-4','Мф 25:40'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Из принятого — отдать',
-        time:'90 мин · групповая встреча',
-        goal:'Осмыслить служение как часть восстановления а не как обязанность.',
-        blocks:[
-          {t:'Парадокс',dur:'15 мин',body:'Кто служит — получает. Это не психология взаимности. Это духовный закон. Когда я помогаю другому — я выхожу из центра своей боли.'},
-          {t:'Мои дары',dur:'20 мин',body:'Через что я прошёл? Что теперь знаю — чего не знал до? Кому это может помочь?'},
-          {t:'Конкретный шаг',dur:'15 мин',body:'Один конкретный способ послужить в ближайшие 2 недели. Не великий подвиг — реальный шаг.'},
-        ],
-        prayers:['О готовности отдавать из полноты а не из нужды','О различении — кому и как служить'],
-        monitor:{green:'Видит служение как дар а не долг.',yellow:'Воспринимает как обязанность.',red:'Ещё не готов. «Мне самому нужна помощь».'},
-        homework:['Сделать один шаг служения'],
-      },
-    ]
+  {id:8,name:'Служение',theme:'Из принятого — отдать',phase:'ФАЗА 4 — ЗРЕЛОСТЬ',
+   deviz:'Лучший способ удержать — отдать',scriptures:['Гал 6:2','2 Кор 1:3-4','Мф 25:40'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Из принятого — отдать',time:'90 мин · групповая встреча',
+    goal:'Осмыслить служение как часть восстановления.',
+    blocks:[
+     {t:'Парадокс',dur:'15 мин',body:'Когда я помогаю другому — я выхожу из центра своей боли.'},
+     {t:'Мои дары',dur:'20 мин',body:'Через что я прошёл? Что теперь знаю? Кому это может помочь?'},
+     {t:'Конкретный шаг',dur:'15 мин',body:'Один конкретный способ послужить в ближайшие 2 недели.'},
+    ],
+    monitor:{green:'Видит служение как дар а не долг.',yellow:'Воспринимает как обязанность.',red:'Ещё не готов.'},
+    prayers:['О готовности отдавать из полноты','О различении — кому и как служить'],
+    homework:['Сделать один шаг служения'],
+   }]
   },
-  { id:9, name:'Духовная зрелость', theme:'Богосыновство', phase:'ФАЗА 4 — ЗРЕЛОСТЬ',
-    deviz:'Не слуга, не наёмник — сын',
-    scriptures:['Рим 8:15-17','Гал 4:6','1 Ин 3:1-2'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Встреча А', title:'Богосыновство',
-        time:'90 мин · групповая встреча',
-        goal:'Помочь участнику перейти от религиозного страха к сыновнему доверию.',
-        blocks:[
-          {t:'Три позиции',dur:'15 мин',body:'Раб — делает из страха. Наёмник — делает за плату. Сын — делает из любви. Где ты сейчас?'},
-          {t:'Симптомы рабства',dur:'15 мин',body:'Страх Бога (не благоговение а ужас), одиночество в присутствии Бога, невозможность молиться без ритуала.'},
-          {t:'Практика доверия',dur:'25 мин',body:'Письмо Богу — как сын отцу. Не молитва — разговор. О том что сейчас. Без пьедестала.'},
-        ],
-        prayers:['Дух усыновления а не рабства','О свободе быть собой перед Богом'],
-        monitor:{green:'Молится как с другом. Нет страха.',yellow:'Богослужение есть но дистанция большая.',red:'Бог воспринимается как судья. Страх доминирует.'},
-        homework:['Каждый день — один честный разговор с Богом как с отцом'],
-      },
-    ]
+  {id:9,name:'Духовная зрелость',theme:'Богосыновство',phase:'ФАЗА 4 — ЗРЕЛОСТЬ',
+   deviz:'Не слуга, не наёмник — сын',scriptures:['Рим 8:15-17','Гал 4:6','1 Ин 3:1-2'],
+   days:[{d:1,type:'meeting',label:'День 1 · Встреча А',title:'Богосыновство',time:'90 мин · групповая встреча',
+    goal:'Помочь перейти от религиозного страха к сыновнему доверию.',
+    blocks:[
+     {t:'Три позиции',dur:'15 мин',body:'Раб — делает из страха. Наёмник — делает за плату. Сын — делает из любви. Где ты сейчас?'},
+     {t:'Симптомы рабства',dur:'15 мин',body:'Страх Бога (не благоговение а ужас), одиночество в Его присутствии, невозможность молиться без ритуала.'},
+     {t:'Практика доверия',dur:'25 мин',body:'Письмо Богу — как сын отцу. Не молитва — разговор. О том что сейчас.'},
+    ],
+    monitor:{green:'Молится как с другом.',yellow:'Богообщение есть но дистанция большая.',red:'Бог воспринимается как судья.'},
+    prayers:['Дух усыновления а не рабства','О свободе быть собой перед Богом'],
+    homework:['Каждый день — один честный разговор с Богом как с отцом'],
+   }]
   },
-  { id:10, name:'Новая жизнь', theme:'Кем я стал', phase:'ФАЗА 5 — ЗАВЕРШЕНИЕ',
-    deviz:'Путь не заканчивается. Он меняет форму',
-    scriptures:['2 Кор 5:17','Флп 1:6','Откр 21:5'],
-    days:[
-      { d:1, type:'meeting', label:'День 1 · Финальная встреча', title:'Кем я стал',
-        time:'120 мин · групповая встреча',
-        goal:'Отметить путь. Засвидетельствовать изменения. Благословить на следующий этап.',
-        blocks:[
-          {t:'Свидетельства',dur:'40 мин',body:'Каждый участник: Кем я был когда пришёл? Что изменилось? Что я теперь знаю — чего не знал? Конкретно, без пафоса.'},
-          {t:'Письма',dur:'20 мин',body:'Написать письмо себе — тому кем стал. Что хочешь сказать? Что важно помнить?'},
-          {t:'Благословение',dur:'20 мин',body:'Ведущий благословляет каждого участника по имени. Конкретно — за что именно.'},
-          {t:'Молитва завершения',dur:'15 мин',body:'Благодарственная молитва всей группой. Не за то что всё хорошо — за то что Бог был с нами в пути.'},
-        ],
-        prayers:['Благодарность за путь','За следующий этап каждого участника'],
-        monitor:{green:'Говорит о конкретных изменениях. Есть благодарность.',yellow:'Чувствует давление завершить «правильно».',red:'Не видит изменений. Разочарован.'},
-        homework:['Продолжать практики из Шага 7','Найти человека которому можно передать опыт'],
-      },
-    ]
+  {id:10,name:'Новая жизнь',theme:'Кем я стал',phase:'ФАЗА 5 — ЗАВЕРШЕНИЕ',
+   deviz:'Путь не заканчивается. Он меняет форму',scriptures:['2 Кор 5:17','Флп 1:6','Откр 21:5'],
+   days:[{d:1,type:'meeting',label:'День 1 · Финальная встреча',title:'Кем я стал',time:'120 мин · групповая встреча',
+    goal:'Отметить путь. Засвидетельствовать изменения. Благословить на следующий этап.',
+    blocks:[
+     {t:'Свидетельства',dur:'40 мин',body:'Каждый: Кем я был когда пришёл? Что изменилось? Что теперь знаю? Конкретно, без пафоса.'},
+     {t:'Письма',dur:'20 мин',body:'Написать письмо себе — тому кем стал.'},
+     {t:'Благословение',dur:'20 мин',body:'Ведущий благословляет каждого по имени. Конкретно — за что именно.'},
+     {t:'Молитва завершения',dur:'15 мин',body:'Благодарственная молитва всей группой. Не за то что всё хорошо — за то что Бог был с нами в пути.'},
+    ],
+    monitor:{green:'Говорит о конкретных изменениях. Есть благодарность.',yellow:'Давление завершить «правильно».',red:'Не видит изменений. Разочарован.'},
+    prayers:['Благодарность за путь','За следующий этап каждого'],
+    homework:['Продолжать практики из Шага 7','Найти человека которому можно передать опыт'],
+   }]
   },
 ];
 
 const WHEEL_AREAS = [
-  {id:'body',name:'Тело',color:'#c9a84c'},
-  {id:'mind',name:'Психика',color:'#e8c97a'},
-  {id:'relations',name:'Отношения',color:'#27ae60'},
-  {id:'work',name:'Работа',color:'#3498db'},
-  {id:'money',name:'Финансы',color:'#9b59b6'},
-  {id:'faith',name:'Вера',color:'#e74c3c'},
+  {id:'body',name:'Тело',color:'#c9a84c',
+   questions:['Как ты оцениваешь своё физическое здоровье сейчас?','Как ты спишь? Есть ли регулярный отдых?','Есть ли физические симптомы которые ты замечаешь (усталость, боли, напряжение)?']},
+  {id:'mind',name:'Психика',color:'#e8c97a',
+   questions:['Как ты оцениваешь своё эмоциональное состояние?','Есть ли тревога, депрессия или ощущение пустоты?','Можешь ли ты управлять своими реакциями или они управляют тобой?']},
+  {id:'relations',name:'Отношения',color:'#27ae60',
+   questions:['Есть ли люди которым ты доверяешь?','Как твои близкие отношения — с семьёй, друзьями?','Есть ли изоляция или ощущение что никто не понимает?']},
+  {id:'work',name:'Работа',color:'#3498db',
+   questions:['Есть ли у тебя дело, занятость, смысл в том что делаешь?','Чувствуешь ли ты себя полезным?','Есть ли что-то что ты давно хотел сделать но откладываешь?']},
+  {id:'money',name:'Финансы',color:'#9b59b6',
+   questions:['Как финансовая ситуация влияет на твою жизнь сейчас?','Есть ли долги или финансовые последствия от прошлого?','Чувствуешь ли ты контроль над своими финансами?']},
+  {id:'faith',name:'Вера',color:'#e74c3c',
+   questions:['Есть ли у тебя ощущение смысла и надежды?','Как ты относишься к Богу прямо сейчас — доверие, страх, злость, пустота?','Молитва — это живой разговор или формальность?']},
 ];
 
-// ─── STATE ───
+// ═══ STATE ═══
 let currentRole = 'participant';
-let currentUser = null;   // { id, name, role, unlockedStep }
+let currentUser = null;
 let selectedParticipantId = null;
 let selectedStepId = 1;
 let selectedDayIndex = 0;
 let hwDone = {};
+let aiHistory = [];
+let wheelAnswers = {};
 
-// ─── SCREEN HELPERS ───
-window.showScreen = (id) => {
+// ═══ SCREEN ═══
+window.showScreen = id => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 };
 
 const FACILITATOR_PASSWORD = 'ПУТЬ2024';
 
-window.enterAs = (role) => {
+window.enterAs = role => {
   currentRole = role;
   document.getElementById('auth-title').textContent = role === 'facilitator' ? 'Ведущий' : 'Участник';
-  document.getElementById('auth-subtitle').textContent = role === 'facilitator' ? 'Введите пароль ведущего' : 'Введите ваше имя';
+  document.getElementById('auth-subtitle').textContent = role === 'facilitator' ? 'Введите пароль' : 'Введите ваше имя';
   document.getElementById('participant-name-field').style.display = role === 'participant' ? 'block' : 'none';
   document.getElementById('facilitator-password-field').style.display = role === 'facilitator' ? 'block' : 'none';
   document.getElementById('auth-error').style.display = 'none';
-  if (role === 'participant') document.getElementById('auth-name').value = '';
-  else document.getElementById('auth-password').value = '';
   showScreen('screen-auth');
 };
 
 window.doAuth = async () => {
-  const errEl = document.getElementById('auth-error');
-  errEl.style.display = 'none';
-
+  document.getElementById('auth-error').style.display = 'none';
   if (currentRole === 'facilitator') {
     const pwd = document.getElementById('auth-password').value;
-    if (pwd !== FACILITATOR_PASSWORD) { showError('Неверный пароль'); return; }
-    currentUser = { id: 'facilitator', name: 'Ведущий', role: 'facilitator' };
-    document.getElementById('f-user-name').textContent = 'Ведущий';
+    if (pwd !== FACILITATOR_PASSWORD) { showErr('Неверный пароль'); return; }
+    currentUser = {id:'facilitator',name:'Ведущий',role:'facilitator'};
     showScreen('screen-facilitator');
     loadParticipants();
     return;
   }
-
-  // участник — по имени
   const name = document.getElementById('auth-name').value.trim();
-  if (!name) { showError('Введите имя'); return; }
-  const nameKey = name.toLowerCase().replace(/\s+/g, '_');
-
-  // ищем участника в Firestore
-  const snap = await getDoc(doc(db, 'participants', nameKey));
-  if (!snap.exists()) {
-    showError('Имя не найдено. Обратитесь к ведущему.');
-    return;
+  if (!name) { showErr('Введите имя'); return; }
+  const key = name.toLowerCase().replace(/\s+/g,'_');
+  const snap = await getDoc(doc(db,'participants',key));
+  if (!snap.exists()) { showErr('Имя не найдено. Обратитесь к ведущему.'); return; }
+  currentUser = {id:key,...snap.data()};
+  document.getElementById('p-user-name').textContent = currentUser.name;
+  document.getElementById('ai-user-name').textContent = currentUser.name;
+  // Если нет колеса — сначала опросник
+  if (!currentUser.wheelDone) {
+    showWheelQuestionnaire();
+  } else {
+    enterParticipantApp();
   }
-  const data = snap.data();
-  currentUser = { id: nameKey, ...data };
-  document.getElementById('p-user-name').textContent = data.name;
+};
+
+function showErr(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+window.logout = () => { currentUser = null; showScreen('screen-landing'); };
+
+// ═══ WHEEL QUESTIONNAIRE ═══
+function showWheelQuestionnaire() {
+  showScreen('screen-wheel');
+  const container = document.getElementById('wheel-questions-container');
+  wheelAnswers = {};
+  let html = '';
+  WHEEL_AREAS.forEach(area => {
+    html += `<div style="margin-bottom:24px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);margin-bottom:12px">${area.name}</div>`;
+    area.questions.forEach((q, qi) => {
+      const key = `${area.id}_${qi}`;
+      html += `<div class="quest-q">
+        <div class="quest-q-text">${q}</div>
+        <div class="quest-scale" id="scale-${key}">
+          ${[1,2,3,4,5,6,7,8,9,10].map(n =>
+            `<div class="scale-btn" onclick="selectScale('${key}',${n},this)">${n}</div>`
+          ).join('')}
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  document.getElementById('wheel-submit-btn').style.display = 'block';
+}
+
+window.selectScale = (key, val, el) => {
+  wheelAnswers[key] = val;
+  el.closest('.quest-scale').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+};
+
+window.submitWheelQuestionnaire = async () => {
+  // Вычисляем среднее по каждой сфере
+  const scores = {};
+  WHEEL_AREAS.forEach(area => {
+    const vals = area.questions.map((_,qi) => wheelAnswers[`${area.id}_${qi}`] || 5);
+    scores[area.id] = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  });
+
+  // Генерируем AI-анализ и первый сигнальный опросник
+  const weakAreas = WHEEL_AREAS.filter(a => scores[a.id] <= 4).map(a => a.name);
+  const strongAreas = WHEEL_AREAS.filter(a => scores[a.id] >= 7).map(a => a.name);
+
+  // Сохраняем в Firestore
+  await updateDoc(doc(db,'participants',currentUser.id), {
+    wheelDone: true,
+    wheelScores: scores,
+    wheelHistory: [{scores, date: new Date().toISOString(), stepId: currentUser.unlockedStep || 1}],
+  });
+  currentUser.wheelDone = true;
+  currentUser.wheelScores = scores;
+
+  // AI анализирует и отправляет флаг ведущему
+  const flagText = weakAreas.length
+    ? `Слабые зоны при входе: ${weakAreas.join(', ')} (оценка ≤4). Сильные: ${strongAreas.join(', ')}. Рекомендую фокус на слабых зонах при формировании опросников.`
+    : `Все зоны в норме при входе. Сильные: ${strongAreas.join(', ')}.`;
+  await saveFlag(currentUser.id, currentUser.name, 'Базовое колесо баланса', flagText, 'info');
+
+  enterParticipantApp();
+};
+
+// ═══ PARTICIPANT APP ═══
+function enterParticipantApp() {
   showScreen('screen-participant');
   renderStepsNav();
-  openStep(1);
-};
-
-function showError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
+  openStep(currentUser.unlockedStep || 1);
 }
 
-window.logout = () => {
-  currentUser = null;
-  showScreen('screen-landing');
+window.backToParticipant = () => {
+  showScreen('screen-participant');
 };
 
-// ─── FACILITATOR TABS ───
-window.switchFTab = (tab) => {
-  document.getElementById('ftab-participants').style.display = tab === 'participants' ? 'grid' : 'none';
-  document.getElementById('ftab-program').style.display = tab === 'program' ? 'grid' : 'none';
-  document.getElementById('tab-participants').classList.toggle('active', tab === 'participants');
-  document.getElementById('tab-program').classList.toggle('active', tab === 'program');
-  if (tab === 'program') renderFacilitatorProgram();
-};
-
-function renderFacilitatorProgram() {
-  const nav = document.getElementById('f-steps-nav');
-  if (nav.innerHTML !== '') return; // already rendered
-  nav.innerHTML = STEPS.map(s =>
-    `<div class="step-nav-item" onclick="openFStep(${s.id})">
-      <div class="step-nav-num">${s.id}</div>
-      <div class="step-nav-info">
-        <div class="step-nav-name">${s.name}</div>
-        <div class="step-nav-sub">${s.phase.split('—')[1]?.trim() || ''}</div>
-      </div>
-    </div>`
-  ).join('');
-}
-
-window.openFStep = (stepId) => {
-  document.querySelectorAll('#f-steps-nav .step-nav-item').forEach((el, i) => {
-    el.classList.toggle('active', STEPS[i]?.id === stepId);
-  });
-  selectedStepId = stepId;
-  selectedDayIndex = 0;
-  renderStepContentIn('f-program-main');
-};
-
-// ─── FACILITATOR PARTICIPANTS ───
-async function loadParticipants() {
-  const snap = await getDocs(collection(db, 'participants'));
-  const list = document.getElementById('participants-list');
-  list.innerHTML = `<div style="padding:12px 20px 4px">
-    <button class="btn-open-step" style="width:100%;margin:0" onclick="showAddParticipant()">+ Добавить участника</button>
-  </div>`;
-  snap.forEach(d => {
-    const data = d.data();
-    const item = document.createElement('div');
-    item.className = 'participant-item';
-    item.dataset.uid = d.id;
-    const step = data.unlockedStep || 1;
-    item.innerHTML = `
-      <div class="p-name">${data.name}</div>
-      <div class="p-step">Шаг ${step}</div>
-      <span class="p-badge badge-green">активен</span>
-    `;
-    item.onclick = () => selectParticipant(d.id, data);
-    list.appendChild(item);
-  });
-}
-
-window.showAddParticipant = () => {
-  const main = document.getElementById('f-main');
-  main.innerHTML = `
-    <div class="participant-detail">
-      <div class="detail-name">Новый участник</div>
-      <div class="detail-email" style="margin-bottom:20px">Введите имя которое участник будет использовать для входа</div>
-      <div class="field-label">Имя участника</div>
-      <input class="field-input" id="new-participant-name" type="text" placeholder="Например: Иван или Иван_К">
-      <button class="btn-open-step" style="margin-top:16px" onclick="createParticipant()">Создать</button>
-      <div class="auth-error" id="add-error" style="display:none;margin-top:10px"></div>
-    </div>`;
-};
-
-window.createParticipant = async () => {
-  const name = document.getElementById('new-participant-name').value.trim();
-  if (!name) return;
-  const nameKey = name.toLowerCase().replace(/\s+/g, '_');
-  const existing = await getDoc(doc(db, 'participants', nameKey));
-  if (existing.exists()) {
-    document.getElementById('add-error').textContent = 'Участник с таким именем уже есть';
-    document.getElementById('add-error').style.display = 'block';
-    return;
-  }
-  await setDoc(doc(db, 'participants', nameKey), {
-    name, unlockedStep: 1, createdAt: new Date().toISOString(),
-  });
-  await loadParticipants();
-  // select the new one
-  const snap = await getDoc(doc(db, 'participants', nameKey));
-  selectParticipant(nameKey, snap.data());
-};
-
-async function selectParticipant(uid, data) {
-  selectedParticipantId = uid;
-  document.querySelectorAll('.participant-item').forEach(el => el.classList.remove('active'));
-  document.querySelector(`[data-uid="${uid}"]`)?.classList.add('active');
-
-  const main = document.getElementById('f-main');
-  const unlockedStep = data.unlockedStep || 1;
-
-  // diary entries
-  let answersHtml = '';
-  try {
-    const answersSnap = await getDocs(query(collection(db, 'participants', uid, 'diary'), orderBy('createdAt', 'desc')));
-    if (!answersSnap.empty) {
-      answersHtml = '<div class="detail-section"><div class="detail-section-title">Дневник участника</div><div class="answers-list">';
-      answersSnap.forEach(d => {
-        const a = d.data();
-        answersHtml += `<div class="answer-card">
-          <div class="answer-a">${a.text || ''}</div>
-          <div class="answer-date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ru') : ''}</div>
-        </div>`;
-      });
-      answersHtml += '</div></div>';
-    }
-  } catch(e) {}
-
-  const stepsHtml = STEPS.map(s => {
-    const cls = s.id < unlockedStep ? 'unlocked' : s.id === unlockedStep ? 'current' : '';
-    const status = s.id < unlockedStep ? 'пройден' : s.id === unlockedStep ? 'текущий' : 'закрыт';
-    return `<div class="step-tile ${cls}">
-      <div class="step-num">${s.id}</div>
-      <div class="step-status">${status}</div>
-    </div>`;
-  }).join('');
-
-  main.innerHTML = `
-    <div class="participant-detail">
-      <div class="detail-name">${data.name}</div>
-      <div class="detail-email">Логин для входа: <strong style="color:var(--gold)">${uid}</strong></div>
-
-      <div class="detail-section" style="margin-top:20px">
-        <div class="detail-section-title">Шаги программы</div>
-        <div class="steps-grid">${stepsHtml}</div>
-        ${unlockedStep < 10 ? `<button class="btn-open-step" onclick="openNextStep('${uid}', ${unlockedStep})">
-          Открыть Шаг ${unlockedStep + 1}
-        </button>` : '<p style="color:var(--gold);margin-top:14px;font-size:13px">Все шаги пройдены ✦</p>'}
-      </div>
-
-      ${answersHtml}
-    </div>`;
-}
-
-window.openNextStep = async (uid, currentStep) => {
-  const nextStep = currentStep + 1;
-  await updateDoc(doc(db, 'participants', uid), { unlockedStep: nextStep });
-  const snap = await getDoc(doc(db, 'participants', uid));
-  selectParticipant(uid, snap.data());
-  document.querySelectorAll('.participant-item').forEach(el => {
-    if (el.dataset.uid === uid) el.querySelector('.p-step').textContent = `Шаг ${nextStep}`;
-  });
-};
-
-// ─── PARTICIPANT ───
 function renderStepsNav() {
   const nav = document.getElementById('steps-nav');
   const unlocked = currentUser?.unlockedStep || 1;
   nav.innerHTML = STEPS.map(s => {
     const isLocked = s.id > unlocked;
-    return `<div class="step-nav-item ${isLocked ? 'locked' : ''}" onclick="${isLocked ? '' : `openStep(${s.id})`}">
+    return `<div class="step-nav-item ${isLocked?'locked':''}" onclick="${isLocked?'':` openStep(${s.id})`}">
       <div class="step-nav-num">${s.id}</div>
-      <div class="step-nav-info">
+      <div style="flex:1;min-width:0">
         <div class="step-nav-name">${s.name}</div>
-        <div class="step-nav-sub">${s.phase.split('—')[1]?.trim() || ''}</div>
+        <div class="step-nav-sub">${s.phase.split('—')[1]?.trim()||''}</div>
       </div>
-      ${isLocked ? '<span class="lock-icon">🔒</span>' : ''}
+      ${isLocked?'<span style="font-size:12px;color:var(--text2)">🔒</span>':''}
     </div>`;
   }).join('');
 }
 
-window.openStep = (stepId) => {
+window.openStep = stepId => {
   selectedStepId = stepId;
   selectedDayIndex = 0;
-  document.querySelectorAll('.step-nav-item').forEach((el, i) => {
-    el.classList.toggle('active', STEPS[i]?.id === stepId);
-  });
-  renderStepContentIn('p-main');
+  document.querySelectorAll('#steps-nav .step-nav-item').forEach((el,i) => el.classList.toggle('active', STEPS[i]?.id===stepId));
+  renderParticipantStep();
 };
 
-function renderStepContentIn(containerId) {
-  const step = STEPS.find(s => s.id === selectedStepId);
+function renderParticipantStep() {
+  const step = STEPS.find(s=>s.id===selectedStepId);
   if (!step) return;
-  const main = document.getElementById(containerId);
-  const isFacilitator = containerId === 'f-program-main';
+  const main = document.getElementById('p-main');
+  const scores = currentUser.wheelScores || {};
 
-  const tabsHtml = step.days.map((d, i) => `
-    <div class="day-tab ${d.type === 'meeting' || d.type === 'individual' ? 'meeting-day' : ''} ${i === selectedDayIndex ? 'active' : ''}"
-         onclick="selectDay(${i},'${containerId}')">${d.label}</div>
-  `).join('');
-
-  const daysHtml = step.days.map((d, i) =>
-    isFacilitator ? renderDayFacilitator(d, i) : renderDayParticipant(d, i)
+  const tabsHtml = step.days.map((d,i) =>
+    `<div class="day-tab ${d.type==='meeting'||d.type==='individual'?'meeting-day':''} ${i===0?'active':''}" onclick="selDay(${i},'p-main')">${d.label}</div>`
   ).join('');
+
+  const daysHtml = step.days.map((d,i) => {
+    const hwHtml = d.homework?.length ? `
+      <div class="detail-section">
+        <div class="section-h">Задания</div>
+        ${d.homework.map((hw,hi) => `
+          <div class="hw-item ${hwDone[`${i}-${hi}`]?'done':''}" onclick="toggleHw('${i}-${hi}',this)">
+            <div class="hw-check">${hwDone[`${i}-${hi}`]?'✓':''}</div>
+            <span>${hw}</span>
+          </div>`).join('')}
+      </div>` : '';
+    const typeBadge = d.type==='meeting'?'badge-meeting':d.type==='individual'?'badge-individual':'badge-self';
+    const typeLabel = d.type==='meeting'?'Групповая встреча':d.type==='individual'?'Индивидуальная встреча':'Самостоятельно';
+    return `<div class="day-content ${i===0?'active':''}" id="dayp-${i}">
+      <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
+      <div class="day-title">${d.title}</div>
+      <div class="day-time">${d.time}</div>
+      ${hwHtml}
+    </div>`;
+  }).join('');
 
   const scripturesHtml = step.scriptures.map(s =>
-    `<button class="scripture-btn" onclick="fetchScripture('${s}','${containerId}')">${s}</button>`
+    `<button class="scripture-btn" onclick="fetchScripture('${s}','p-main',false)">${s}</button>`
   ).join('');
 
-  const participantExtras = !isFacilitator ? `
-    <div class="detail-section mt-24">
-      <div class="section-h">Дневник чувств</div>
-      <div class="diary-form">
-        <textarea class="diary-textarea" id="diary-input" placeholder="Что происходит внутри сегодня..."></textarea>
-        <button class="btn-save-diary" onclick="saveDiaryEntry()">Сохранить</button>
-      </div>
-      <div class="diary-entries" id="diary-entries"></div>
-    </div>
-    <div class="detail-section mt-24">
-      <div class="section-h">Колесо баланса</div>
+  // Колесо участника
+  const wheelHtml = `
+    <div class="detail-section">
+      <div class="section-h">Моё колесо баланса</div>
       <div class="wheel-wrap">
-        <canvas id="wheel" width="260" height="260"></canvas>
-        <div class="wheel-sliders" id="wheel-sliders"></div>
+        <canvas id="p-wheel" width="260" height="260"></canvas>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8">
+          ${WHEEL_AREAS.map(a => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+            <span style="color:var(--text)">${a.name}</span>
+            <span style="color:${scores[a.id]>=7?'var(--green)':scores[a.id]>=4?'var(--yellow)':'var(--red)'};font-weight:600">${scores[a.id]||'—'}</span>
+          </div>`).join('')}
+        </div>
       </div>
-    </div>` : '';
+    </div>`;
 
   main.innerHTML = `
     <div class="step-content">
@@ -1350,287 +779,506 @@ function renderStepContentIn(containerId) {
       <div class="step-deviz">${step.deviz}</div>
       <div class="days-tabs">${tabsHtml}</div>
       ${daysHtml}
-      <div class="detail-section mt-24">
-        <div class="section-h">Писание шага</div>
-        <div class="scripture-list">${scripturesHtml}</div>
-        <div class="scripture-result" id="scripture-result-${containerId}"></div>
+      <div class="detail-section mt-16">
+        <div class="section-h">Писание</div>
+        <div>${scripturesHtml}</div>
+        <div class="scripture-result" id="scripture-result-p-main"></div>
       </div>
-      ${participantExtras}
+      ${wheelHtml}
+      <div class="detail-section" style="margin-top:24px">
+        <div class="section-h">Дневник</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <textarea class="diary-textarea" id="diary-input" placeholder="Что происходит внутри сегодня..."></textarea>
+          <button class="btn-save-diary" onclick="saveDiary()">Сохранить</button>
+        </div>
+        <div id="diary-entries" style="margin-top:16px"></div>
+      </div>
     </div>`;
 
-  document.querySelectorAll(`#${containerId} .day-content`)[selectedDayIndex]?.classList.add('active');
-
-  if (!isFacilitator) { loadDiary(); initWheel(); }
+  loadDiary();
+  drawWheel('p-wheel', scores);
 }
 
-// ── УЧАСТНИК: только домашнее задание ──
-function renderDayParticipant(d, i) {
-  const typeBadge = d.type === 'meeting' ? 'badge-meeting' : d.type === 'individual' ? 'badge-individual' : 'badge-self';
-  const typeLabel = d.type === 'meeting' ? 'Групповая встреча' : d.type === 'individual' ? 'Индивидуальная встреча' : 'Самостоятельно';
+// ═══ AI CHAT ═══
+window.openAiChat = () => {
+  showScreen('screen-ai');
+  if (aiHistory.length === 0) initAiChat();
+};
 
-  const hwHtml = d.homework?.length ? `
-    <div class="detail-section">
-      <div class="section-h">Задания на этот день</div>
-      <div class="hw-list">${d.homework.map((hw, hi) => `
-        <div class="hw-item ${hwDone[`${i}-${hi}`] ? 'done' : ''}" onclick="toggleHw('${i}-${hi}', this)">
-          <div class="hw-check">${hwDone[`${i}-${hi}`] ? '✓' : ''}</div>
-          <span>${hw}</span>
-        </div>`).join('')}</div>
-    </div>` : '<div style="color:var(--text2);font-size:13px;padding:20px 0">Заданий на этот день нет — это день встречи с группой.</div>';
+async function initAiChat() {
+  const scores = currentUser.wheelScores || {};
+  const weakAreas = WHEEL_AREAS.filter(a=>(scores[a.id]||5)<=4).map(a=>a.name);
+  const step = STEPS.find(s=>s.id===(currentUser.unlockedStep||1));
+  const systemContext = `Ты — AI-помощник программы «Восстановление личности». 
+Участник: ${currentUser.name}. Текущий шаг: ${step?.id} — «${step?.name}». 
+Слабые зоны по колесу баланса: ${weakAreas.length?weakAreas.join(', '):'нет явных'}.
+Твоя задача: вести участника по программе, задавать конкретные вопросы, выявлять самообман, не давать советов — задавать вопросы которые возвращают к фактам.
+Замечай несоответствия между словами и паттернами: если участник говорит «всё хорошо» но это противоречит его дневнику или колесу — мягко уточняй.
+Говори живым разговорным языком. Коротко. Максимум 3-4 предложения за раз.
+ВАЖНО: если видишь признаки самообмана, избегания или несоответствия — в конце ответа добавь строку: FLAG:[описание флага для ведущего]`;
 
-  return `
-    <div class="day-content" id="day-p-${i}">
-      <div class="day-header">
-        <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
-        <div class="day-title">${d.title}</div>
-        <div class="day-time">${d.time}</div>
-      </div>
-      ${hwHtml}
-    </div>`;
+  aiHistory = [{role:'system',content:systemContext}];
+
+  const greeting = `Привет, ${currentUser.name}. Я здесь чтобы помочь тебе разобраться в том что происходит — не давать советы, а задавать вопросы. ${weakAreas.length?`Я вижу что сфера «${weakAreas[0]}» даётся тебе труднее всего. ` : ''}С чего начнём?`;
+  addAiMsg('ai', greeting);
 }
 
-// ── ВЕДУЩИЙ: полный сценарий ──
-function renderDayFacilitator(d, i) {
-  const typeBadge = d.type === 'meeting' ? 'badge-meeting' : d.type === 'individual' ? 'badge-individual' : 'badge-self';
-  const typeLabel = d.type === 'meeting' ? 'Групповая встреча' : d.type === 'individual' ? 'Индивидуальная встреча' : 'Самостоятельная работа участника';
-
-  const blocksHtml = (d.blocks || []).map((b, bi) => `
-    <div class="block-item" id="block-f-${i}-${bi}">
-      <div class="block-header" onclick="toggleBlock('block-f-${i}-${bi}')">
-        <span class="block-title">${b.t}</span>
-        <span style="display:flex;gap:12px;align-items:center">
-          <span class="block-dur">${b.dur}</span>
-          <span class="block-chevron">▼</span>
-        </span>
-      </div>
-      <div class="block-body" style="white-space:pre-line">${b.body}</div>
-    </div>`).join('');
-
-  const monitorHtml = d.monitor ? `
-    <div class="detail-section">
-      <div class="section-h">Мониторинг — читай участника</div>
-      <div class="monitor-grid">
-        <div class="monitor-card monitor-green"><div class="monitor-label">🟢 Движется</div>${d.monitor.green}</div>
-        <div class="monitor-card monitor-yellow"><div class="monitor-label">🟡 Внимание</div>${d.monitor.yellow}</div>
-        <div class="monitor-card monitor-red"><div class="monitor-label">🔴 Стоп</div>${d.monitor.red}</div>
-      </div>
-    </div>` : '';
-
-  const prayersHtml = d.prayers?.length ? `
-    <div class="detail-section">
-      <div class="section-h">Направления молитвы перед встречей</div>
-      <div class="prayer-list">${d.prayers.map(p => `<div class="prayer-item">${p}</div>`).join('')}</div>
-    </div>` : '';
-
-  const hwHtml = d.homework?.length ? `
-    <div class="detail-section">
-      <div class="section-h">Домашнее задание участнику</div>
-      <div class="hw-list">${d.homework.map(hw => `
-        <div class="hw-item">
-          <div class="hw-check">→</div>
-          <span>${hw}</span>
-        </div>`).join('')}</div>
-    </div>` : '';
-
-  // дополнительные секции для ведущего
-  const facilNotes = `
-    <div class="detail-section">
-      <div class="section-h">Запреты ведущего на этой встрече</div>
-      <div class="prayer-list">
-        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не давать советов и не интерпретировать вместо участника</div>
-        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не путать слёзы с прогрессом</div>
-        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не торопить — держать паузу</div>
-        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не принимать умные рассуждения вместо конкретных фактов</div>
-        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не усиливать стыд — различай «я сделал» и «я плохой»</div>
-      </div>
-    </div>`;
-
-  return `
-    <div class="day-content" id="day-f-${i}">
-      <div class="day-header">
-        <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
-        <div class="day-title">${d.title}</div>
-        <div class="day-time">${d.time}</div>
-        <div class="day-goal">${d.goal}</div>
-      </div>
-      <div class="detail-section">
-        <div class="section-h">Сценарий встречи — блоки</div>
-        <div class="blocks-list">${blocksHtml}</div>
-      </div>
-      ${monitorHtml}
-      ${prayersHtml}
-      ${hwHtml}
-      ${facilNotes}
-    </div>`;
+function addAiMsg(role, text) {
+  const el = document.getElementById('ai-messages');
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role}`;
+  div.textContent = text;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  if (role !== 'system') aiHistory.push({role: role==='ai'?'assistant':'user', content:text});
 }
 
-window.selectDay = (i, containerId) => {
-  selectedDayIndex = i;
-  const container = document.getElementById(containerId || 'p-main');
-  container.querySelectorAll('.day-tab').forEach((t, ti) => t.classList.toggle('active', ti === i));
-  container.querySelectorAll('.day-content').forEach((c, ci) => c.classList.toggle('active', ci === i));
+window.aiKeydown = e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAiMessage(); }
 };
 
-window.toggleBlock = (id) => {
-  document.getElementById(id)?.classList.toggle('open');
-};
+window.sendAiMessage = async () => {
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addAiMsg('user', text);
 
-window.toggleHw = (key, el) => {
-  hwDone[key] = !hwDone[key];
-  el.classList.toggle('done', hwDone[key]);
-  el.querySelector('.hw-check').textContent = hwDone[key] ? '✓' : '';
-};
+  // Сохраняем в дневник
+  await addDoc(collection(db,'participants',currentUser.id,'diary'),{
+    text:`[AI-разговор] ${text}`, stepId:selectedStepId, createdAt:new Date().toISOString()
+  });
 
-window.fetchScripture = async (ref, containerId) => {
-  const elId = `scripture-result-${containerId || 'p-main'}`;
-  const el = document.getElementById(elId);
-  if (!el) return;
-  el.style.display = 'block';
-  el.innerHTML = '<div class="scripture-loading">Загружаю разбор...</div>';
-  const isFacilitator = containerId === 'f-program-main';
-  const prompt = isFacilitator
-    ? `Разбери текст ${ref} для ведущего группы реабилитации. Коротко (5-7 предложений): богословский смысл, как применить в группе, конкретный вопрос который можно задать участникам, на что обратить внимание если участник уходит в религиозные клише.`
-    : `Разбери текст ${ref} для человека в программе восстановления. Коротко (4-5 предложений): суть, что это значит лично для меня, один практический вывод. Без пафоса, живым языком.`;
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'ai-typing';
+  typing.textContent = 'AI думает...';
+  document.getElementById('ai-messages').appendChild(typing);
+
   try {
-    const res = await fetch('https://bibleproxy-production.up.railway.app', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 700,
-        messages: [{ role: 'user', content: prompt }]
+    const res = await fetch('https://bibleproxy-production.up.railway.app',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:400,
+        system: aiHistory[0].content,
+        messages: aiHistory.slice(1).filter(m=>m.role!=='system')
       })
     });
     const data = await res.json();
-    const text = data.content?.[0]?.text || 'Не удалось получить ответ';
-    el.innerHTML = `<strong style="color:var(--gold);font-size:12px">${ref}</strong><br><br>${text}`;
+    let reply = data.content?.[0]?.text || 'Не удалось получить ответ';
+
+    // Проверяем на флаги
+    const flagMatch = reply.match(/FLAG:\[(.+?)\]/);
+    if (flagMatch) {
+      const flagText = flagMatch[1];
+      reply = reply.replace(/FLAG:\[.+?\]/, '').trim();
+      await saveFlag(currentUser.id, currentUser.name, `AI-разговор (Шаг ${currentUser.unlockedStep||1})`, flagText, 'warning');
+    }
+
+    document.getElementById('ai-typing')?.remove();
+    addAiMsg('ai', reply);
+
+    // Анализ несоответствий каждые 5 сообщений
+    if (aiHistory.filter(m=>m.role==='user').length % 5 === 0) {
+      analyzePatterns();
+    }
   } catch(e) {
-    el.innerHTML = 'Ошибка соединения с сервером';
+    document.getElementById('ai-typing')?.remove();
+    addAiMsg('ai','Ошибка соединения. Попробуй позже.');
   }
 };
 
+async function analyzePatterns() {
+  const userMsgs = aiHistory.filter(m=>m.role==='user').map(m=>m.content).join('\n');
+  try {
+    const res = await fetch('https://bibleproxy-production.up.railway.app',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:200,
+        messages:[{role:'user', content:`Проанализируй эти сообщения участника программы реабилитации и найди несоответствия между словами и паттернами поведения. Если есть красные флаги (самообман, избегание, перекладывание ответственности, умные рассуждения вместо фактов) — опиши одним предложением что именно. Если всё чисто — ответь: «ОК». Сообщения:\n${userMsgs}`}]
+      })
+    });
+    const data = await res.json();
+    const analysis = data.content?.[0]?.text || '';
+    if (analysis && !analysis.includes('ОК')) {
+      await saveFlag(currentUser.id, currentUser.name, 'AI-анализ паттернов', analysis, 'warning');
+    }
+  } catch(e) {}
+}
+
+// ═══ FLAGS ═══
+async function saveFlag(participantId, participantName, title, body, type='warning') {
+  await addDoc(collection(db,'flags'),{
+    participantId, participantName, title, body, type,
+    createdAt: new Date().toISOString(), read: false
+  });
+}
+
+// ═══ SCRIPTURE ═══
+window.fetchScripture = async (ref, containerId, isFacilitator) => {
+  const el = document.getElementById(`scripture-result-${containerId}`);
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = '<div style="color:var(--text2);font-style:italic">Загружаю разбор...</div>';
+  const prompt = isFacilitator
+    ? `Разбери ${ref} для ведущего группы реабилитации (5-6 предложений): богословский смысл, как применить в группе, конкретный вопрос участникам, что делать если уходят в религиозные клише.`
+    : `Разбери ${ref} для человека в программе восстановления (4-5 предложений): суть, что значит лично для меня, один практический вывод. Без пафоса.`;
+  try {
+    const res = await fetch('https://bibleproxy-production.up.railway.app',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    el.innerHTML = `<strong style="color:var(--gold);font-size:12px">${ref}</strong><br><br>${data.content?.[0]?.text||'Ошибка'}`;
+  } catch(e) { el.innerHTML = 'Ошибка соединения'; }
+};
+
+// ═══ DIARY ═══
 async function loadDiary() {
   if (!currentUser) return;
   const el = document.getElementById('diary-entries');
   if (!el) return;
   try {
-    const snap = await getDocs(query(collection(db, 'participants', currentUser.id, 'diary'), orderBy('createdAt', 'desc')));
+    const snap = await getDocs(query(collection(db,'participants',currentUser.id,'diary'),orderBy('createdAt','desc'),limit(10)));
     el.innerHTML = '';
     snap.forEach(d => {
       const a = d.data();
       el.innerHTML += `<div class="diary-entry">
-        <div class="diary-entry-date">${a.createdAt ? new Date(a.createdAt).toLocaleString('ru') : ''}</div>
-        <div class="diary-entry-text">${a.text || ''}</div>
+        <div class="diary-entry-date">${a.createdAt?new Date(a.createdAt).toLocaleString('ru'):''}</div>
+        <div class="diary-entry-text">${a.text||''}</div>
       </div>`;
     });
-  } catch(e) {}
+  } catch(e){}
 }
 
-window.saveDiaryEntry = async () => {
+window.saveDiary = async () => {
   const text = document.getElementById('diary-input')?.value?.trim();
-  if (!text || !currentUser) return;
-  await addDoc(collection(db, 'participants', currentUser.id, 'diary'), {
-    text, stepId: selectedStepId, createdAt: new Date().toISOString(),
+  if (!text||!currentUser) return;
+  await addDoc(collection(db,'participants',currentUser.id,'diary'),{
+    text, stepId:selectedStepId, createdAt:new Date().toISOString()
   });
   document.getElementById('diary-input').value = '';
   loadDiary();
+
+  // AI анализирует дневник на флаги
+  try {
+    const res = await fetch('https://bibleproxy-production.up.railway.app',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,
+        messages:[{role:'user',content:`Участник программы реабилитации написал в дневник: "${text}". 
+Есть ли признаки самообмана, избегания, перекладывания ответственности или расхождения с тем что он должен прорабатывать на Шаге ${selectedStepId}? 
+Если да — одно предложение что именно. Если нет — «ОК».`}]
+      })
+    });
+    const data = await res.json();
+    const analysis = data.content?.[0]?.text||'';
+    if (analysis && !analysis.includes('ОК')) {
+      await saveFlag(currentUser.id,currentUser.name,`Дневник (Шаг ${selectedStepId})`,analysis,'warning');
+    }
+  } catch(e){}
 };
 
-// ─── WHEEL ───
-function initWheel() {
-  const canvas = document.getElementById('wheel');
+// ═══ WHEEL DRAW ═══
+function drawWheel(canvasId, scores) {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const sliders = document.getElementById('wheel-sliders');
-  const values = {};
-  WHEEL_AREAS.forEach(a => values[a.id] = 5);
-
-  function drawWheel() {
-    const cx = 130, cy = 130, r = 110;
-    ctx.clearRect(0, 0, 260, 260);
-    ctx.fillStyle = '#141414';
-    ctx.fillRect(0,0,260,260);
-    const n = WHEEL_AREAS.length;
-    const angleStep = (Math.PI * 2) / n;
-
-    // grid
-    for (let ring = 1; ring <= 10; ring++) {
-      ctx.beginPath();
-      for (let i = 0; i < n; i++) {
-        const ang = i * angleStep - Math.PI / 2;
-        const rr = r * ring / 10;
-        if (i === 0) ctx.moveTo(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang));
-        else ctx.lineTo(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang));
-      }
-      ctx.closePath();
-      ctx.strokeStyle = ring === 10 ? '#3a3a3a' : '#222';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-
-    // spokes
-    WHEEL_AREAS.forEach((a, i) => {
-      const ang = i * angleStep - Math.PI / 2;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + r * Math.cos(ang), cy + r * Math.sin(ang));
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
-
-    // fill
+  const cx=130,cy=130,r=100;
+  ctx.clearRect(0,0,260,260);
+  ctx.fillStyle='#141414'; ctx.fillRect(0,0,260,260);
+  const n=WHEEL_AREAS.length;
+  const step=Math.PI*2/n;
+  for(let ring=1;ring<=10;ring++){
     ctx.beginPath();
-    WHEEL_AREAS.forEach((a, i) => {
-      const ang = i * angleStep - Math.PI / 2;
-      const rr = r * (values[a.id] || 0) / 10;
-      if (i === 0) ctx.moveTo(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang));
-      else ctx.lineTo(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang));
-    });
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(201,168,76,0.2)';
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(201,168,76,0.6)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // dots
-    WHEEL_AREAS.forEach((a, i) => {
-      const ang = i * angleStep - Math.PI / 2;
-      const rr = r * (values[a.id] || 0) / 10;
-      ctx.beginPath();
-      ctx.arc(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang), 4, 0, Math.PI * 2);
-      ctx.fillStyle = a.color;
-      ctx.fill();
-      // label
-      const lr = r + 18;
-      ctx.fillStyle = '#8a8478';
-      ctx.font = '11px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(a.name, cx + lr * Math.cos(ang), cy + lr * Math.sin(ang));
-    });
+    for(let i=0;i<n;i++){
+      const ang=i*step-Math.PI/2;
+      const rr=r*ring/10;
+      i===0?ctx.moveTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)):ctx.lineTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang));
+    }
+    ctx.closePath(); ctx.strokeStyle=ring===10?'#3a3a3a':'#222'; ctx.lineWidth=1; ctx.stroke();
   }
-
-  sliders.innerHTML = WHEEL_AREAS.map(a => `
-    <div class="slider-row">
-      <div class="slider-label">
-        <span class="slider-name">${a.name}</span>
-        <span class="slider-val" id="val-${a.id}">5</span>
-      </div>
-      <input type="range" min="0" max="10" value="5" id="sl-${a.id}"
-        oninput="updateWheel('${a.id}', this.value)">
-    </div>`).join('');
-
-  window.updateWheel = (id, val) => {
-    values[id] = parseInt(val);
-    document.getElementById(`val-${id}`).textContent = val;
-    drawWheel();
-  };
-
-  drawWheel();
+  WHEEL_AREAS.forEach((_,i)=>{
+    const ang=i*step-Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+r*Math.cos(ang),cy+r*Math.sin(ang));
+    ctx.strokeStyle='#2a2a2a'; ctx.lineWidth=1; ctx.stroke();
+  });
+  ctx.beginPath();
+  WHEEL_AREAS.forEach((a,i)=>{
+    const ang=i*step-Math.PI/2;
+    const rr=r*(scores[a.id]||5)/10;
+    i===0?ctx.moveTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)):ctx.lineTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang));
+  });
+  ctx.closePath(); ctx.fillStyle='rgba(201,168,76,.2)'; ctx.fill(); ctx.strokeStyle='rgba(201,168,76,.6)'; ctx.lineWidth=2; ctx.stroke();
+  WHEEL_AREAS.forEach((a,i)=>{
+    const ang=i*step-Math.PI/2;
+    const rr=r*(scores[a.id]||5)/10;
+    ctx.beginPath(); ctx.arc(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang),4,0,Math.PI*2); ctx.fillStyle=a.color; ctx.fill();
+    ctx.fillStyle='#8a8478'; ctx.font='11px Inter,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(a.name,cx+(r+18)*Math.cos(ang),cy+(r+18)*Math.sin(ang));
+  });
 }
 
+// ═══ DAY TABS ═══
+window.selDay = (i,containerId) => {
+  selectedDayIndex=i;
+  const c=document.getElementById(containerId);
+  c.querySelectorAll('.day-tab').forEach((t,ti)=>t.classList.toggle('active',ti===i));
+  c.querySelectorAll('.day-content').forEach((d,di)=>d.classList.toggle('active',di===i));
+};
+
+window.toggleHw = (key,el) => {
+  hwDone[key]=!hwDone[key];
+  el.classList.toggle('done',hwDone[key]);
+  el.querySelector('.hw-check').textContent=hwDone[key]?'✓':'';
+};
+
+// ═══ FACILITATOR ═══
+window.switchFTab = tab => {
+  document.getElementById('ftab-participants').style.display=tab==='participants'?'grid':'none';
+  document.getElementById('ftab-program').style.display=tab==='program'?'grid':'none';
+  document.getElementById('tab-participants').classList.toggle('active',tab==='participants');
+  document.getElementById('tab-program').classList.toggle('active',tab==='program');
+  if(tab==='program') renderFProgram();
+};
+
+function renderFProgram() {
+  const nav=document.getElementById('f-steps-nav');
+  if(nav.innerHTML!=='') return;
+  nav.innerHTML=STEPS.map(s=>`<div class="step-nav-item" onclick="openFStep(${s.id})">
+    <div class="step-nav-num">${s.id}</div>
+    <div style="flex:1"><div class="step-nav-name">${s.name}</div><div class="step-nav-sub">${s.phase.split('—')[1]?.trim()||''}</div></div>
+  </div>`).join('');
+}
+
+window.openFStep = stepId => {
+  selectedStepId=stepId; selectedDayIndex=0;
+  document.querySelectorAll('#f-steps-nav .step-nav-item').forEach((el,i)=>el.classList.toggle('active',STEPS[i]?.id===stepId));
+  renderFacilitatorStep();
+};
+
+function renderFacilitatorStep() {
+  const step=STEPS.find(s=>s.id===selectedStepId);
+  if(!step) return;
+  const main=document.getElementById('f-program-main');
+
+  const tabsHtml=step.days.map((d,i)=>
+    `<div class="day-tab ${d.type==='meeting'||d.type==='individual'?'meeting-day':''} ${i===0?'active':''}" onclick="selDay(${i},'f-program-main')">${d.label}</div>`
+  ).join('');
+
+  const daysHtml=step.days.map((d,i)=>{
+    const typeBadge=d.type==='meeting'?'badge-meeting':d.type==='individual'?'badge-individual':'badge-self';
+    const typeLabel=d.type==='meeting'?'Групповая встреча':d.type==='individual'?'Индивидуальная встреча':'Самостоятельная работа';
+    const blocksHtml=(d.blocks||[]).map((b,bi)=>`
+      <div class="block-item" id="bf-${i}-${bi}">
+        <div class="block-header" onclick="document.getElementById('bf-${i}-${bi}').classList.toggle('open')">
+          <span class="block-title">${b.t}</span>
+          <span style="display:flex;gap:12px;align-items:center"><span class="block-dur">${b.dur}</span><span class="block-chevron">▼</span></span>
+        </div>
+        <div class="block-body">${b.body}</div>
+      </div>`).join('');
+    const monitorHtml=d.monitor?`<div class="detail-section">
+      <div class="section-h">Мониторинг</div>
+      <div class="monitor-grid">
+        <div class="monitor-card monitor-green"><div class="monitor-label">🟢 Движется</div>${d.monitor.green}</div>
+        <div class="monitor-card monitor-yellow"><div class="monitor-label">🟡 Внимание</div>${d.monitor.yellow}</div>
+        <div class="monitor-card monitor-red"><div class="monitor-label">🔴 Стоп</div>${d.monitor.red}</div>
+      </div></div>`:'';
+    const prayersHtml=d.prayers?.length?`<div class="detail-section">
+      <div class="section-h">Молитвы перед встречей</div>
+      ${d.prayers.map(p=>`<div class="prayer-item">${p}</div>`).join('')}</div>`:'';
+    const hwHtml=d.homework?.length?`<div class="detail-section">
+      <div class="section-h">Домашнее задание участнику</div>
+      ${d.homework.map(hw=>`<div class="hw-item"><div class="hw-check">→</div><span>${hw}</span></div>`).join('')}</div>`:'';
+    const forbids=`<div class="detail-section">
+      <div class="section-h">Запреты ведущего</div>
+      ${['Не давать советов — только вопросы','Не путать слёзы с прогрессом','Не торопить — держать паузу','Не принимать умные рассуждения вместо фактов','Не усиливать стыд — различай «я сделал» и «я плохой»']
+        .map(f=>`<div class="prayer-item" style="border-left:3px solid var(--red);color:var(--text)">${f}</div>`).join('')}</div>`;
+    return `<div class="day-content ${i===0?'active':''}" id="dayf-${i}">
+      <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
+      <div class="day-title">${d.title}</div>
+      <div class="day-time">${d.time}</div>
+      <div class="day-goal">${d.goal}</div>
+      <div class="detail-section"><div class="section-h">Сценарий</div>${blocksHtml}</div>
+      ${monitorHtml}${prayersHtml}${hwHtml}${forbids}
+    </div>`;
+  }).join('');
+
+  const scripturesHtml=step.scriptures.map(s=>
+    `<button class="scripture-btn" onclick="fetchScripture('${s}','f-program-main',true)">${s}</button>`
+  ).join('');
+
+  main.innerHTML=`<div class="step-content">
+    <div class="step-phase-badge">${step.phase}</div>
+    <div class="step-big-title">Шаг ${step.id} · ${step.name}</div>
+    <div class="step-deviz">${step.deviz}</div>
+    <div class="days-tabs">${tabsHtml}</div>
+    ${daysHtml}
+    <div class="detail-section" style="margin-top:24px">
+      <div class="section-h">Писание шага</div>
+      <div>${scripturesHtml}</div>
+      <div class="scripture-result" id="scripture-result-f-program-main"></div>
+    </div>
+  </div>`;
+}
+
+async function loadParticipants() {
+  const snap=await getDocs(collection(db,'participants'));
+  const list=document.getElementById('participants-list');
+  list.innerHTML=`<div style="padding:12px 20px 8px">
+    <button class="btn-open-step" style="width:100%;margin:0;font-size:12px" onclick="showAddParticipant()">+ Добавить участника</button>
+  </div>`;
+
+  // Загружаем флаги
+  const flagsSnap=await getDocs(query(collection(db,'flags'),orderBy('createdAt','desc')));
+  const unreadFlags={};
+  flagsSnap.forEach(d=>{
+    const f=d.data();
+    if(!f.read) unreadFlags[f.participantId]=(unreadFlags[f.participantId]||0)+1;
+  });
+
+  snap.forEach(d=>{
+    const data=d.data();
+    const item=document.createElement('div');
+    item.className='participant-item';
+    item.dataset.uid=d.id;
+    const flags=unreadFlags[d.id]||0;
+    item.innerHTML=`
+      <div class="p-name">${data.name}</div>
+      <div class="p-step">Шаг ${data.unlockedStep||1}</div>
+      ${flags?`<span class="p-badge badge-red">🚩 ${flags} флаг${flags>1?'а':''}</span>`:'<span class="p-badge badge-green">активен</span>'}
+    `;
+    item.onclick=()=>selectParticipant(d.id,data);
+    list.appendChild(item);
+  });
+}
+
+window.showAddParticipant = () => {
+  document.getElementById('f-main').innerHTML=`
+    <div style="max-width:480px">
+      <div class="detail-name">Новый участник</div>
+      <div class="detail-email" style="margin-bottom:20px">Введите имя которое участник будет использовать для входа</div>
+      <div class="field-label">Имя участника</div>
+      <input class="field-input" id="new-p-name" type="text" placeholder="Например: Иван или Иван_К">
+      <button class="btn-open-step" style="margin-top:16px;width:100%" onclick="createParticipant()">Создать</button>
+      <div class="auth-error" id="add-error" style="display:none;margin-top:10px"></div>
+    </div>`;
+};
+
+window.createParticipant = async () => {
+  const name=document.getElementById('new-p-name').value.trim();
+  if(!name) return;
+  const key=name.toLowerCase().replace(/\s+/g,'_');
+  const existing=await getDoc(doc(db,'participants',key));
+  if(existing.exists()){document.getElementById('add-error').textContent='Участник с таким именем уже есть';document.getElementById('add-error').style.display='block';return;}
+  await setDoc(doc(db,'participants',key),{name,unlockedStep:1,wheelDone:false,createdAt:new Date().toISOString()});
+  await loadParticipants();
+  const snap=await getDoc(doc(db,'participants',key));
+  selectParticipant(key,snap.data());
+};
+
+async function selectParticipant(uid,data) {
+  selectedParticipantId=uid;
+  document.querySelectorAll('.participant-item').forEach(el=>el.classList.remove('active'));
+  document.querySelector(`[data-uid="${uid}"]`)?.classList.add('active');
+
+  const main=document.getElementById('f-main');
+  const unlocked=data.unlockedStep||1;
+  const scores=data.wheelScores||{};
+
+  // Флаги
+  let flagsHtml='';
+  try {
+    const flagsSnap=await getDocs(query(collection(db,'flags'),orderBy('createdAt','desc')));
+    const pFlags=[];
+    flagsSnap.forEach(d=>{const f=d.data();if(f.participantId===uid)pFlags.push({id:d.id,...f});});
+    if(pFlags.length){
+      flagsHtml=`<div class="detail-section">
+        <div class="detail-section-title">🚩 Сигналы AI (${pFlags.length})</div>
+        ${pFlags.slice(0,10).map(f=>`<div class="flag-card ${f.read?'':'flag-unread'}">
+          <div class="flag-title">${f.title}</div>
+          <div class="flag-body">${f.body}</div>
+          <div class="flag-date">${f.createdAt?new Date(f.createdAt).toLocaleString('ru'):''}</div>
+        </div>`).join('')}
+      </div>`;
+    }
+  } catch(e){}
+
+  // Дневник
+  let diaryHtml='';
+  try {
+    const dSnap=await getDocs(query(collection(db,'participants',uid,'diary'),orderBy('createdAt','desc'),limit(5)));
+    if(!dSnap.empty){
+      diaryHtml=`<div class="detail-section">
+        <div class="detail-section-title">Последние записи дневника</div>
+        ${[...dSnap.docs].map(d=>`<div class="answer-card">
+          <div class="answer-a">${d.data().text||''}</div>
+          <div class="answer-date">${d.data().createdAt?new Date(d.data().createdAt).toLocaleDateString('ru'):''}</div>
+        </div>`).join('')}
+      </div>`;
+    }
+  } catch(e){}
+
+  const stepsHtml=STEPS.map(s=>{
+    const cls=s.id<unlocked?'unlocked':s.id===unlocked?'current':'';
+    const status=s.id<unlocked?'пройден':s.id===unlocked?'текущий':'закрыт';
+    return `<div class="step-tile ${cls}"><div class="step-num">${s.id}</div><div class="step-status">${status}</div></div>`;
+  }).join('');
+
+  const wheelHtml=data.wheelDone?`<div class="detail-section">
+    <div class="detail-section-title">Колесо баланса</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:start">
+      <canvas id="f-wheel-${uid}" width="200" height="200"></canvas>
+      <div style="font-size:12px;color:var(--text2);line-height:2">
+        ${WHEEL_AREAS.map(a=>`<div><span style="color:var(--text)">${a.name}:</span> <span style="color:${(scores[a.id]||5)>=7?'var(--green)':(scores[a.id]||5)>=4?'var(--yellow)':'var(--red)'};font-weight:600">${scores[a.id]||'—'}/10</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`:'<div class="detail-section"><div class="detail-section-title">Колесо баланса</div><div style="color:var(--text2);font-size:13px">Участник ещё не заполнил базовый опросник.</div></div>';
+
+  main.innerHTML=`<div style="max-width:700px">
+    <div class="detail-name">${data.name}</div>
+    <div class="detail-email">Логин: <strong style="color:var(--gold)">${uid}</strong></div>
+    ${flagsHtml}
+    ${wheelHtml}
+    <div class="detail-section">
+      <div class="detail-section-title">Шаги программы</div>
+      <div class="steps-grid">${stepsHtml}</div>
+      ${unlocked<10?`<button class="btn-open-step" onclick="openNextStep('${uid}',${unlocked})">Открыть Шаг ${unlocked+1}</button>`:'<p style="color:var(--gold);margin-top:14px;font-size:13px">Все шаги пройдены ✦</p>'}
+    </div>
+    ${diaryHtml}
+  </div>`;
+
+  if(data.wheelDone) setTimeout(()=>drawWheel(`f-wheel-${uid}`,scores),50);
+}
+
+window.openNextStep = async (uid,cur) => {
+  const next=cur+1;
+  await updateDoc(doc(db,'participants',uid),{unlockedStep:next});
+
+  // Генерируем сигнальный опросник для нового шага через AI
+  const pSnap=await getDoc(doc(db,'participants',uid));
+  const pData=pSnap.data();
+  const scores=pData.wheelScores||{};
+  const weakAreas=WHEEL_AREAS.filter(a=>(scores[a.id]||5)<=5).map(a=>a.name);
+  const step=STEPS.find(s=>s.id===next);
+
+  try {
+    const res=await fetch('https://bibleproxy-production.up.railway.app',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,
+        messages:[{role:'user',content:`Участник ${pData.name} переходит на Шаг ${next} программы «${step?.name}». 
+Слабые зоны по колесу баланса: ${weakAreas.join(', ')||'нет'}. 
+Составь 3 коротких сигнальных вопроса для ведущего — что конкретно проверить на этом шаге с учётом слабых зон. Формат: просто 3 вопроса, каждый с новой строки.`}]
+      })
+    });
+    const data=await res.json();
+    const questions=data.content?.[0]?.text||'';
+    await saveFlag(uid,pData.name,`Переход на Шаг ${next} — сигнальные вопросы`,questions,'info');
+  } catch(e){}
+
+  await loadParticipants();
+  const snap=await getDoc(doc(db,'participants',uid));
+  selectParticipant(uid,snap.data());
+};
 </script>
 </body>
 </html>
