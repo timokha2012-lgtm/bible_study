@@ -136,6 +136,32 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .ai-go{width:100%;background:transparent;border:1px solid var(--b2);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;padding:8px;cursor:pointer;margin-top:6px;transition:all .2s;}
 .ai-go:hover{border-color:var(--gold);color:var(--gold);}
 
+/* Workbook */
+.wb-section{background:var(--s2);border:1px solid var(--b1);margin-bottom:16px;overflow:hidden;}
+.wb-section-title{font-size:12px;font-weight:500;color:var(--gold);padding:12px 16px;border-bottom:1px solid var(--b1);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.wb-section-title:hover{background:rgba(200,160,74,.04);}
+.wb-section-body{padding:16px;display:none;}
+.wb-section.open .wb-section-body{display:block;}
+.wb-desc{font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5;}
+.wb-question{margin-bottom:16px;}
+.wb-q-text{font-size:12px;color:var(--text);margin-bottom:6px;line-height:1.5;}
+.wb-input{width:100%;background:var(--s3);border:none;border-bottom:1px solid var(--b2);color:var(--text);font-family:'Inter',sans-serif;font-size:12px;padding:6px 0;outline:none;resize:none;min-height:32px;transition:border-color .15s;line-height:1.6;}
+.wb-input:focus{border-bottom-color:var(--gold);}
+.wb-scale-row{display:flex;gap:6px;margin-top:6px;}
+.wb-scale-btn{flex:1;padding:6px 2px;background:var(--s3);border:1px solid var(--b2);color:var(--text3);font-size:11px;cursor:pointer;text-align:center;transition:all .15s;}
+.wb-scale-btn:hover{border-color:var(--gold);}
+.wb-scale-btn.sel{background:var(--gold);border-color:var(--gold);color:#080808;font-weight:500;}
+.wb-scale-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--b1);}
+.wb-scale-item-text{flex:1;font-size:12px;color:var(--text2);}
+.wb-table{width:100%;border-collapse:collapse;font-size:11px;}
+.wb-table th{background:var(--s3);padding:8px 10px;text-align:left;color:var(--text3);font-weight:400;border:1px solid var(--b2);}
+.wb-table td{padding:6px 10px;border:1px solid var(--b2);vertical-align:top;}
+.wb-table td:first-child{color:var(--text2);width:100px;}
+.wb-table input{width:100%;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;outline:none;}
+.wb-save-btn{background:var(--gold);color:#080808;border:none;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;padding:8px 18px;cursor:pointer;margin-top:14px;float:right;transition:background .2s;}
+.wb-save-btn:hover{background:var(--gold2);}
+.wb-saved-note{font-size:10px;color:var(--green);margin-top:10px;display:none;}
+
 @media(max-width:900px){
   .app-body{grid-template-columns:1fr;}
   .app-left,.app-right{display:none;}
@@ -295,6 +321,202 @@ const STEPS=[
    ]},
 ];
 
+// ─── WORKBOOK DATA (from participant workbook PDF) ───
+const WORKBOOKS = {
+  1: {
+    title:'Шаг 1 · Возвращение к дружбе',
+    sections:[
+      {
+        id:'self_check',
+        title:'Стартовая самооценка — «Где я сейчас?»',
+        desc:'Отметь по шкале: 0 — совсем нет; 1 — немного; 2 — иногда; 3 — часто; 4 — почти всегда',
+        type:'scale4',
+        items:[
+          'Я скрываю часть правды о себе',
+          'Я оправдываю своё поведение обстоятельствами',
+          'Мне трудно просить помощь',
+          'Я делаю вид что всё лучше чем есть',
+          'Когда мне стыдно я исчезаю',
+          'Когда мне страшно я начинаю врать или недоговаривать',
+          'Я боюсь что если скажу правду меня отвергнут',
+          'Я знаю конкретных людей к кому могу обратиться',
+          'У меня есть план что делать при тяге и срыве',
+          'Я верю что честность может стать началом',
+        ]
+      },
+      {
+        id:'reality',
+        title:'5.1. Моя реальность без грима',
+        desc:'Отвечай конкретно — фактами, без литературщины',
+        type:'questions',
+        items:[
+          'Когда я понял что теряю контроль?',
+          'Что я скрывал от других?',
+          'Что я скрывал от себя?',
+          'Какими фразами я обычно оправдывал себя?',
+          'Что уже разрушено?',
+          'Что разрушится следующим если ничего не менять?',
+        ]
+      },
+      {
+        id:'price',
+        title:'5.2. Цена самообмана',
+        desc:'По каждой сфере: что я потерял, что скрывал, во что мне обошлась ложь',
+        type:'table',
+        cols:['Что я потерял','Что я скрывал','Во что мне обошлась ложь'],
+        rows:['Тело','Психика','Отношения','Работа / служение','Деньги','Вера / совесть'],
+      },
+      {
+        id:'relations',
+        title:'5.3. Какой я в отношениях',
+        type:'questions',
+        items:[
+          'Где я использовал людей вместо любви?',
+          'Где я требовал доверия сам не будучи честным?',
+          'Где я играл роль?',
+          'Какой я друг на самом деле?',
+          'Хотел бы я сам иметь рядом такого человека как я? Почему?',
+        ]
+      },
+      {
+        id:'honesty',
+        title:'ДЗ 1. Лист честности',
+        type:'questions',
+        items:[
+          'Больше всего я скрываю...',
+          'Мне труднее всего признать...',
+          'Когда я говорю «всё нормально» на самом деле...',
+          'Я чаще всего вру когда чувствую...',
+          'Я боюсь что если люди увидят правду они...',
+          'Больше всего я оправдываю...',
+          'Цена моей лжи уже составила...',
+          'Я не хочу дальше жить так потому что...',
+          'Один человек с кем мне нужно быть честным...',
+          'Мой первый настоящий шаг...',
+        ]
+      },
+      {
+        id:'psalm',
+        title:'ДЗ 3. Псалом и отклик',
+        desc:'Прочитай Пс. 31 или Пс. 50 и ответь',
+        type:'questions',
+        items:[
+          'Где этот текст касается меня?',
+          'Что во мне сопротивляется?',
+          'Где я хочу не спрятаться а вернуться?',
+        ]
+      },
+    ]
+  },
+  2: {
+    title:'Шаг 2 · Тело: союзник',
+    sections:[
+      {
+        id:'body_map',
+        title:'Карта тела',
+        desc:'Где в теле ты чаще замечаешь следующие состояния?',
+        type:'questions',
+        items:[
+          'Где в теле я замечаю тревогу?',
+          'Где я замечаю стыд?',
+          'Где я замечаю пустоту?',
+          'Где я замечаю злость?',
+          'Где я замечаю тягу?',
+          'Что появляется раньше — мысль или телесный сигнал?',
+          'Что я обычно игнорирую?',
+          'К чему это приводит через несколько часов?',
+        ]
+      },
+      {
+        id:'sleep_chaos',
+        title:'Мой сон и мой хаос',
+        type:'questions',
+        items:[
+          'Что происходит со мной после 2-3 плохих ночей?',
+          'Как меняется тяга после недосыпа?',
+          'Как меняется раздражение?',
+          'Как меняется способность просить помощи?',
+        ]
+      },
+      {
+        id:'anchors',
+        title:'Мои якоря',
+        type:'questions',
+        items:[
+          'Какой якорь мне подошёл лучше всего? Почему?',
+          'Когда именно я буду его применять?',
+          'Мои 3 ранних телесных сигнала тяги:',
+        ]
+      },
+      {
+        id:'rhythm',
+        title:'Минимальный недельный ритм',
+        desc:'Запиши конкретное время для каждого',
+        type:'questions',
+        items:[
+          'Подъём:',
+          'Отход ко сну:',
+          'Первый приём пищи:',
+          'Вода (сколько стаканов):',
+          'Движение (что именно):',
+          'Пауза без телефона (когда):',
+        ]
+      },
+    ]
+  },
+  3: {
+    title:'Шаг 3 · Надежда и союз помощи',
+    sections:[
+      {
+        id:'hope_history',
+        title:'История моей надежды',
+        type:'questions',
+        items:[
+          'Эпизод 1: когда я надеялся и был предан / разочарован',
+          'Что я решил о Боге после этого?',
+          'Что я решил о людях?',
+          'Что я решил о себе?',
+          'Эпизод 2: ещё один момент разрушенной надежды',
+          'Что изменилось во мне после него?',
+        ]
+      },
+      {
+        id:'hope_types',
+        title:'Ложная / настоящая надежда',
+        desc:'Мои примеры надежды-контракта и надежды-доверия',
+        type:'questions',
+        items:[
+          'Мои фразы надежды-контракта (я ожидал что если...):',
+          'Мои фразы надежды-доверия (я иду даже если...):',
+          'Где я до сих пор требую мгновенного результата?',
+        ]
+      },
+      {
+        id:'support_map',
+        title:'Карта реальной поддержки',
+        type:'questions',
+        items:[
+          'Кому я могу позвонить в кризис (имя и телефон):',
+          'Кому я могу сказать правду (имя):',
+          'Кто может быть свидетелем моего пути (имя):',
+          'Кто поможет мне не исчезнуть в тишине (имя):',
+        ]
+      },
+      {
+        id:'help_contract',
+        title:'Контракт принятия помощи',
+        type:'questions',
+        items:[
+          'Кому я позвоню/напишу в ближайшие 48 часов?',
+          'Что именно скажу?',
+          'О чём попрошу?',
+          'Как не сорву этот шаг?',
+        ]
+      },
+    ]
+  },
+};
+
 // State
 let currentUser = null;
 let selectedStep = null;
@@ -415,7 +637,7 @@ function renderStepCenter(){
 
   const tabsHtml = s.meetings.map((m,i)=>`
     <div class="meet-tab ${i===0?'active':''}" onclick="switchMeeting('${m.id}','${s.id}')">${m.label}</div>
-  `).join('');
+  `).join('') + `<div class="meet-tab" onclick="showWorkbook(${s.id})" style="border-color:rgba(200,160,74,.5)">📓 Тетрадь</div>`;
 
   const meetsHtml = s.meetings.map((m,i)=>{
     const tc = m.type==='meeting'?'badge-m':m.type==='individual'?'badge-i':'badge-s';
@@ -487,6 +709,78 @@ window.toggleHW = (key, el) => {
   el.classList.toggle('done', hwDone[key]);
   el.querySelector('.hw-check').textContent = hwDone[key]?'✓':'';
 };
+
+// ─── WORKBOOK ───
+let wbData = {};
+
+window.showWorkbook = async (stepId) => {
+  const wb = WORKBOOKS[stepId];
+  const center = document.getElementById('app-center');
+  try {
+    const snap = await getDoc(doc(db,'participants',currentUser.id));
+    wbData = snap.data()?.workbook?.[stepId] || {};
+  } catch(e){ wbData = {}; }
+  if(!wb){
+    center.innerHTML = `<div class="step-phase">РАБОЧАЯ ТЕТРАДЬ</div><div class="step-title-big">Шаг ${stepId}</div><div style="color:var(--text3);font-size:13px;margin-top:16px">Тетрадь для этого шага в разработке.</div>`;
+    return;
+  }
+  const sectionsHtml = wb.sections.map(sec => {
+    let bodyHtml = '';
+    if(sec.desc) bodyHtml += `<div class="wb-desc">${sec.desc}</div>`;
+    if(sec.type === 'questions'){
+      bodyHtml += sec.items.map((q,i) => `<div class="wb-question"><div class="wb-q-text">${q}</div><textarea class="wb-input" id="wb-${sec.id}-${i}" rows="2" placeholder="Напиши честно...">${wbData[sec.id+'_'+i]||''}</textarea></div>`).join('');
+    } else if(sec.type === 'scale4'){
+      bodyHtml += sec.items.map((item,i) => `<div class="wb-scale-item"><div class="wb-scale-item-text">${item}</div><div class="wb-scale-row" style="width:180px;flex-shrink:0">${[0,1,2,3,4].map(n=>'<div class="wb-scale-btn '+(wbData[sec.id+'_'+i]==n?'sel':'')+'" onclick="wbPick(''+sec.id+'','+i+','+n+',this)">'+n+'</div>').join('')}</div></div>`).join('');
+    } else if(sec.type === 'table'){
+      bodyHtml += '<table class="wb-table"><tr><th>Сфера</th>'+sec.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>'+sec.rows.map((row,ri)=>'<tr><td>'+row+'</td>'+sec.cols.map((_,ci)=>'<td><input type="text" value="'+(wbData[sec.id+'_'+ri+'_'+ci]||'')+'" onchange="wbTableChange(''+sec.id+'','+ri+','+ci+',this.value)" placeholder="..."></td>').join('')+'</tr>').join('')+'</table>';
+    }
+    bodyHtml += '<div style="display:flex;align-items:center;gap:12px;margin-top:12px"><button class="wb-save-btn" onclick="saveWbSection('+stepId+',''+sec.id+'')">Сохранить →</button><span class="wb-saved-note" id="saved-'+sec.id+'">✓ Сохранено</span></div><div style="clear:both"></div>';
+    return '<div class="wb-section" id="wbs-'+sec.id+'"><div class="wb-section-title" onclick="document.getElementById('wbs-'+sec.id+'').classList.toggle('open')"><span>'+sec.title+'</span><span style="color:var(--text3);font-size:11px">▾</span></div><div class="wb-section-body">'+bodyHtml+'</div></div>';
+  }).join('');
+  center.innerHTML = '<div class="step-phase">РАБОЧАЯ ТЕТРАДЬ</div><div class="step-title-big">'+wb.title+'</div><div style="font-size:12px;color:var(--text3);margin-bottom:24px">Заполняй честно — только фактами. AI анализирует твои ответы.</div>'+sectionsHtml;
+  document.querySelector('.wb-section')?.classList.add('open');
+};
+
+window.wbPick = (secId, idx, val, el) => {
+  wbData[secId+'_'+idx] = val;
+  el.closest('.wb-scale-row').querySelectorAll('.wb-scale-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+};
+window.wbTableChange = (secId, ri, ci, val) => { wbData[secId+'_'+ri+'_'+ci] = val; };
+
+window.saveWbSection = async (stepId, secId) => {
+  const wb = WORKBOOKS[stepId];
+  const sec = wb?.sections.find(s=>s.id===secId);
+  if(!sec) return;
+  if(sec.type === 'questions'){
+    sec.items.forEach((_,i) => { wbData[sec.id+'_'+i] = document.getElementById('wb-'+sec.id+'-'+i)?.value||''; });
+  }
+  try {
+    const existing = (await getDoc(doc(db,'participants',currentUser.id))).data()?.workbook||{};
+    existing[stepId] = {...(existing[stepId]||{}), ...wbData};
+    await updateDoc(doc(db,'participants',currentUser.id),{workbook:existing});
+    const note = document.getElementById('saved-'+secId);
+    if(note){ note.style.display='inline'; setTimeout(()=>note.style.display='none',2000); }
+    // AI analyzes
+    const answers = sec.type==='questions'
+      ? sec.items.map((q,i)=>q+'\n'+(wbData[sec.id+'_'+i]||'(не заполнено)')).join('\n\n')
+      : JSON.stringify(Object.fromEntries(Object.entries(wbData).filter(([k])=>k.startsWith(secId))));
+    const res = await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,
+        messages:[{role:'user',content:'Участник Шага '+stepId+' заполнил раздел тетради «'+sec.title+'».\n\nОтветы:\n'+answers+'\n\nЕсть ли признаки самообмана, избегания, общих слов вместо фактов, перекладывания ответственности? Если да — одним конкретным предложением. Если ответы честные — «ОК».'}]})
+    });
+    const data = await res.json();
+    const analysis = data.content?.[0]?.text||'';
+    if(analysis && !analysis.includes('ОК')){
+      await addDoc(collection(db,'flags'),{
+        participantId:currentUser.id,participantName:currentUser.name,
+        title:'Тетрадь · Шаг '+stepId+' · '+sec.title,
+        body:analysis,type:'warning',createdAt:new Date().toISOString(),read:false
+      });
+    }
+  } catch(e){ console.error(e); }
+};
+
 
 window.showWheelPanel = () => {
   const scores = currentUser.wheelScores||{};
