@@ -1311,66 +1311,92 @@ function renderStepContentIn(containerId) {
   const step = STEPS.find(s => s.id === selectedStepId);
   if (!step) return;
   const main = document.getElementById(containerId);
+  const isFacilitator = containerId === 'f-program-main';
 
   const tabsHtml = step.days.map((d, i) => `
     <div class="day-tab ${d.type === 'meeting' || d.type === 'individual' ? 'meeting-day' : ''} ${i === selectedDayIndex ? 'active' : ''}"
-         onclick="selectDay(${i})">${d.label}</div>
+         onclick="selectDay(${i},'${containerId}')">${d.label}</div>
   `).join('');
 
-  const daysHtml = step.days.map((d, i) => renderDay(d, i, step)).join('');
+  const daysHtml = step.days.map((d, i) =>
+    isFacilitator ? renderDayFacilitator(d, i) : renderDayParticipant(d, i)
+  ).join('');
 
   const scripturesHtml = step.scriptures.map(s =>
-    `<button class="scripture-btn" onclick="fetchScripture('${s}')">${s}</button>`
+    `<button class="scripture-btn" onclick="fetchScripture('${s}','${containerId}')">${s}</button>`
   ).join('');
+
+  const participantExtras = !isFacilitator ? `
+    <div class="detail-section mt-24">
+      <div class="section-h">Дневник чувств</div>
+      <div class="diary-form">
+        <textarea class="diary-textarea" id="diary-input" placeholder="Что происходит внутри сегодня..."></textarea>
+        <button class="btn-save-diary" onclick="saveDiaryEntry()">Сохранить</button>
+      </div>
+      <div class="diary-entries" id="diary-entries"></div>
+    </div>
+    <div class="detail-section mt-24">
+      <div class="section-h">Колесо баланса</div>
+      <div class="wheel-wrap">
+        <canvas id="wheel" width="260" height="260"></canvas>
+        <div class="wheel-sliders" id="wheel-sliders"></div>
+      </div>
+    </div>` : '';
 
   main.innerHTML = `
     <div class="step-content">
       <div class="step-phase-badge">${step.phase}</div>
       <div class="step-big-title">Шаг ${step.id} · ${step.name}</div>
       <div class="step-deviz">${step.deviz}</div>
-
       <div class="days-tabs">${tabsHtml}</div>
       ${daysHtml}
-
       <div class="detail-section mt-24">
         <div class="section-h">Писание шага</div>
         <div class="scripture-list">${scripturesHtml}</div>
-        <div class="scripture-result" id="scripture-result"></div>
+        <div class="scripture-result" id="scripture-result-${containerId}"></div>
       </div>
+      ${participantExtras}
+    </div>`;
 
-      <div class="detail-section mt-24">
-        <div class="section-h">Дневник чувств</div>
-        <div class="diary-form">
-          <textarea class="diary-textarea" id="diary-input" placeholder="Что происходит внутри сегодня..."></textarea>
-          <button class="btn-save-diary" onclick="saveDiaryEntry()">Сохранить</button>
-        </div>
-        <div class="diary-entries" id="diary-entries"></div>
-      </div>
+  document.querySelectorAll(`#${containerId} .day-content`)[selectedDayIndex]?.classList.add('active');
 
-      <div class="detail-section mt-24">
-        <div class="section-h">Колесо баланса</div>
-        <div class="wheel-wrap">
-          <canvas id="wheel" width="260" height="260"></canvas>
-          <div class="wheel-sliders" id="wheel-sliders"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // activate first day
-  document.querySelectorAll('.day-content')[selectedDayIndex]?.classList.add('active');
-
-  loadDiary();
-  initWheel();
+  if (!isFacilitator) { loadDiary(); initWheel(); }
 }
 
-function renderDay(d, i, step) {
+// ── УЧАСТНИК: только домашнее задание ──
+function renderDayParticipant(d, i) {
   const typeBadge = d.type === 'meeting' ? 'badge-meeting' : d.type === 'individual' ? 'badge-individual' : 'badge-self';
   const typeLabel = d.type === 'meeting' ? 'Групповая встреча' : d.type === 'individual' ? 'Индивидуальная встреча' : 'Самостоятельно';
 
+  const hwHtml = d.homework?.length ? `
+    <div class="detail-section">
+      <div class="section-h">Задания на этот день</div>
+      <div class="hw-list">${d.homework.map((hw, hi) => `
+        <div class="hw-item ${hwDone[`${i}-${hi}`] ? 'done' : ''}" onclick="toggleHw('${i}-${hi}', this)">
+          <div class="hw-check">${hwDone[`${i}-${hi}`] ? '✓' : ''}</div>
+          <span>${hw}</span>
+        </div>`).join('')}</div>
+    </div>` : '<div style="color:var(--text2);font-size:13px;padding:20px 0">Заданий на этот день нет — это день встречи с группой.</div>';
+
+  return `
+    <div class="day-content" id="day-p-${i}">
+      <div class="day-header">
+        <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
+        <div class="day-title">${d.title}</div>
+        <div class="day-time">${d.time}</div>
+      </div>
+      ${hwHtml}
+    </div>`;
+}
+
+// ── ВЕДУЩИЙ: полный сценарий ──
+function renderDayFacilitator(d, i) {
+  const typeBadge = d.type === 'meeting' ? 'badge-meeting' : d.type === 'individual' ? 'badge-individual' : 'badge-self';
+  const typeLabel = d.type === 'meeting' ? 'Групповая встреча' : d.type === 'individual' ? 'Индивидуальная встреча' : 'Самостоятельная работа участника';
+
   const blocksHtml = (d.blocks || []).map((b, bi) => `
-    <div class="block-item" id="block-${i}-${bi}">
-      <div class="block-header" onclick="toggleBlock('block-${i}-${bi}')">
+    <div class="block-item" id="block-f-${i}-${bi}">
+      <div class="block-header" onclick="toggleBlock('block-f-${i}-${bi}')">
         <span class="block-title">${b.t}</span>
         <span style="display:flex;gap:12px;align-items:center">
           <span class="block-dur">${b.dur}</span>
@@ -1378,37 +1404,49 @@ function renderDay(d, i, step) {
         </span>
       </div>
       <div class="block-body" style="white-space:pre-line">${b.body}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   const monitorHtml = d.monitor ? `
     <div class="detail-section">
-      <div class="section-h">Мониторинг участника</div>
+      <div class="section-h">Мониторинг — читай участника</div>
       <div class="monitor-grid">
-        <div class="monitor-card monitor-green"><div class="monitor-label">🟢 Хорошо</div>${d.monitor.green}</div>
+        <div class="monitor-card monitor-green"><div class="monitor-label">🟢 Движется</div>${d.monitor.green}</div>
         <div class="monitor-card monitor-yellow"><div class="monitor-label">🟡 Внимание</div>${d.monitor.yellow}</div>
-        <div class="monitor-card monitor-red"><div class="monitor-label">🔴 Тревога</div>${d.monitor.red}</div>
+        <div class="monitor-card monitor-red"><div class="monitor-label">🔴 Стоп</div>${d.monitor.red}</div>
       </div>
     </div>` : '';
 
   const prayersHtml = d.prayers?.length ? `
     <div class="detail-section">
-      <div class="section-h">Направления молитвы</div>
+      <div class="section-h">Направления молитвы перед встречей</div>
       <div class="prayer-list">${d.prayers.map(p => `<div class="prayer-item">${p}</div>`).join('')}</div>
     </div>` : '';
 
   const hwHtml = d.homework?.length ? `
     <div class="detail-section">
-      <div class="section-h">Домашнее задание</div>
-      <div class="hw-list">${d.homework.map((hw, hi) => `
-        <div class="hw-item ${hwDone[`${i}-${hi}`] ? 'done' : ''}" onclick="toggleHw('${i}-${hi}', this)">
-          <div class="hw-check">${hwDone[`${i}-${hi}`] ? '✓' : ''}</div>
+      <div class="section-h">Домашнее задание участнику</div>
+      <div class="hw-list">${d.homework.map(hw => `
+        <div class="hw-item">
+          <div class="hw-check">→</div>
           <span>${hw}</span>
         </div>`).join('')}</div>
     </div>` : '';
 
+  // дополнительные секции для ведущего
+  const facilNotes = `
+    <div class="detail-section">
+      <div class="section-h">Запреты ведущего на этой встрече</div>
+      <div class="prayer-list">
+        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не давать советов и не интерпретировать вместо участника</div>
+        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не путать слёзы с прогрессом</div>
+        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не торопить — держать паузу</div>
+        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не принимать умные рассуждения вместо конкретных фактов</div>
+        <div class="prayer-item" style="border-left:3px solid var(--red);padding-left:12px;color:var(--text)">Не усиливать стыд — различай «я сделал» и «я плохой»</div>
+      </div>
+    </div>`;
+
   return `
-    <div class="day-content" id="day-${i}">
+    <div class="day-content" id="day-f-${i}">
       <div class="day-header">
         <span class="day-type-badge ${typeBadge}">${typeLabel}</span>
         <div class="day-title">${d.title}</div>
@@ -1416,19 +1454,21 @@ function renderDay(d, i, step) {
         <div class="day-goal">${d.goal}</div>
       </div>
       <div class="detail-section">
-        <div class="section-h">Блоки встречи</div>
+        <div class="section-h">Сценарий встречи — блоки</div>
         <div class="blocks-list">${blocksHtml}</div>
       </div>
       ${monitorHtml}
       ${prayersHtml}
       ${hwHtml}
+      ${facilNotes}
     </div>`;
 }
 
-window.selectDay = (i) => {
+window.selectDay = (i, containerId) => {
   selectedDayIndex = i;
-  document.querySelectorAll('.day-tab').forEach((t, ti) => t.classList.toggle('active', ti === i));
-  document.querySelectorAll('.day-content').forEach((c, ci) => c.classList.toggle('active', ci === i));
+  const container = document.getElementById(containerId || 'p-main');
+  container.querySelectorAll('.day-tab').forEach((t, ti) => t.classList.toggle('active', ti === i));
+  container.querySelectorAll('.day-content').forEach((c, ci) => c.classList.toggle('active', ci === i));
 };
 
 window.toggleBlock = (id) => {
@@ -1441,22 +1481,24 @@ window.toggleHw = (key, el) => {
   el.querySelector('.hw-check').textContent = hwDone[key] ? '✓' : '';
 };
 
-// ─── SCRIPTURE AI ───
-window.fetchScripture = async (ref) => {
-  const el = document.getElementById('scripture-result');
+window.fetchScripture = async (ref, containerId) => {
+  const elId = `scripture-result-${containerId || 'p-main'}`;
+  const el = document.getElementById(elId);
+  if (!el) return;
   el.style.display = 'block';
   el.innerHTML = '<div class="scripture-loading">Загружаю разбор...</div>';
+  const isFacilitator = containerId === 'f-program-main';
+  const prompt = isFacilitator
+    ? `Разбери текст ${ref} для ведущего группы реабилитации. Коротко (5-7 предложений): богословский смысл, как применить в группе, конкретный вопрос который можно задать участникам, на что обратить внимание если участник уходит в религиозные клише.`
+    : `Разбери текст ${ref} для человека в программе восстановления. Коротко (4-5 предложений): суть, что это значит лично для меня, один практический вывод. Без пафоса, живым языком.`;
   try {
     const res = await fetch('https://bibleproxy-production.up.railway.app', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 600,
-        messages: [{
-          role: 'user',
-          content: `Разбери текст ${ref} для группы реабилитации зависимых. Коротко (4-6 предложений): суть, что это значит для человека в восстановлении, один практический вывод. Без пафоса, живым языком.`
-        }]
+        max_tokens: 700,
+        messages: [{ role: 'user', content: prompt }]
       })
     });
     const data = await res.json();
