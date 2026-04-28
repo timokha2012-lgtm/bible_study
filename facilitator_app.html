@@ -217,20 +217,9 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-  <div class="login-box">
-    <div class="login-label">Программа восстановления личности</div>
-    <div class="login-title">Кабинет<br>ведущего</div>
-    <div class="login-sub">Введите пароль для входа</div>
-    <input class="inp" id="pwd-input" type="password" placeholder="пароль" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn-login" onclick="doLogin()">Войти</button>
-    <div class="login-err" id="login-err">Неверный пароль</div>
-  </div>
-</div>
 
 <!-- APP -->
-<div id="app">
+<div id="app" style="display:flex;">
   <div class="topbar">
     <div class="topbar-logo">Восстановление личности</div>
     <div class="topbar-sep"></div>
@@ -922,6 +911,9 @@ const STEPS = [
 },
 ];
 
+// Auto init
+document.addEventListener("DOMContentLoaded", () => { renderStepsNav(); loadParticipants(); });
+
 // State
 let currentStep = null;
 let currentMeeting = null;
@@ -929,17 +921,9 @@ let aiHistory = [];
 let selectedPid = null;
 
 // ─── LOGIN ───
-window.doLogin = () => {
-  document.getElementById('login').style.display='none';
-  document.getElementById('app').style.display='flex';
-  renderStepsNav();
-  loadParticipants();
-};
-window.doLogout = () => {
-  document.getElementById('login').style.display='flex';
-  document.getElementById('app').style.display='none';
-  document.getElementById('pwd-input').value='';
-};
+// Auto-init on load
+window.doLogin = () => { renderStepsNav(); loadParticipants(); };
+window.doLogout = () => { window.location.reload(); };
 
 // ─── TABS ───
 window.switchTab = (tab) => {
