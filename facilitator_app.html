@@ -147,9 +147,13 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .rf-item::before{content:'⚠';color:var(--red2);font-size:10px;flex-shrink:0;}
 
 /* ═══════════════════════════════════════
-   AI PANEL — постоянная, справа от всего
+   AI PANEL — плавающая, поверх контента
    ═══════════════════════════════════════ */
-.ai-panel{width:340px;border-left:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0;background:var(--bg);}
+#ai-toggle{position:fixed;bottom:24px;right:24px;width:48px;height:48px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;z-index:200;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:background .15s;}
+#ai-toggle:hover{background:var(--gold2);}
+#ai-toggle .ai-badge{position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--green2);border:2px solid var(--bg);}
+.ai-panel{position:fixed;bottom:84px;right:24px;width:360px;height:70vh;max-height:600px;border:1px solid var(--b2);display:flex;flex-direction:column;flex-shrink:0;background:#111;z-index:199;box-shadow:0 8px 40px rgba(0,0,0,.7);transition:opacity .2s,transform .2s;}
+.ai-panel.hidden{opacity:0;pointer-events:none;transform:translateY(12px);}
 .ai-header{padding:12px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .ai-dot{width:6px;height:6px;background:var(--green2);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
@@ -262,28 +266,30 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
       </div>
     </div>
 
-    <!-- AI PANEL — всегда видна, вне обоих вью -->
-    <div class="ai-panel">
-      <div class="ai-header">
-        <div class="ai-dot"></div>
-        <div class="ai-label">AI-ассистент ведущего</div>
-      </div>
-      <div class="ai-messages" id="ai-msgs">
-        <div class="ai-msg system">Выберите шаг или участника — и задайте любой вопрос по программе.</div>
-      </div>
-      <div class="ai-input-area">
-        <div class="ai-context" id="ai-context">контекст: не выбран</div>
-        <div class="ai-quick-btns" id="quick-btns">
-          <button class="quick-btn" onclick="quickAsk('Как начать встречу?')">Как начать?</button>
-          <button class="quick-btn" onclick="quickAsk('Красные флаги на этом шаге?')">Красные флаги</button>
-          <button class="quick-btn" onclick="quickAsk('Фразы против стыда')">Против стыда</button>
-          <button class="quick-btn" onclick="quickAsk('Что делать если участник молчит?')">Молчит</button>
-        </div>
-        <textarea class="ai-textarea" id="ai-input" placeholder="Спроси что угодно по программе или участнику..." onkeydown="aiKey(event)" rows="3"></textarea>
-        <button class="ai-send" onclick="sendAI()">Отправить →</button>
-      </div>
-    </div>
+  </div>
+</div>
 
+<button id="ai-toggle" onclick="toggleAI()" title="AI-ассистент ведущего">🤖<div class="ai-badge"></div></button>
+
+<div class="ai-panel hidden" id="ai-panel">
+  <div class="ai-header">
+    <div class="ai-dot"></div>
+    <div class="ai-label">AI-ассистент ведущего</div>
+    <button onclick="toggleAI()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;padding:0 2px;">✕</button>
+  </div>
+  <div class="ai-messages" id="ai-msgs">
+    <div class="ai-msg system">Выберите шаг или участника — и задайте любой вопрос по программе.</div>
+  </div>
+  <div class="ai-input-area">
+    <div class="ai-context" id="ai-context">контекст: не выбран</div>
+    <div class="ai-quick-btns" id="quick-btns">
+      <button class="quick-btn" onclick="quickAsk('Как начать встречу?')">Как начать?</button>
+      <button class="quick-btn" onclick="quickAsk('Красные флаги на этом шаге?')">Красные флаги</button>
+      <button class="quick-btn" onclick="quickAsk('Фразы против стыда')">Против стыда</button>
+      <button class="quick-btn" onclick="quickAsk('Что делать если участник молчит?')">Молчит</button>
+    </div>
+    <textarea class="ai-textarea" id="ai-input" placeholder="Спроси что угодно по программе или участнику..." onkeydown="aiKey(event)" rows="3"></textarea>
+    <button class="ai-send" onclick="sendAI()">Отправить →</button>
   </div>
 </div>
 
@@ -390,6 +396,11 @@ const STEPS = [
 {id:8,name:'Защита от срыва',phase:'ШАГ 8 · ФИНАЛЬНЫЙ',deviz:'К моменту когда вещество в руке путь к нему шёл не первый час',passport:{'Место в программе':'Финальный шаг','Главная цель':'Научить видеть личный паттерн входа в срыв и иметь конкретный план до физического употребления'},stepGoal:'Шаг строится на ясности, наблюдении, ответственности и поддержке.',expectedResults:['Знает свои 5 личных красных флагов','Имеет антисрывной план 24/72/7','Носит карточку экстренной трезвости'],criteria:['Знает 5 личных красных флагов','Заполненный план 24/72/7','Минимум 3 реальных контакта поддержки'],facilitatorPosition:'Не делать из группы полицию трезвости. Нужна не слежка, а взрослая система раннего распознавания.',redFlags:['Изоляция, исчезновение из группы','Ментальный торг: «один раз не считается»','Ностальгия по старому употреблению'],facilitatorErrors:['Подменять поддержку тотальным контролем','Игнорировать рост риска под видом «помолись и пройдёт»'],facilitatorPhrases:{support:['«К тому моменту когда вещество уже в руке путь к нему идёт не первый час»','«Структура работает именно тогда когда мотивация спит»','«Честность раньше паники — вот что спасает»']},monitoring:[{zone:'Структура',ok:'ритм выполняется',warn:'частично нарушена',danger:'полный хаос'},{zone:'Контакт',ok:'выходит на связь сам',warn:'после напоминаний',danger:'исчезает'},{zone:'Флаги',ok:'замечает заранее',warn:'замечает но молчит',danger:'не замечает или отрицает'}],scriptures:['1 Пет 5:8','Мф 26:41','1 Кор 10:12–13'],meetings:[{id:'m1',label:'Встреча А',type:'meeting',title:'Механика срыва и личные красные флаги',time:'100–110 минут',goal:'Участник видит как именно он входил в срыв.',blocks:[{n:'1',t:'Чек-ин',dur:'10 мин',body:'Где на этой неделе был уязвим, даже если формально всё выглядело нормально?'},{n:'2',t:'5 звеньев срыва',dur:'15 мин',body:'Эмоциональный, мыслительный, поведенческий, духовный и физический.\nHALT: голод, злость, одиночество, усталость.'},{n:'3',t:'Лента прошлого срыва',dur:'25 мин',body:'Не только день употребления — но что происходило за час, сутки, 3 дня и неделю до него.'},{n:'4',t:'Мои красные флаги',dur:'20 мин',body:'Минимум 5 личных признаков: в теле, мыслях, поведении, отношениях, духовной жизни.'}],homework:['Дневник триггеров и красных флагов 7 дней','Дописать ленту прошлого срыва']},{id:'m2',label:'Встреча Б',type:'meeting',title:'Антисрывной план и круг поддержки',time:'100–110 минут',goal:'Участник получает конкретный план действий.',blocks:[{n:'1',t:'Антисрывной план 24/72/7',dur:'25 мин',body:'Что делаю в первые 24 часа при острой тяге?\nЧто если нестабильность тянется 72 часа?\nЧто меняю при накапливающемся риске 7 дней?'},{n:'2',t:'Карточка экстренной трезвости',dur:'10 мин',body:'3 номера телефонов. Якорная фраза. Короткий стих. 3 шага на ближайшие 30 минут.'},{n:'3',t:'Круг поддержки',dur:'10 мин',body:'Люди которые реально знают свою роль — не «может быть если что».'}],homework:['Носить карточку экстренной трезвости','Подтвердить круг поддержки — минимум 3 человека','Продолжать дневник триггеров']}]},
 {id:9,name:'Новая жизнь и служение',phase:'ШАГ 9 · ЗРЕЛОСТЬ',deviz:'Если трезвость не наполняется смыслом — старая пустота рано или поздно начнёт торговаться с тобой',passport:{'Место в программе':'Завершение курса','Главная цель':'Помочь перейти от выживания к зрелому построению осмысленной жизни'},stepGoal:'Помочь участнику перейти от выживания и профилактики срыва к зрелому построению осмысленной жизни.',expectedResults:['Есть карта новой жизни','Есть правило жизни на 90 дней','Есть личная формулировка смысла'],criteria:['Карта новой жизни по сферам','Правило жизни на 90 дней с ритмами','Один реальный шаг пользы'],facilitatorPosition:'Сначала устойчивость — потом расширение ответственности. Служение из полноты, не из вины.',redFlags:['Хватает слишком много ответственности сразу','Путает служение со спасательством'],facilitatorErrors:['Толкать в служение раньше устойчивости','Стыдить за маленький масштаб цели'],facilitatorPhrases:{support:['«Служение без границ — это часто новая форма саморазрушения»','«Смысл — это то что делает трезвость стоящей»','«Не надо спасать мир. Сначала живи честно и трезво»']},monitoring:[{zone:'Устойчивость',ok:'ритм держится',warn:'частично',danger:'хаос или героизм'},{zone:'Смысл',ok:'конкретная формулировка',warn:'общие слова',danger:'пустота или спасательство'}],scriptures:['Еф 2:10','Гал 6:2–5','Ин 21:15–19'],meetings:[{id:'m1',label:'Встреча А',type:'meeting',title:'Карта новой жизни',time:'100–110 минут',goal:'Участник выявляет ресурсы новой жизни.',blocks:[{n:'1',t:'Карта новой жизни',dur:'25 мин',body:'По сферам — что хочу строить: отношения, дело, духовная жизнь, тело, служение, финансы.'},{n:'2',t:'Личный смысл',dur:'20 мин',body:'Ради чего мне важно оставаться трезвым? Не религиозный ответ — живой.'}],homework:['Заполнить карту новой жизни','Сформулировать личный смысл без пафоса']},{id:'m2',label:'Встреча Б · Завершение',type:'meeting',title:'Правило жизни и служение',time:'100–110 минут',goal:'Участник составляет правило жизни на 90 дней.',blocks:[{n:'1',t:'Правило жизни 90 дней',dur:'25 мин',body:'Духовные практики. Телесный ритм. Отношения. Служение. Продолжение поддержки.'},{n:'2',t:'Первый шаг служения',dur:'15 мин',body:'Один конкретный реальный шаг в ближайшие 2 недели. Не великий подвиг — измеримое действие.'},{n:'3',t:'Свидетельства и благодарность',dur:'20 мин',body:'Кем я был когда пришёл? Что изменилось? Что хочу передать следующим.'},{n:'4',t:'Благословение и завершение',dur:'10 мин',body:'Ведущий благословляет каждого участника по имени.'}],homework:['Жить по правилу жизни 30 дней','Сделать один реальный шаг служения']}]},
 ];
+
+// Toggle AI panel
+window.toggleAI = () => {
+  document.getElementById('ai-panel').classList.toggle('hidden');
+};
 
 // Auto init
 document.addEventListener("DOMContentLoaded", () => { renderStepsNav(); loadParticipants(); });
