@@ -6,21 +6,11 @@
 <title>Восстановление личности</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
-:root{
-  --bg:#080808;--s1:#0f0f0f;--s2:#141414;--s3:#1a1a1a;
-  --b1:#1f1f1f;--b2:#282828;--b3:#333;
-  --gold:#c8a04a;--gold2:#deb96a;
-  --text:#e0dbd0;--text2:#807870;--text3:#454038;
-  --red:#903028;--green:#286040;--yellow:#806020;
-}
+:root{--bg:#080808;--s1:#0f0f0f;--s2:#141414;--s3:#1a1a1a;--b1:#1f1f1f;--b2:#282828;--b3:#333;--gold:#c8a04a;--gold2:#deb96a;--text:#e0dbd0;--text2:#807870;--text3:#454038;--red:#903028;--green:#286040;--yellow:#806020;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;display:flex;flex-direction:column;}
-
-/* ─── SCREENS ─── */
 .screen{display:none;flex:1;flex-direction:column;}
 .screen.active{display:flex;}
-
-/* ─── LANDING ─── */
 #sc-landing{align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 20%,#140e04 0%,var(--bg) 65%);}
 .landing-inner{text-align:center;padding:40px 24px;max-width:440px;}
 .logo-badge{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text3);margin-bottom:24px;}
@@ -33,8 +23,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .enter-btn{width:100%;background:var(--gold);color:#080808;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:.05em;padding:13px;cursor:pointer;margin-top:12px;transition:background .2s;}
 .enter-btn:hover{background:var(--gold2);}
 .enter-err{font-size:12px;color:var(--red);margin-top:10px;display:none;text-align:center;}
-
-/* ─── WHEEL SCREEN ─── */
 #sc-wheel{align-items:center;justify-content:center;overflow-y:auto;padding:32px 20px;background:radial-gradient(ellipse at 50% 0%,#140e04 0%,var(--bg) 60%);}
 .wheel-inner{max-width:620px;width:100%;}
 .wheel-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);margin-bottom:8px;}
@@ -48,8 +36,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .sc-btn.sel{background:var(--gold);border-color:var(--gold);color:#080808;font-weight:500;}
 .wheel-submit{width:100%;background:var(--gold);color:#080808;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;padding:14px;cursor:pointer;margin-top:28px;transition:background .2s;}
 .wheel-submit:hover{background:var(--gold2);}
-
-/* ─── PARTICIPANT APP ─── */
 #sc-app{flex-direction:column;}
 .app-header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0;}
 .app-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);font-weight:300;}
@@ -57,8 +43,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .btn-out{background:transparent;border:1px solid var(--b2);color:var(--text3);font-size:11px;font-family:'Inter',sans-serif;padding:5px 12px;cursor:pointer;transition:all .2s;}
 .btn-out:hover{border-color:var(--red);color:var(--red);}
 .app-body{flex:1;display:grid;grid-template-columns:220px 1fr 340px;overflow:hidden;height:calc(100vh - 48px);}
-
-/* LEFT */
 .app-left{border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
 .left-section{padding:8px 0;border-bottom:1px solid var(--b1);}
 .left-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);padding:0 16px 8px;}
@@ -71,8 +55,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .snav-name{font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .wheel-mini-btn{margin:12px 16px;padding:9px;background:transparent;border:1px solid var(--b2);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;width:calc(100% - 32px);}
 .wheel-mini-btn:hover{border-color:var(--gold);color:var(--gold);}
-
-/* CENTER */
 .app-center{overflow-y:auto;padding:28px 32px;}
 .app-center::-webkit-scrollbar{width:3px;}
 .app-center::-webkit-scrollbar-thumb{background:var(--b2);}
@@ -105,8 +87,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .diary-entry{border:1px solid var(--b1);padding:12px 14px;margin-bottom:6px;margin-top:10px;}
 .diary-entry-date{font-size:10px;color:var(--text3);margin-bottom:4px;}
 .diary-entry-text{font-size:12px;color:var(--text2);line-height:1.6;}
-
-/* Wheel display */
 .wheel-display{display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:start;margin-bottom:24px;}
 .wheel-scores{font-size:12px;}
 .wheel-score-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--b1);}
@@ -115,8 +95,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .wsr-ok{color:#4a9070;}
 .wsr-warn{color:#a07830;}
 .wsr-bad{color:#903028;}
-
-/* RIGHT — AI CHAT */
 .app-right{border-left:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
 .ai-top{padding:12px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .ai-dot{width:6px;height:6px;border-radius:50%;background:#4a9070;animation:pulse 2s infinite;}
@@ -135,8 +113,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .ai-ta:focus{border-color:var(--gold);}
 .ai-go{width:100%;background:transparent;border:1px solid var(--b2);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;padding:8px;cursor:pointer;margin-top:6px;transition:all .2s;}
 .ai-go:hover{border-color:var(--gold);color:var(--gold);}
-
-/* Workbook */
 .wb-section{background:var(--s2);border:1px solid var(--b1);margin-bottom:16px;overflow:hidden;}
 .wb-section-title{font-size:12px;font-weight:500;color:var(--gold);padding:12px 16px;border-bottom:1px solid var(--b1);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .wb-section-title:hover{background:rgba(200,160,74,.04);}
@@ -161,16 +137,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .wb-save-btn{background:var(--gold);color:#080808;border:none;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;padding:8px 18px;cursor:pointer;margin-top:14px;float:right;transition:background .2s;}
 .wb-save-btn:hover{background:var(--gold2);}
 .wb-saved-note{font-size:10px;color:var(--green);margin-top:10px;display:none;}
-
-@media(max-width:900px){
-  .app-body{grid-template-columns:1fr;}
-  .app-left,.app-right{display:none;}
-}
+@media(max-width:900px){.app-body{grid-template-columns:1fr;}.app-left,.app-right{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- LANDING -->
 <div id="sc-landing" class="screen active">
   <div class="landing-inner">
     <div class="logo-badge">Программа восстановления личности</div>
@@ -185,7 +156,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   </div>
 </div>
 
-<!-- WHEEL QUESTIONNAIRE -->
 <div id="sc-wheel" class="screen">
   <div class="wheel-inner">
     <div class="wheel-title">Колесо баланса</div>
@@ -195,7 +165,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="sc-app" class="screen">
   <div class="app-header">
     <div class="app-title">Восстановление личности</div>
@@ -203,7 +172,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <button class="btn-out" onclick="logout()">Выйти</button>
   </div>
   <div class="app-body">
-    <!-- LEFT -->
     <div class="app-left">
       <div class="left-section">
         <div class="left-label">Шаги программы</div>
@@ -213,11 +181,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         <button class="wheel-mini-btn" onclick="showWheelPanel()">◎ Моё колесо баланса</button>
       </div>
     </div>
-    <!-- CENTER -->
     <div class="app-center" id="app-center">
       <div style="color:var(--text3);font-size:13px;padding:40px 0">← Выберите шаг</div>
     </div>
-    <!-- RIGHT — AI -->
     <div class="app-right">
       <div class="ai-top">
         <div class="ai-dot"></div>
@@ -254,641 +220,246 @@ const WHEEL_AREAS=[
 ];
 
 const STEPS=[
-  {id:1,name:'Возвращение к дружбе',phase:'ФАЗА 1 · ПРОБУЖДЕНИЕ',deviz:'«Я уже не называю вас рабами... но Я назвал вас друзьями» — Ин. 15:15',
-   meetings:[
-    {id:'m1',label:'Встреча 1',type:'meeting',title:'Правда о себе без грима',time:'День 1 · групповая встреча',
-     hw:['Заполнить входную шкалу самооценки','Письменно: 3 формы моего самообмана с конкретными примерами','Позвонить одному человеку и сказать правду о своём состоянии']},
-    {id:'ind',label:'Индивидуальная',type:'individual',title:'Индивидуальная встреча',time:'Дни 5–8 · с ведущим',
-     hw:['Сделать конкретный шаг в течение 24 часов после встречи','Заполнить карту помощи']},
-    {id:'m2',label:'Встреча 2',type:'meeting',title:'Принятие помощи и план 7 дней',time:'День 14 · групповая встреча',
-     hw:['Жить по плану 7 дней','Использовать карту помощи','Заполнить итоговую шкалу самооценки','Прочитать введение в Шаг 2']},
-   ]},
-  {id:2,name:'Тело: союзник',phase:'ФАЗА 1 · СТАБИЛИЗАЦИЯ',deviz:'Срыв начинается не с действия — а с разрешения себе',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Я живу не отдельно от тела',time:'Групповая встреча',
-     hw:['Вести дневник тела утром и вечером 7 дней','Выбрать якорь и применять ежедневно','Соблюдать минимальный недельный ритм','Подготовить «Мои 3 ранних телесных сигнала»']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Якоря, ритм и телесная трезвость',time:'Групповая встреча',
-     hw:['Продолжать дневник тела','Применять выбранный якорь ежедневно','Жить по минимальному ритму']},
-   ]},
-  {id:3,name:'Надежда и помощь',phase:'ФАЗА 1 · СТАБИЛИЗАЦИЯ',deviz:'Если красиво говоришь о надежде, но никому не звонишь — это литературный кружок',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'История надежды и её предательства',time:'Групповая встреча',
-     hw:['Заполнить «Лист надежды»: 3 примера когда надежда выжила','Завершить карту союза помощи','Выполнить первый шаг из контракта: звонок или встреча']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Союз помощи и конкретные действия',time:'Групповая встреча',
-     hw:['Выполнить конкретный шаг из контракта','Завершить карту поддержки']},
-   ]},
-  {id:4,name:'Образ Бога',phase:'ФАЗА 2 · ГЛУБИНА',deviz:'Мы исцеляемся к образу Того, Кем видим Бога',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Исследование образа',time:'Групповая встреча',
-     hw:['Дневник образа: каждый день — один момент когда образ включился','Письмо Богу которого боюсь — без цензуры']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Трансформация образа',time:'Групповая встреча',
-     hw:['Каждый день — один честный разговор с Богом как с отцом','Продолжать дневник образа']},
-   ]},
-  {id:5,name:'Инвентаризация',phase:'ФАЗА 2 · ГЛУБИНА',deviz:'Честная инвентаризация — это взгляд хирурга перед операцией',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Карта разрушения и паттерны',time:'Групповая встреча',
-     hw:['Продолжить карту ущерба','Записать 5 личных триггеров с подробностями','Дневник честности']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Паттерны, триггеры, готовность',time:'Групповая встреча',
-     hw:['Завершить формулу паттерна','Подготовиться к следующему шагу']},
-   ]},
-  {id:6,name:'Решение',phase:'ФАЗА 3 · РЕШЕНИЕ',deviz:'Не клятва — намерение. Не героизм — структура',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Внутренний торг и цена выбора',time:'Групповая встреча',
-     hw:['Письменно: мой внутренний торг — обе стороны','Цена и дар изменения']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Намерение и структура ответственности',time:'Групповая встреча',
-     hw:['Жить по намерению 30 дней','Выходить на связь с людьми ответственности']},
-   ]},
-  {id:7,name:'Прощение',phase:'ФАЗА 3 · ИСЦЕЛЕНИЕ',deviz:'Прощение — не подарок обидчику. Это отказ от внутреннего долга мести',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Карта обид и их цена',time:'Групповая встреча',
-     hw:['Продолжить карту обид','Письменно: как конкретная обида управляет моей жизнью']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Освобождение и границы',time:'Групповая встреча',
-     hw:['Завершить письмо освобождения','Практика прощения себя — каждый день один конкретный пункт']},
-   ]},
-  {id:8,name:'Защита от срыва',phase:'ФАЗА 4 · ЗРЕЛОСТЬ',deviz:'К моменту когда вещество в руке путь к нему шёл не первый час',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Механика срыва и красные флаги',time:'Групповая встреча',
-     hw:['Дневник триггеров и красных флагов 7 дней','Дописать ленту прошлого срыва']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Антисрывной план и круг поддержки',time:'Групповая встреча',
-     hw:['Носить карточку экстренной трезвости','Подтвердить круг поддержки — минимум 3 человека','Продолжать дневник триггеров']},
-   ]},
-  {id:9,name:'Новая жизнь',phase:'ФАЗА 4 · ЗРЕЛОСТЬ',deviz:'Трезвость которая не наполняется смыслом рано или поздно начнёт торговаться',
-   meetings:[
-    {id:'m1',label:'Встреча А',type:'meeting',title:'Карта новой жизни',time:'Групповая встреча',
-     hw:['Заполнить карту новой жизни по ключевым сферам','Сформулировать личный смысл — без пафоса']},
-    {id:'m2',label:'Встреча Б',type:'meeting',title:'Правило жизни и служение',time:'Групповая встреча',
-     hw:['Жить по правилу жизни 30 дней','Сделать один реальный шаг пользы']},
-   ]},
+  {id:1,name:'Возвращение к дружбе',phase:'ФАЗА 1 · ПРОБУЖДЕНИЕ',deviz:'«Я уже не называю вас рабами... но Я назвал вас друзьями» — Ин. 15:15',meetings:[
+    {id:'m1',label:'Встреча 1',type:'meeting',title:'Правда о себе без грима',time:'День 1 · групповая встреча',hw:['Заполнить входную шкалу самооценки','Письменно: 3 формы моего самообмана с конкретными примерами','Позвонить одному человеку и сказать правду о своём состоянии']},
+    {id:'ind',label:'Индивидуальная',type:'individual',title:'Индивидуальная встреча',time:'Дни 5–8 · с ведущим',hw:['Сделать конкретный шаг в течение 24 часов после встречи','Заполнить карту помощи']},
+    {id:'m2',label:'Встреча 2',type:'meeting',title:'Принятие помощи и план 7 дней',time:'День 14 · групповая встреча',hw:['Жить по плану 7 дней','Использовать карту помощи','Заполнить итоговую шкалу самооценки','Прочитать введение в Шаг 2']},
+  ]},
+  {id:2,name:'Тело: союзник',phase:'ФАЗА 1 · СТАБИЛИЗАЦИЯ',deviz:'Срыв начинается не с действия — а с разрешения себе',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Я живу не отдельно от тела',time:'Групповая встреча',hw:['Вести дневник тела утром и вечером 7 дней','Выбрать якорь и применять ежедневно','Соблюдать минимальный недельный ритм','Подготовить «Мои 3 ранних телесных сигнала»']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Якоря, ритм и телесная трезвость',time:'Групповая встреча',hw:['Продолжать дневник тела','Применять выбранный якорь ежедневно','Жить по минимальному ритму']},
+  ]},
+  {id:3,name:'Надежда и помощь',phase:'ФАЗА 1 · СТАБИЛИЗАЦИЯ',deviz:'Если красиво говоришь о надежде, но никому не звонишь — это литературный кружок',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'История надежды и её предательства',time:'Групповая встреча',hw:['Заполнить «Лист надежды»: 3 примера когда надежда выжила','Завершить карту союза помощи','Выполнить первый шаг из контракта: звонок или встреча']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Союз помощи и конкретные действия',time:'Групповая встреча',hw:['Выполнить конкретный шаг из контракта','Завершить карту поддержки']},
+  ]},
+  {id:4,name:'Образ Бога',phase:'ФАЗА 2 · ГЛУБИНА',deviz:'Мы исцеляемся к образу Того, Кем видим Бога',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Исследование образа',time:'Групповая встреча',hw:['Дневник образа: каждый день — один момент когда образ включился','Письмо Богу которого боюсь — без цензуры']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Трансформация образа',time:'Групповая встреча',hw:['Каждый день — один честный разговор с Богом как с отцом','Продолжать дневник образа']},
+  ]},
+  {id:5,name:'Инвентаризация',phase:'ФАЗА 2 · ГЛУБИНА',deviz:'Честная инвентаризация — это взгляд хирурга перед операцией',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Карта разрушения и паттерны',time:'Групповая встреча',hw:['Продолжить карту ущерба','Записать 5 личных триггеров с подробностями','Дневник честности']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Паттерны, триггеры, готовность',time:'Групповая встреча',hw:['Завершить формулу паттерна','Подготовиться к следующему шагу']},
+  ]},
+  {id:6,name:'Решение',phase:'ФАЗА 3 · РЕШЕНИЕ',deviz:'Не клятва — намерение. Не героизм — структура',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Внутренний торг и цена выбора',time:'Групповая встреча',hw:['Письменно: мой внутренний торг — обе стороны','Цена и дар изменения']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Намерение и структура ответственности',time:'Групповая встреча',hw:['Жить по намерению 30 дней','Выходить на связь с людьми ответственности']},
+  ]},
+  {id:7,name:'Прощение',phase:'ФАЗА 3 · ИСЦЕЛЕНИЕ',deviz:'Прощение — не подарок обидчику. Это отказ от внутреннего долга мести',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Карта обид и их цена',time:'Групповая встреча',hw:['Продолжить карту обид','Письменно: как конкретная обида управляет моей жизнью']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Освобождение и границы',time:'Групповая встреча',hw:['Завершить письмо освобождения','Практика прощения себя — каждый день один конкретный пункт']},
+  ]},
+  {id:8,name:'Защита от срыва',phase:'ФАЗА 4 · ЗРЕЛОСТЬ',deviz:'К моменту когда вещество в руке путь к нему шёл не первый час',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Механика срыва и красные флаги',time:'Групповая встреча',hw:['Дневник триггеров и красных флагов 7 дней','Дописать ленту прошлого срыва']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Антисрывной план и круг поддержки',time:'Групповая встреча',hw:['Носить карточку экстренной трезвости','Подтвердить круг поддержки — минимум 3 человека','Продолжать дневник триггеров']},
+  ]},
+  {id:9,name:'Новая жизнь',phase:'ФАЗА 4 · ЗРЕЛОСТЬ',deviz:'Трезвость которая не наполняется смыслом рано или поздно начнёт торговаться',meetings:[
+    {id:'m1',label:'Встреча А',type:'meeting',title:'Карта новой жизни',time:'Групповая встреча',hw:['Заполнить карту новой жизни по ключевым сферам','Сформулировать личный смысл — без пафоса']},
+    {id:'m2',label:'Встреча Б',type:'meeting',title:'Правило жизни и служение',time:'Групповая встреча',hw:['Жить по правилу жизни 30 дней','Сделать один реальный шаг пользы']},
+  ]},
 ];
 
-// ─── WORKBOOK DATA (from participant workbook PDF) ───
-const WORKBOOKS = {
-  1: {
-    title:'Шаг 1 · Возвращение к дружбе',
-    sections:[
-      {
-        id:'self_check',
-        title:'Стартовая самооценка — «Где я сейчас?»',
-        desc:'Отметь по шкале: 0 — совсем нет; 1 — немного; 2 — иногда; 3 — часто; 4 — почти всегда',
-        type:'scale4',
-        items:[
-          'Я скрываю часть правды о себе',
-          'Я оправдываю своё поведение обстоятельствами',
-          'Мне трудно просить помощь',
-          'Я делаю вид что всё лучше чем есть',
-          'Когда мне стыдно я исчезаю',
-          'Когда мне страшно я начинаю врать или недоговаривать',
-          'Я боюсь что если скажу правду меня отвергнут',
-          'Я знаю конкретных людей к кому могу обратиться',
-          'У меня есть план что делать при тяге и срыве',
-          'Я верю что честность может стать началом',
-        ]
-      },
-      {
-        id:'reality',
-        title:'5.1. Моя реальность без грима',
-        desc:'Отвечай конкретно — фактами, без литературщины',
-        type:'questions',
-        items:[
-          'Когда я понял что теряю контроль?',
-          'Что я скрывал от других?',
-          'Что я скрывал от себя?',
-          'Какими фразами я обычно оправдывал себя?',
-          'Что уже разрушено?',
-          'Что разрушится следующим если ничего не менять?',
-        ]
-      },
-      {
-        id:'price',
-        title:'5.2. Цена самообмана',
-        desc:'По каждой сфере: что я потерял, что скрывал, во что мне обошлась ложь',
-        type:'table',
-        cols:['Что я потерял','Что я скрывал','Во что мне обошлась ложь'],
-        rows:['Тело','Психика','Отношения','Работа / служение','Деньги','Вера / совесть'],
-      },
-      {
-        id:'relations',
-        title:'5.3. Какой я в отношениях',
-        type:'questions',
-        items:[
-          'Где я использовал людей вместо любви?',
-          'Где я требовал доверия сам не будучи честным?',
-          'Где я играл роль?',
-          'Какой я друг на самом деле?',
-          'Хотел бы я сам иметь рядом такого человека как я? Почему?',
-        ]
-      },
-      {
-        id:'honesty',
-        title:'ДЗ 1. Лист честности',
-        type:'questions',
-        items:[
-          'Больше всего я скрываю...',
-          'Мне труднее всего признать...',
-          'Когда я говорю «всё нормально» на самом деле...',
-          'Я чаще всего вру когда чувствую...',
-          'Я боюсь что если люди увидят правду они...',
-          'Больше всего я оправдываю...',
-          'Цена моей лжи уже составила...',
-          'Я не хочу дальше жить так потому что...',
-          'Один человек с кем мне нужно быть честным...',
-          'Мой первый настоящий шаг...',
-        ]
-      },
-      {
-        id:'psalm',
-        title:'ДЗ 3. Псалом и отклик',
-        desc:'Прочитай Пс. 31 или Пс. 50 и ответь',
-        type:'questions',
-        items:[
-          'Где этот текст касается меня?',
-          'Что во мне сопротивляется?',
-          'Где я хочу не спрятаться а вернуться?',
-        ]
-      },
-    ]
-  },
-  2: {
-    title:'Шаг 2 · Тело: союзник',
-    sections:[
-      {
-        id:'body_map',
-        title:'Карта тела',
-        desc:'Где в теле ты чаще замечаешь следующие состояния?',
-        type:'questions',
-        items:[
-          'Где в теле я замечаю тревогу?',
-          'Где я замечаю стыд?',
-          'Где я замечаю пустоту?',
-          'Где я замечаю злость?',
-          'Где я замечаю тягу?',
-          'Что появляется раньше — мысль или телесный сигнал?',
-          'Что я обычно игнорирую?',
-          'К чему это приводит через несколько часов?',
-        ]
-      },
-      {
-        id:'sleep_chaos',
-        title:'Мой сон и мой хаос',
-        type:'questions',
-        items:[
-          'Что происходит со мной после 2-3 плохих ночей?',
-          'Как меняется тяга после недосыпа?',
-          'Как меняется раздражение?',
-          'Как меняется способность просить помощи?',
-        ]
-      },
-      {
-        id:'anchors',
-        title:'Мои якоря',
-        type:'questions',
-        items:[
-          'Какой якорь мне подошёл лучше всего? Почему?',
-          'Когда именно я буду его применять?',
-          'Мои 3 ранних телесных сигнала тяги:',
-        ]
-      },
-      {
-        id:'rhythm',
-        title:'Минимальный недельный ритм',
-        desc:'Запиши конкретное время для каждого',
-        type:'questions',
-        items:[
-          'Подъём:',
-          'Отход ко сну:',
-          'Первый приём пищи:',
-          'Вода (сколько стаканов):',
-          'Движение (что именно):',
-          'Пауза без телефона (когда):',
-        ]
-      },
-    ]
-  },
-  3: {
-    title:'Шаг 3 · Надежда и союз помощи',
-    sections:[
-      {
-        id:'hope_history',
-        title:'История моей надежды',
-        type:'questions',
-        items:[
-          'Эпизод 1: когда я надеялся и был предан / разочарован',
-          'Что я решил о Боге после этого?',
-          'Что я решил о людях?',
-          'Что я решил о себе?',
-          'Эпизод 2: ещё один момент разрушенной надежды',
-          'Что изменилось во мне после него?',
-        ]
-      },
-      {
-        id:'hope_types',
-        title:'Ложная / настоящая надежда',
-        desc:'Мои примеры надежды-контракта и надежды-доверия',
-        type:'questions',
-        items:[
-          'Мои фразы надежды-контракта (я ожидал что если...):',
-          'Мои фразы надежды-доверия (я иду даже если...):',
-          'Где я до сих пор требую мгновенного результата?',
-        ]
-      },
-      {
-        id:'support_map',
-        title:'Карта реальной поддержки',
-        type:'questions',
-        items:[
-          'Кому я могу позвонить в кризис (имя и телефон):',
-          'Кому я могу сказать правду (имя):',
-          'Кто может быть свидетелем моего пути (имя):',
-          'Кто поможет мне не исчезнуть в тишине (имя):',
-        ]
-      },
-      {
-        id:'help_contract',
-        title:'Контракт принятия помощи',
-        type:'questions',
-        items:[
-          'Кому я позвоню/напишу в ближайшие 48 часов?',
-          'Что именно скажу?',
-          'О чём попрошу?',
-          'Как не сорву этот шаг?',
-        ]
-      },
-    ]
-  },
+const WORKBOOKS={
+  1:{title:'Шаг 1 · Возвращение к дружбе',sections:[
+    {id:'self_check',title:'Стартовая самооценка — «Где я сейчас?»',desc:'Отметь по шкале: 0 — совсем нет; 1 — немного; 2 — иногда; 3 — часто; 4 — почти всегда',type:'scale4',items:['Я скрываю часть правды о себе','Я оправдываю своё поведение обстоятельствами','Мне трудно просить помощь','Я делаю вид что всё лучше чем есть','Когда мне стыдно я исчезаю','Когда мне страшно я начинаю врать или недоговаривать','Я боюсь что если скажу правду меня отвергнут','Я знаю конкретных людей к кому могу обратиться','У меня есть план что делать при тяге и срыве','Я верю что честность может стать началом']},
+    {id:'reality',title:'5.1. Моя реальность без грима',desc:'Отвечай конкретно — фактами, без литературщины',type:'questions',items:['Когда я понял что теряю контроль?','Что я скрывал от других?','Что я скрывал от себя?','Какими фразами я обычно оправдывал себя?','Что уже разрушено?','Что разрушится следующим если ничего не менять?']},
+    {id:'price',title:'5.2. Цена самообмана',desc:'По каждой сфере: что я потерял, что скрывал, во что мне обошлась ложь',type:'table',cols:['Что я потерял','Что я скрывал','Во что мне обошлась ложь'],rows:['Тело','Психика','Отношения','Работа / служение','Деньги','Вера / совесть']},
+    {id:'relations',title:'5.3. Какой я в отношениях',type:'questions',items:['Где я использовал людей вместо любви?','Где я требовал доверия сам не будучи честным?','Где я играл роль?','Какой я друг на самом деле?','Хотел бы я сам иметь рядом такого человека как я? Почему?']},
+    {id:'honesty',title:'ДЗ 1. Лист честности',type:'questions',items:['Больше всего я скрываю...','Мне труднее всего признать...','Когда я говорю «всё нормально» на самом деле...','Я чаще всего вру когда чувствую...','Я боюсь что если люди увидят правду они...','Больше всего я оправдываю...','Цена моей лжи уже составила...','Я не хочу дальше жить так потому что...','Один человек с кем мне нужно быть честным...','Мой первый настоящий шаг...']},
+    {id:'psalm',title:'ДЗ 3. Псалом и отклик',desc:'Прочитай Пс. 31 или Пс. 50 и ответь',type:'questions',items:['Где этот текст касается меня?','Что во мне сопротивляется?','Где я хочу не спрятаться а вернуться?']},
+  ]},
+  2:{title:'Шаг 2 · Тело: союзник',sections:[
+    {id:'body_map',title:'Карта тела',desc:'Где в теле ты чаще замечаешь следующие состояния?',type:'questions',items:['Где в теле я замечаю тревогу?','Где я замечаю стыд?','Где я замечаю пустоту?','Где я замечаю злость?','Где я замечаю тягу?','Что появляется раньше — мысль или телесный сигнал?','Что я обычно игнорирую?','К чему это приводит через несколько часов?']},
+    {id:'sleep_chaos',title:'Мой сон и мой хаос',type:'questions',items:['Что происходит со мной после 2-3 плохих ночей?','Как меняется тяга после недосыпа?','Как меняется раздражение?','Как меняется способность просить помощи?']},
+    {id:'anchors',title:'Мои якоря',type:'questions',items:['Какой якорь мне подошёл лучше всего? Почему?','Когда именно я буду его применять?','Мои 3 ранних телесных сигнала тяги:']},
+    {id:'rhythm',title:'Минимальный недельный ритм',desc:'Запиши конкретное время для каждого',type:'questions',items:['Подъём:','Отход ко сну:','Первый приём пищи:','Вода (сколько стаканов):','Движение (что именно):','Пауза без телефона (когда):']},
+  ]},
+  3:{title:'Шаг 3 · Надежда и союз помощи',sections:[
+    {id:'hope_history',title:'История моей надежды',type:'questions',items:['Эпизод 1: когда я надеялся и был предан / разочарован','Что я решил о Боге после этого?','Что я решил о людях?','Что я решил о себе?','Эпизод 2: ещё один момент разрушенной надежды','Что изменилось во мне после него?']},
+    {id:'hope_types',title:'Ложная / настоящая надежда',desc:'Мои примеры надежды-контракта и надежды-доверия',type:'questions',items:['Мои фразы надежды-контракта (я ожидал что если...):','Мои фразы надежды-доверия (я иду даже если...):','Где я до сих пор требую мгновенного результата?']},
+    {id:'support_map',title:'Карта реальной поддержки',type:'questions',items:['Кому я могу позвонить в кризис (имя и телефон):','Кому я могу сказать правду (имя):','Кто может быть свидетелем моего пути (имя):','Кто поможет мне не исчезнуть в тишине (имя):']},
+    {id:'help_contract',title:'Контракт принятия помощи',type:'questions',items:['Кому я позвоню/напишу в ближайшие 48 часов?','Что именно скажу?','О чём попрошу?','Как не сорву этот шаг?']},
+  ]},
 };
 
-// State
-let currentUser = null;
-let selectedStep = null;
-let hwDone = {};
-let aiHistory = [];
-let wheelAnswers = {};
+let currentUser=null,selectedStep=null,hwDone={},aiHistory=[],wheelAnswers={},wbData={};
 
-// ─── ENTRY ───
-window.doEnter = async () => {
-  const name = document.getElementById('name-inp').value.trim();
-  if(!name){ showErr('Введите имя'); return; }
-  const key = name.toLowerCase().replace(/\s+/g,'_');
-  let snap = await getDoc(doc(db,'participants',key));
-  // Try variations
-  if(!snap.exists()) snap = await getDoc(doc(db,'participants',name.trim()));
-  if(!snap.exists()){ showErr('Имя не найдено. Обратитесь к ведущему.'); return; }
-  currentUser = {id:key,...snap.data()};
-  document.getElementById('app-username').textContent = currentUser.name;
-  if(!currentUser.wheelDone){
-    showWheelQuestionnaire();
-  } else {
-    enterApp();
-  }
+window.doEnter=async()=>{
+  const name=document.getElementById('name-inp').value.trim();
+  if(!name){showErr('Введите имя');return;}
+  const key=name.toLowerCase().replace(/\s+/g,'_');
+  let snap=await getDoc(doc(db,'participants',key));
+  if(!snap.exists()) snap=await getDoc(doc(db,'participants',name.trim()));
+  if(!snap.exists()){showErr('Имя не найдено. Обратитесь к ведущему.');return;}
+  currentUser={id:key,...snap.data()};
+  document.getElementById('app-username').textContent=currentUser.name;
+  if(!currentUser.wheelDone){showWheelQuestionnaire();}else{enterApp();}
 };
 
-function showErr(msg){
-  const el = document.getElementById('enter-err');
-  el.textContent=msg; el.style.display='block';
-}
+function showErr(msg){const el=document.getElementById('enter-err');el.textContent=msg;el.style.display='block';}
+window.logout=()=>{currentUser=null;show('sc-landing');};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-window.logout = () => { currentUser=null; show('sc-landing'); };
-
-function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-// ─── WHEEL ───
 function showWheelQuestionnaire(){
-  show('sc-wheel');
-  wheelAnswers = {};
-  const container = document.getElementById('wheel-qs');
-  container.innerHTML = WHEEL_AREAS.map(area => `
+  show('sc-wheel');wheelAnswers={};
+  const container=document.getElementById('wheel-qs');
+  container.innerHTML=WHEEL_AREAS.map(area=>`
     <div class="wheel-area-title">${area.name}</div>
-    ${area.qs.map((q,qi) => `
-      <div class="q-card">
-        <div class="q-text">${q}</div>
-        <div class="scale-row" id="sc-${area.id}-${qi}">
-          ${[1,2,3,4,5,6,7,8,9,10].map(n=>
-            `<div class="sc-btn" onclick="pickScale('${area.id}',${qi},${n},this)">${n}</div>`
-          ).join('')}
-        </div>
-      </div>`).join('')}
+    ${area.qs.map((q,qi)=>`<div class="q-card"><div class="q-text">${q}</div><div class="scale-row" id="sc-${area.id}-${qi}">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<div class="sc-btn" onclick="pickScale('${area.id}',${qi},${n},this)">${n}</div>`).join('')}</div></div>`).join('')}
   `).join('');
 }
 
-window.pickScale = (areaId, qi, val, el) => {
-  wheelAnswers[`${areaId}_${qi}`] = val;
+window.pickScale=(areaId,qi,val,el)=>{
+  wheelAnswers[`${areaId}_${qi}`]=val;
   el.closest('.scale-row').querySelectorAll('.sc-btn').forEach(b=>b.classList.remove('sel'));
   el.classList.add('sel');
 };
 
-window.submitWheel = async () => {
-  const scores = {};
-  WHEEL_AREAS.forEach(area => {
-    const vals = area.qs.map((_,qi)=>wheelAnswers[`${area.id}_${qi}`]||5);
-    scores[area.id] = Math.round(vals.reduce((a,b)=>a+b)/vals.length);
-  });
-  await updateDoc(doc(db,'participants',currentUser.id),{
-    wheelDone:true, wheelScores:scores,
-    wheelHistory:[{scores, date:new Date().toISOString(), stepId:currentUser.unlockedStep||1}]
-  });
-  currentUser.wheelDone=true; currentUser.wheelScores=scores;
-  // Send flag to facilitator
-  const weak = WHEEL_AREAS.filter(a=>scores[a.id]<=4).map(a=>a.name);
-  await addDoc(collection(db,'flags'),{
-    participantId:currentUser.id, participantName:currentUser.name,
-    title:'Базовое колесо баланса (первый вход)',
-    body:`Слабые зоны: ${weak.length?weak.join(', '):'нет явных (все ≥5)'}. Сильные: ${WHEEL_AREAS.filter(a=>scores[a.id]>=7).map(a=>a.name).join(', ')||'нет'}`,
-    type:'info', createdAt:new Date().toISOString(), read:false
-  });
+window.submitWheel=async()=>{
+  const scores={};
+  WHEEL_AREAS.forEach(area=>{const vals=area.qs.map((_,qi)=>wheelAnswers[`${area.id}_${qi}`]||5);scores[area.id]=Math.round(vals.reduce((a,b)=>a+b)/vals.length);});
+  await updateDoc(doc(db,'participants',currentUser.id),{wheelDone:true,wheelScores:scores,wheelHistory:[{scores,date:new Date().toISOString(),stepId:currentUser.unlockedStep||1}]});
+  currentUser.wheelDone=true;currentUser.wheelScores=scores;
+  const weak=WHEEL_AREAS.filter(a=>scores[a.id]<=4).map(a=>a.name);
+  await addDoc(collection(db,'flags'),{participantId:currentUser.id,participantName:currentUser.name,title:'Базовое колесо баланса (первый вход)',body:`Слабые зоны: ${weak.length?weak.join(', '):'нет явных (все ≥5)'}. Сильные: ${WHEEL_AREAS.filter(a=>scores[a.id]>=7).map(a=>a.name).join(', ')||'нет'}`,type:'info',createdAt:new Date().toISOString(),read:false});
   enterApp();
 };
 
-// ─── APP ───
-function enterApp(){
-  show('sc-app');
-  renderStepsNav();
-  openStep(currentUser.unlockedStep||1);
-  initAiChat();
-}
+function enterApp(){show('sc-app');renderStepsNav();openStep(currentUser.unlockedStep||1);initAiChat();}
 
 function renderStepsNav(){
-  const unlocked = currentUser.unlockedStep||1;
-  document.getElementById('steps-nav').innerHTML = STEPS.map(s => {
-    const locked = s.id > unlocked;
-    return `<div class="step-nav-item ${locked?'locked':''}" onclick="${locked?'':` openStep(${s.id})`}">
-      <div class="snav-num">${s.id}</div>
-      <div style="flex:1;min-width:0">
-        <div class="snav-name">${s.name}</div>
-      </div>
-      ${locked?'<span style="font-size:10px;color:var(--text3)">🔒</span>':''}
-    </div>`;
+  const unlocked=currentUser.unlockedStep||1;
+  document.getElementById('steps-nav').innerHTML=STEPS.map(s=>{
+    const locked=s.id>unlocked;
+    return `<div class="step-nav-item ${locked?'locked':''}" ${locked?'':` onclick="openStep(${s.id})"`}><div class="snav-num">${s.id}</div><div style="flex:1;min-width:0"><div class="snav-name">${s.name}</div></div>${locked?'<span style="font-size:10px;color:var(--text3)">🔒</span>':''}</div>`;
   }).join('');
 }
 
-window.openStep = (id) => {
-  selectedStep = STEPS.find(s=>s.id===id);
+window.openStep=(id)=>{
+  selectedStep=STEPS.find(s=>s.id===id);
   document.querySelectorAll('.step-nav-item').forEach((el,i)=>el.classList.toggle('active',STEPS[i]?.id===id));
   renderStepCenter();
 };
 
 function renderStepCenter(){
-  const s = selectedStep;
-  if(!s) return;
-  const center = document.getElementById('app-center');
-  const scores = currentUser.wheelScores||{};
-
-  const tabsHtml = s.meetings.map((m,i)=>`
-    <div class="meet-tab ${i===0?'active':''}" onclick="switchMeeting('${m.id}','${s.id}')">${m.label}</div>
-  `).join('') + `<div class="meet-tab" onclick="showWorkbook(${s.id})" style="border-color:rgba(200,160,74,.5)">📓 Тетрадь</div>`;
-
-  const meetsHtml = s.meetings.map((m,i)=>{
-    const tc = m.type==='meeting'?'badge-m':m.type==='individual'?'badge-i':'badge-s';
-    const tl = m.type==='meeting'?'Групповая встреча':m.type==='individual'?'Индивидуальная встреча':'Самостоятельно';
-    const hwHtml = m.hw.map((h,hi)=>`
-      <div class="hw-row ${hwDone[`${s.id}-${m.id}-${hi}`]?'done':''}" onclick="toggleHW('${s.id}-${m.id}-${hi}',this)">
-        <div class="hw-check">${hwDone[`${s.id}-${m.id}-${hi}`]?'✓':''}</div>
-        <div class="hw-text">${h}</div>
-      </div>`).join('');
-    return `<div class="meet-content ${i===0?'active':''}" id="mc-${m.id}">
-      <span class="meet-type-badge ${tc}">${tl}</span>
-      <div class="meet-title">${m.title}</div>
-      <div class="meet-time">${m.time}</div>
-      ${m.type==='meeting'?`<div style="background:rgba(200,160,74,.06);border:1px solid rgba(200,160,74,.15);padding:11px 14px;font-size:12px;color:var(--text2);margin-bottom:16px">📅 День групповой встречи. Приди подготовленным.</div>`:
-        m.type==='individual'?`<div style="background:rgba(40,96,64,.06);border:1px solid rgba(40,96,64,.15);padding:11px 14px;font-size:12px;color:var(--text2);margin-bottom:16px">🤝 Индивидуальная встреча с ведущим. Будь готов говорить конкретно.</div>`:''
-      }
-      <div class="sec-h">Задания</div>
-      ${hwHtml}
-    </div>`;
+  const s=selectedStep;if(!s)return;
+  const center=document.getElementById('app-center');
+  const scores=currentUser.wheelScores||{};
+  const tabsHtml=s.meetings.map((m,i)=>`<div class="meet-tab ${i===0?'active':''}" onclick="switchMeeting('${m.id}','${s.id}')">${m.label}</div>`).join('')+`<div class="meet-tab" onclick="showWorkbook(${s.id})" style="border-color:rgba(200,160,74,.5)">📓 Тетрадь</div>`;
+  const meetsHtml=s.meetings.map((m,i)=>{
+    const tc=m.type==='meeting'?'badge-m':m.type==='individual'?'badge-i':'badge-s';
+    const tl=m.type==='meeting'?'Групповая встреча':m.type==='individual'?'Индивидуальная встреча':'Самостоятельно';
+    const hwHtml=m.hw.map((h,hi)=>`<div class="hw-row ${hwDone[`${s.id}-${m.id}-${hi}`]?'done':''}" onclick="toggleHW('${s.id}-${m.id}-${hi}',this)"><div class="hw-check">${hwDone[`${s.id}-${m.id}-${hi}`]?'✓':''}</div><div class="hw-text">${h}</div></div>`).join('');
+    return `<div class="meet-content ${i===0?'active':''}" id="mc-${m.id}"><span class="meet-type-badge ${tc}">${tl}</span><div class="meet-title">${m.title}</div><div class="meet-time">${m.time}</div>${m.type==='meeting'?'<div style="background:rgba(200,160,74,.06);border:1px solid rgba(200,160,74,.15);padding:11px 14px;font-size:12px;color:var(--text2);margin-bottom:16px">📅 День групповой встречи. Приди подготовленным.</div>':m.type==='individual'?'<div style="background:rgba(40,96,64,.06);border:1px solid rgba(40,96,64,.15);padding:11px 14px;font-size:12px;color:var(--text2);margin-bottom:16px">🤝 Индивидуальная встреча с ведущим. Будь готов говорить конкретно.</div>':''}<div class="sec-h">Задания</div>${hwHtml}</div>`;
   }).join('');
-
-  // Wheel display
-  const wheelHtml = `
-    <div class="sec-h">Моё колесо баланса</div>
-    <div class="wheel-display">
-      <canvas id="p-wheel" width="180" height="180"></canvas>
-      <div class="wheel-scores">
-        ${WHEEL_AREAS.map(a=>{
-          const v=scores[a.id]||0;
-          const cls=v>=7?'wsr-ok':v>=4?'wsr-warn':'wsr-bad';
-          return `<div class="wheel-score-row"><span class="wsr-name">${a.name}</span><span class="wsr-val ${cls}">${v||'—'}</span></div>`;
-        }).join('')}
-      </div>
-    </div>`;
-
-  // Diary
-  const diaryHtml = `
-    <div class="sec-h">Дневник</div>
-    <textarea class="diary-area" id="diary-ta" placeholder="Что происходит внутри сегодня..."></textarea>
-    <button class="diary-save-btn" onclick="saveDiary()">Сохранить</button>
-    <div style="clear:both"></div>
-    <div id="diary-entries" style="margin-top:4px"></div>`;
-
-  center.innerHTML = `
-    <div class="step-phase">${s.phase}</div>
-    <div class="step-title-big">Шаг ${s.id} · ${s.name}</div>
-    <div class="step-deviz">${s.deviz}</div>
-    <div class="meet-tabs">${tabsHtml}</div>
-    ${meetsHtml}
-    ${wheelHtml}
-    ${diaryHtml}
-  `;
-
-  setTimeout(()=>drawWheel('p-wheel',scores), 50);
+  const wheelHtml=`<div class="sec-h">Моё колесо баланса</div><div class="wheel-display"><canvas id="p-wheel" width="180" height="180"></canvas><div class="wheel-scores">${WHEEL_AREAS.map(a=>{const v=scores[a.id]||0;const cls=v>=7?'wsr-ok':v>=4?'wsr-warn':'wsr-bad';return `<div class="wheel-score-row"><span class="wsr-name">${a.name}</span><span class="wsr-val ${cls}">${v||'—'}</span></div>`;}).join('')}</div></div>`;
+  const diaryHtml=`<div class="sec-h">Дневник</div><textarea class="diary-area" id="diary-ta" placeholder="Что происходит внутри сегодня..."></textarea><button class="diary-save-btn" onclick="saveDiary()">Сохранить</button><div style="clear:both"></div><div id="diary-entries" style="margin-top:4px"></div>`;
+  center.innerHTML=`<div class="step-phase">${s.phase}</div><div class="step-title-big">Шаг ${s.id} · ${s.name}</div><div class="step-deviz">${s.deviz}</div><div class="meet-tabs">${tabsHtml}</div>${meetsHtml}${wheelHtml}${diaryHtml}`;
+  setTimeout(()=>drawWheel('p-wheel',scores),50);
   loadDiary();
 }
 
-window.switchMeeting = (mid, sid) => {
-  document.querySelectorAll('.meet-tab').forEach((t,i)=>{
-    const s=STEPS.find(x=>x.id==sid);
-    t.classList.toggle('active', s?.meetings[i]?.id===mid);
-  });
+window.switchMeeting=(mid,sid)=>{
+  document.querySelectorAll('.meet-tab').forEach((t,i)=>{const s=STEPS.find(x=>x.id==sid);t.classList.toggle('active',s?.meetings[i]?.id===mid);});
   document.querySelectorAll('.meet-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('mc-'+mid)?.classList.add('active');
 };
 
-window.toggleHW = (key, el) => {
-  hwDone[key] = !hwDone[key];
-  el.classList.toggle('done', hwDone[key]);
-  el.querySelector('.hw-check').textContent = hwDone[key]?'✓':'';
-};
+window.toggleHW=(key,el)=>{hwDone[key]=!hwDone[key];el.classList.toggle('done',hwDone[key]);el.querySelector('.hw-check').textContent=hwDone[key]?'✓':'';};
 
-// ─── WORKBOOK ───
-let wbData = {};
-
-window.showWorkbook = async (stepId) => {
-  const wb = WORKBOOKS[stepId];
-  const center = document.getElementById('app-center');
-  try {
-    const snap = await getDoc(doc(db,'participants',currentUser.id));
-    wbData = snap.data()?.workbook?.[stepId] || {};
-  } catch(e){ wbData = {}; }
-  if(!wb){
-    center.innerHTML = `<div class="step-phase">РАБОЧАЯ ТЕТРАДЬ</div><div class="step-title-big">Шаг ${stepId}</div><div style="color:var(--text3);font-size:13px;margin-top:16px">Тетрадь для этого шага в разработке.</div>`;
-    return;
-  }
-  const sectionsHtml = wb.sections.map(sec => {
-    let bodyHtml = '';
-    if(sec.desc) bodyHtml += `<div class="wb-desc">${sec.desc}</div>`;
-    if(sec.type === 'questions'){
-      bodyHtml += sec.items.map((q,i) => `<div class="wb-question"><div class="wb-q-text">${q}</div><textarea class="wb-input" id="wb-${sec.id}-${i}" rows="2" placeholder="Напиши честно...">${wbData[sec.id+'_'+i]||''}</textarea></div>`).join('');
-    } else if(sec.type === 'scale4'){
-      bodyHtml += sec.items.map((item,i) => `<div class="wb-scale-item"><div class="wb-scale-item-text">${item}</div><div class="wb-scale-row" style="width:180px;flex-shrink:0">${[0,1,2,3,4].map(n=>'<div class="wb-scale-btn '+(wbData[sec.id+'_'+i]==n?'sel':'')+'" onclick="wbPick(''+sec.id+'','+i+','+n+',this)">'+n+'</div>').join('')}</div></div>`).join('');
-    } else if(sec.type === 'table'){
-      bodyHtml += '<table class="wb-table"><tr><th>Сфера</th>'+sec.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>'+sec.rows.map((row,ri)=>'<tr><td>'+row+'</td>'+sec.cols.map((_,ci)=>'<td><input type="text" value="'+(wbData[sec.id+'_'+ri+'_'+ci]||'')+'" onchange="wbTableChange(''+sec.id+'','+ri+','+ci+',this.value)" placeholder="..."></td>').join('')+'</tr>').join('')+'</table>';
+window.showWorkbook=async(stepId)=>{
+  const wb=WORKBOOKS[stepId];
+  const center=document.getElementById('app-center');
+  try{const snap=await getDoc(doc(db,'participants',currentUser.id));wbData=snap.data()?.workbook?.[stepId]||{};}catch(e){wbData={};}
+  if(!wb){center.innerHTML=`<div class="step-phase">РАБОЧАЯ ТЕТРАДЬ</div><div class="step-title-big">Шаг ${stepId}</div><div style="color:var(--text3);font-size:13px;margin-top:16px">Тетрадь для этого шага в разработке.</div>`;return;}
+  const sectionsHtml=wb.sections.map(sec=>{
+    let bodyHtml='';
+    if(sec.desc) bodyHtml+=`<div class="wb-desc">${sec.desc}</div>`;
+    if(sec.type==='questions'){
+      bodyHtml+=sec.items.map((q,i)=>`<div class="wb-question"><div class="wb-q-text">${q}</div><textarea class="wb-input" id="wb-${sec.id}-${i}" rows="2" placeholder="Напиши честно...">${wbData[sec.id+'_'+i]||''}</textarea></div>`).join('');
+    } else if(sec.type==='scale4'){
+      bodyHtml+=sec.items.map((item,i)=>{
+        const btns=[0,1,2,3,4].map(n=>`<div class="wb-scale-btn ${wbData[sec.id+'_'+i]==n?'sel':''}" onclick="wbPick('${sec.id}',${i},${n},this)">${n}</div>`).join('');
+        return `<div class="wb-scale-item"><div class="wb-scale-item-text">${item}</div><div class="wb-scale-row" style="width:180px;flex-shrink:0">${btns}</div></div>`;
+      }).join('');
+    } else if(sec.type==='table'){
+      const rows=sec.rows.map((row,ri)=>{
+        const cells=sec.cols.map((_,ci)=>`<td><input type="text" value="${wbData[sec.id+'_'+ri+'_'+ci]||''}" onchange="wbTableChange('${sec.id}',${ri},${ci},this.value)" placeholder="..."></td>`).join('');
+        return `<tr><td>${row}</td>${cells}</tr>`;
+      }).join('');
+      bodyHtml+=`<table class="wb-table"><tr><th>Сфера</th>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr>${rows}</table>`;
     }
-    bodyHtml += '<div style="display:flex;align-items:center;gap:12px;margin-top:12px"><button class="wb-save-btn" onclick="saveWbSection('+stepId+',''+sec.id+'')">Сохранить →</button><span class="wb-saved-note" id="saved-'+sec.id+'">✓ Сохранено</span></div><div style="clear:both"></div>';
-    return '<div class="wb-section" id="wbs-'+sec.id+'"><div class="wb-section-title" onclick="document.getElementById('wbs-'+sec.id+'').classList.toggle('open')"><span>'+sec.title+'</span><span style="color:var(--text3);font-size:11px">▾</span></div><div class="wb-section-body">'+bodyHtml+'</div></div>';
+    bodyHtml+=`<div style="display:flex;align-items:center;gap:12px;margin-top:12px"><button class="wb-save-btn" onclick="saveWbSection(${stepId},'${sec.id}')">Сохранить →</button><span class="wb-saved-note" id="saved-${sec.id}">✓ Сохранено</span></div><div style="clear:both"></div>`;
+    return `<div class="wb-section" id="wbs-${sec.id}"><div class="wb-section-title" onclick="document.getElementById('wbs-${sec.id}').classList.toggle('open')"><span>${sec.title}</span><span style="color:var(--text3);font-size:11px">▾</span></div><div class="wb-section-body">${bodyHtml}</div></div>`;
   }).join('');
-  center.innerHTML = '<div class="step-phase">РАБОЧАЯ ТЕТРАДЬ</div><div class="step-title-big">'+wb.title+'</div><div style="font-size:12px;color:var(--text3);margin-bottom:24px">Заполняй честно — только фактами. AI анализирует твои ответы.</div>'+sectionsHtml;
+  center.innerHTML='<div class="step-phase">РАБОЧАЯ ТЕТРАДЬ</div><div class="step-title-big">'+wb.title+'</div><div style="font-size:12px;color:var(--text3);margin-bottom:24px">Заполняй честно — только фактами. AI анализирует твои ответы.</div>'+sectionsHtml;
   document.querySelector('.wb-section')?.classList.add('open');
 };
 
-window.wbPick = (secId, idx, val, el) => {
-  wbData[secId+'_'+idx] = val;
-  el.closest('.wb-scale-row').querySelectorAll('.wb-scale-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');
-};
-window.wbTableChange = (secId, ri, ci, val) => { wbData[secId+'_'+ri+'_'+ci] = val; };
+window.wbPick=(secId,idx,val,el)=>{wbData[secId+'_'+idx]=val;el.closest('.wb-scale-row').querySelectorAll('.wb-scale-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');};
+window.wbTableChange=(secId,ri,ci,val)=>{wbData[secId+'_'+ri+'_'+ci]=val;};
 
-window.saveWbSection = async (stepId, secId) => {
-  const wb = WORKBOOKS[stepId];
-  const sec = wb?.sections.find(s=>s.id===secId);
-  if(!sec) return;
-  if(sec.type === 'questions'){
-    sec.items.forEach((_,i) => { wbData[sec.id+'_'+i] = document.getElementById('wb-'+sec.id+'-'+i)?.value||''; });
-  }
-  try {
-    const existing = (await getDoc(doc(db,'participants',currentUser.id))).data()?.workbook||{};
-    existing[stepId] = {...(existing[stepId]||{}), ...wbData};
+window.saveWbSection=async(stepId,secId)=>{
+  const wb=WORKBOOKS[stepId];const sec=wb?.sections.find(s=>s.id===secId);if(!sec)return;
+  if(sec.type==='questions'){sec.items.forEach((_,i)=>{wbData[sec.id+'_'+i]=document.getElementById('wb-'+sec.id+'-'+i)?.value||'';});}
+  try{
+    const existing=(await getDoc(doc(db,'participants',currentUser.id))).data()?.workbook||{};
+    existing[stepId]={...(existing[stepId]||{}),...wbData};
     await updateDoc(doc(db,'participants',currentUser.id),{workbook:existing});
-    const note = document.getElementById('saved-'+secId);
-    if(note){ note.style.display='inline'; setTimeout(()=>note.style.display='none',2000); }
-    // AI analyzes
-    const answers = sec.type==='questions'
-      ? sec.items.map((q,i)=>q+'\n'+(wbData[sec.id+'_'+i]||'(не заполнено)')).join('\n\n')
-      : JSON.stringify(Object.fromEntries(Object.entries(wbData).filter(([k])=>k.startsWith(secId))));
-    const res = await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,
-        messages:[{role:'user',content:'Участник Шага '+stepId+' заполнил раздел тетради «'+sec.title+'».\n\nОтветы:\n'+answers+'\n\nЕсть ли признаки самообмана, избегания, общих слов вместо фактов, перекладывания ответственности? Если да — одним конкретным предложением. Если ответы честные — «ОК».'}]})
-    });
-    const data = await res.json();
-    const analysis = data.content?.[0]?.text||'';
-    if(analysis && !analysis.includes('ОК')){
-      await addDoc(collection(db,'flags'),{
-        participantId:currentUser.id,participantName:currentUser.name,
-        title:'Тетрадь · Шаг '+stepId+' · '+sec.title,
-        body:analysis,type:'warning',createdAt:new Date().toISOString(),read:false
-      });
-    }
-  } catch(e){ console.error(e); }
+    const note=document.getElementById('saved-'+secId);
+    if(note){note.style.display='inline';setTimeout(()=>note.style.display='none',2000);}
+    const answers=sec.type==='questions'?sec.items.map((q,i)=>q+'\n'+(wbData[sec.id+'_'+i]||'(не заполнено)')).join('\n\n'):JSON.stringify(Object.fromEntries(Object.entries(wbData).filter(([k])=>k.startsWith(secId))));
+    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:'Участник Шага '+stepId+' заполнил раздел тетради «'+sec.title+'».\n\nОтветы:\n'+answers+'\n\nЕсть ли признаки самообмана, избегания, общих слов вместо фактов, перекладывания ответственности? Если да — одним конкретным предложением. Если ответы честные — «ОК».'}]})});
+    const data=await res.json();const analysis=data.content?.[0]?.text||'';
+    if(analysis&&!analysis.includes('ОК')){await addDoc(collection(db,'flags'),{participantId:currentUser.id,participantName:currentUser.name,title:'Тетрадь · Шаг '+stepId+' · '+sec.title,body:analysis,type:'warning',createdAt:new Date().toISOString(),read:false});}
+  }catch(e){console.error(e);}
 };
 
-
-window.showWheelPanel = () => {
-  const scores = currentUser.wheelScores||{};
-  const center = document.getElementById('app-center');
-  center.innerHTML = `
-    <div class="step-title-big" style="margin-bottom:24px">Колесо баланса</div>
-    <div class="wheel-display" style="max-width:400px">
-      <canvas id="p-wheel" width="180" height="180"></canvas>
-      <div class="wheel-scores">
-        ${WHEEL_AREAS.map(a=>{
-          const v=scores[a.id]||0;
-          const cls=v>=7?'wsr-ok':v>=4?'wsr-warn':'wsr-bad';
-          return `<div class="wheel-score-row"><span class="wsr-name">${a.name}</span><span class="wsr-val ${cls}">${v||'—'}/10</span></div>`;
-        }).join('')}
-      </div>
-    </div>`;
+window.showWheelPanel=()=>{
+  const scores=currentUser.wheelScores||{};
+  const center=document.getElementById('app-center');
+  center.innerHTML=`<div class="step-title-big" style="margin-bottom:24px">Колесо баланса</div><div class="wheel-display" style="max-width:400px"><canvas id="p-wheel" width="180" height="180"></canvas><div class="wheel-scores">${WHEEL_AREAS.map(a=>{const v=scores[a.id]||0;const cls=v>=7?'wsr-ok':v>=4?'wsr-warn':'wsr-bad';return `<div class="wheel-score-row"><span class="wsr-name">${a.name}</span><span class="wsr-val ${cls}">${v||'—'}/10</span></div>`;}).join('')}</div></div>`;
   setTimeout(()=>drawWheel('p-wheel',scores),50);
 };
 
-// ─── WHEEL DRAW ───
-function drawWheel(cid, scores){
-  const canvas=document.getElementById(cid);
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  const cx=90,cy=90,r=75;
-  ctx.clearRect(0,0,180,180);
-  ctx.fillStyle='#141414'; ctx.fillRect(0,0,180,180);
-  const n=WHEEL_AREAS.length, step=Math.PI*2/n;
-  for(let ring=1;ring<=10;ring++){
-    ctx.beginPath();
-    for(let i=0;i<n;i++){
-      const ang=i*step-Math.PI/2, rr=r*ring/10;
-      i===0?ctx.moveTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)):ctx.lineTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang));
-    }
-    ctx.closePath();ctx.strokeStyle=ring===10?'#2a2a2a':'#1a1a1a';ctx.lineWidth=1;ctx.stroke();
-  }
-  WHEEL_AREAS.forEach((_,i)=>{
-    const ang=i*step-Math.PI/2;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(ang),cy+r*Math.sin(ang));
-    ctx.strokeStyle='#222';ctx.lineWidth=1;ctx.stroke();
-  });
-  ctx.beginPath();
-  WHEEL_AREAS.forEach((a,i)=>{
-    const ang=i*step-Math.PI/2, rr=r*(scores[a.id]||5)/10;
-    i===0?ctx.moveTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)):ctx.lineTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang));
-  });
+function drawWheel(cid,scores){
+  const canvas=document.getElementById(cid);if(!canvas)return;
+  const ctx=canvas.getContext('2d');const cx=90,cy=90,r=75;
+  ctx.clearRect(0,0,180,180);ctx.fillStyle='#141414';ctx.fillRect(0,0,180,180);
+  const n=WHEEL_AREAS.length,step=Math.PI*2/n;
+  for(let ring=1;ring<=10;ring++){ctx.beginPath();for(let i=0;i<n;i++){const ang=i*step-Math.PI/2,rr=r*ring/10;i===0?ctx.moveTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)):ctx.lineTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang));}ctx.closePath();ctx.strokeStyle=ring===10?'#2a2a2a':'#1a1a1a';ctx.lineWidth=1;ctx.stroke();}
+  WHEEL_AREAS.forEach((_,i)=>{const ang=i*step-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(ang),cy+r*Math.sin(ang));ctx.strokeStyle='#222';ctx.lineWidth=1;ctx.stroke();});
+  ctx.beginPath();WHEEL_AREAS.forEach((a,i)=>{const ang=i*step-Math.PI/2,rr=r*(scores[a.id]||5)/10;i===0?ctx.moveTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang)):ctx.lineTo(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang));});
   ctx.closePath();ctx.fillStyle='rgba(200,160,74,.18)';ctx.fill();ctx.strokeStyle='rgba(200,160,74,.6)';ctx.lineWidth=2;ctx.stroke();
-  WHEEL_AREAS.forEach((a,i)=>{
-    const ang=i*step-Math.PI/2, rr=r*(scores[a.id]||5)/10;
-    ctx.beginPath();ctx.arc(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang),3,0,Math.PI*2);ctx.fillStyle=a.color;ctx.fill();
-    ctx.fillStyle='#555';ctx.font='9px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(a.name,cx+(r+13)*Math.cos(ang),cy+(r+13)*Math.sin(ang));
-  });
+  WHEEL_AREAS.forEach((a,i)=>{const ang=i*step-Math.PI/2,rr=r*(scores[a.id]||5)/10;ctx.beginPath();ctx.arc(cx+rr*Math.cos(ang),cy+rr*Math.sin(ang),3,0,Math.PI*2);ctx.fillStyle=a.color;ctx.fill();ctx.fillStyle='#555';ctx.font='9px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(a.name,cx+(r+13)*Math.cos(ang),cy+(r+13)*Math.sin(ang));});
 }
 
-// ─── DIARY ───
 async function loadDiary(){
-  if(!currentUser) return;
-  const el=document.getElementById('diary-entries');
-  if(!el) return;
-  try {
+  if(!currentUser)return;const el=document.getElementById('diary-entries');if(!el)return;
+  try{
     const snap=await getDocs(query(collection(db,'participants',currentUser.id,'diary'),orderBy('createdAt','desc'),limit(8)));
     el.innerHTML='';
-    snap.forEach(d=>{
-      const a=d.data();
-      // Skip AI conversation entries
-      if(a.text?.startsWith('[AI]')) return;
-      el.innerHTML+=`<div class="diary-entry">
-        <div class="diary-entry-date">${a.createdAt?new Date(a.createdAt).toLocaleString('ru'):''}</div>
-        <div class="diary-entry-text">${a.text||''}</div>
-      </div>`;
-    });
-  } catch(e){}
+    snap.forEach(d=>{const a=d.data();if(a.text?.startsWith('[AI]'))return;el.innerHTML+=`<div class="diary-entry"><div class="diary-entry-date">${a.createdAt?new Date(a.createdAt).toLocaleString('ru'):''}</div><div class="diary-entry-text">${a.text||''}</div></div>`;});
+  }catch(e){}
 }
 
-window.saveDiary = async () => {
-  const text=document.getElementById('diary-ta')?.value?.trim();
-  if(!text||!currentUser) return;
-  await addDoc(collection(db,'participants',currentUser.id,'diary'),{
-    text, stepId:selectedStep?.id, createdAt:new Date().toISOString()
-  });
-  document.getElementById('diary-ta').value='';
-  loadDiary();
-  // Analyze entry
-  try {
-    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:120,
-        messages:[{role:'user',content:`Участник шага ${selectedStep?.id||1} «${selectedStep?.name||''}» написал в дневник: "${text}". Есть ли признаки самообмана, избегания или перекладывания ответственности? Если да — одним предложением. Если нет — «ОК».`}]})
-    });
-    const data=await res.json();
-    const analysis=data.content?.[0]?.text||'';
-    if(analysis&&!analysis.includes('ОК')){
-      await addDoc(collection(db,'flags'),{
-        participantId:currentUser.id,participantName:currentUser.name,
-        title:`Дневник · Шаг ${selectedStep?.id||1}`,body:analysis,
-        type:'warning',createdAt:new Date().toISOString(),read:false
-      });
-    }
-  } catch(e){}
+window.saveDiary=async()=>{
+  const text=document.getElementById('diary-ta')?.value?.trim();if(!text||!currentUser)return;
+  await addDoc(collection(db,'participants',currentUser.id,'diary'),{text,stepId:selectedStep?.id,createdAt:new Date().toISOString()});
+  document.getElementById('diary-ta').value='';loadDiary();
+  try{
+    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:120,messages:[{role:'user',content:`Участник шага ${selectedStep?.id||1} «${selectedStep?.name||''}» написал в дневник: "${text}". Есть ли признаки самообмана, избегания или перекладывания ответственности? Если да — одним предложением. Если нет — «ОК».`}]})});
+    const data=await res.json();const analysis=data.content?.[0]?.text||'';
+    if(analysis&&!analysis.includes('ОК')){await addDoc(collection(db,'flags'),{participantId:currentUser.id,participantName:currentUser.name,title:`Дневник · Шаг ${selectedStep?.id||1}`,body:analysis,type:'warning',createdAt:new Date().toISOString(),read:false});}
+  }catch(e){}
 };
 
-// ─── AI CHAT ───
 async function initAiChat(){
   const scores=currentUser.wheelScores||{};
   const weak=WHEEL_AREAS.filter(a=>(scores[a.id]||5)<=4).map(a=>a.name);
   const step=STEPS.find(s=>s.id===(currentUser.unlockedStep||1));
-  const greeting=`Привет, ${currentUser.name}. Я здесь рядом — не чтобы давать советы, а чтобы задавать вопросы которые помогут разобраться. ${weak.length?`Вижу что сфера «${weak[0]}» даётся труднее всего. ` : ''}С чего начнём?`;
-  addMsg('ai', greeting);
+  const greeting=`Привет, ${currentUser.name}. Я здесь рядом — не чтобы давать советы, а чтобы задавать вопросы которые помогут разобраться. ${weak.length?`Вижу что сфера «${weak[0]}» даётся труднее всего. `:''}С чего начнём?`;
+  addMsg('ai',greeting);
   const sys=`Ты — помощник участника программы «Восстановление личности».
 Участник: ${currentUser.name}. Текущий шаг: ${step?.id} — «${step?.name}».
 Слабые зоны по колесу баланса: ${weak.length?weak.join(', '):'нет явных'}.
@@ -900,73 +471,36 @@ async function initAiChat(){
 window.aiKey=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}};
 
 window.sendAI=async()=>{
-  const ta=document.getElementById('ai-ta');
-  const text=ta.value.trim();
-  if(!text||!currentUser) return;
-  ta.value='';
-  addMsg('me',text);
-  // Save to diary
-  await addDoc(collection(db,'participants',currentUser.id,'diary'),{
-    text:`[AI] ${text}`,stepId:selectedStep?.id,createdAt:new Date().toISOString()
-  });
-  const typing=document.createElement('div');
-  typing.className='ai-typing-txt';typing.id='ai-typing';typing.textContent='...';
-  document.getElementById('ai-msgs').appendChild(typing);
-  document.getElementById('ai-msgs').scrollTop=9999;
-  try {
+  const ta=document.getElementById('ai-ta');const text=ta.value.trim();if(!text||!currentUser)return;
+  ta.value='';addMsg('me',text);
+  await addDoc(collection(db,'participants',currentUser.id,'diary'),{text:`[AI] ${text}`,stepId:selectedStep?.id,createdAt:new Date().toISOString()});
+  const typing=document.createElement('div');typing.className='ai-typing-txt';typing.id='ai-typing';typing.textContent='...';
+  document.getElementById('ai-msgs').appendChild(typing);document.getElementById('ai-msgs').scrollTop=9999;
+  try{
     const msgs=[...aiHistory.slice(1,-10),{role:'user',content:text}];
-    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:350,
-        system:aiHistory[0]?.content||'',messages:msgs})
-    });
-    const data=await res.json();
-    let reply=data.content?.[0]?.text||'Нет ответа';
+    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:350,system:aiHistory[0]?.content||'',messages:msgs})});
+    const data=await res.json();let reply=data.content?.[0]?.text||'Нет ответа';
     const flagMatch=reply.match(/FLAG:\[(.+?)\]/);
-    if(flagMatch){
-      reply=reply.replace(/FLAG:\[.+?\]/,'').trim();
-      await addDoc(collection(db,'flags'),{
-        participantId:currentUser.id,participantName:currentUser.name,
-        title:`AI-разговор · Шаг ${selectedStep?.id||1}`,body:flagMatch[1],
-        type:'warning',createdAt:new Date().toISOString(),read:false
-      });
-    }
-    document.getElementById('ai-typing')?.remove();
-    addMsg('ai',reply);
+    if(flagMatch){reply=reply.replace(/FLAG:\[.+?\]/,'').trim();await addDoc(collection(db,'flags'),{participantId:currentUser.id,participantName:currentUser.name,title:`AI-разговор · Шаг ${selectedStep?.id||1}`,body:flagMatch[1],type:'warning',createdAt:new Date().toISOString(),read:false});}
+    document.getElementById('ai-typing')?.remove();addMsg('ai',reply);
     aiHistory.push({role:'user',content:text},{role:'assistant',content:reply});
-    // Pattern analysis every 5 messages
-    if(aiHistory.filter(m=>m.role==='user').length%5===0) analyzePatterns();
-  } catch(e){
-    document.getElementById('ai-typing')?.remove();
-    addMsg('ai','Ошибка соединения. Попробуй позже.');
-  }
+    if(aiHistory.filter(m=>m.role==='user').length%5===0)analyzePatterns();
+  }catch(e){document.getElementById('ai-typing')?.remove();addMsg('ai','Ошибка соединения. Попробуй позже.');}
 };
 
 async function analyzePatterns(){
   const userMsgs=aiHistory.filter(m=>m.role==='user').slice(-10).map(m=>m.content).join('\n');
-  try {
-    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,
-        messages:[{role:'user',content:`Проанализируй сообщения участника шага ${selectedStep?.id||1}. Есть ли несоответствия между словами и паттернами поведения, самообман или избегание? Если да — одним предложением. Если нет — «ОК».\n${userMsgs}`}]})
-    });
-    const data=await res.json();
-    const a=data.content?.[0]?.text||'';
-    if(a&&!a.includes('ОК')){
-      await addDoc(collection(db,'flags'),{
-        participantId:currentUser.id,participantName:currentUser.name,
-        title:`AI-анализ паттернов · Шаг ${selectedStep?.id||1}`,body:a,
-        type:'warning',createdAt:new Date().toISOString(),read:false
-      });
-    }
-  } catch(e){}
+  try{
+    const res=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,messages:[{role:'user',content:`Проанализируй сообщения участника шага ${selectedStep?.id||1}. Есть ли несоответствия между словами и паттернами поведения, самообман или избегание? Если да — одним предложением. Если нет — «ОК».\n${userMsgs}`}]})});
+    const data=await res.json();const a=data.content?.[0]?.text||'';
+    if(a&&!a.includes('ОК')){await addDoc(collection(db,'flags'),{participantId:currentUser.id,participantName:currentUser.name,title:`AI-анализ паттернов · Шаг ${selectedStep?.id||1}`,body:a,type:'warning',createdAt:new Date().toISOString(),read:false});}
+  }catch(e){}
 }
 
 function addMsg(role,text){
   const el=document.getElementById('ai-msgs');
-  const div=document.createElement('div');
-  div.className=`ai-m ${role}`;
-  div.textContent=text;
-  el.appendChild(div);
-  el.scrollTop=9999;
+  const div=document.createElement('div');div.className=`ai-m ${role}`;div.textContent=text;
+  el.appendChild(div);el.scrollTop=9999;
 }
 </script>
 </body>
